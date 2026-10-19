@@ -32,16 +32,20 @@ const full: Repository = {
   sizeKb: 500000,
 }
 
+function renderCard(repo: Repository, onTopicClick?: (topic: string) => void) {
+  return render(
+    <ul>
+      <RepositoryCard repo={repo} onTopicClick={onTopicClick} />
+    </ul>,
+  )
+}
+
 describe('RepositoryCard', () => {
   beforeEach(() => vi.useFakeTimers({ now: new Date('2026-10-19T12:00:00Z'), toFake: ['Date'] }))
   afterEach(() => vi.useRealTimers())
 
   it('renders every fact for a full repository', () => {
-    render(
-      <ul>
-        <RepositoryCard repo={full} />
-      </ul>,
-    )
+    renderCard(full)
     const link = screen.getByTestId('repo-link')
     expect(link).toHaveAttribute('href', 'https://github.com/facebook/react')
     expect(link).toHaveAttribute('target', '_blank')
@@ -55,18 +59,10 @@ describe('RepositoryCard', () => {
     expect(screen.getByTestId('repo-description')).toHaveTextContent('The library')
     expect(screen.getByTestId('repo-language')).toHaveTextContent('JavaScript')
     expect(screen.getByTestId('repo-license')).toHaveTextContent('MIT')
+    expect(screen.getByTestId('repo-pushed')).toHaveTextContent('yesterday')
     expect(screen.getByTestId('repo-updated')).toHaveTextContent('Metadata updated 3 days ago')
-    expect(screen.getByTestId('repo-updated')).toHaveAttribute(
-      'title',
-      expect.stringContaining('description'),
-    )
-    expect(screen.getByTestId('repo-pushed')).toHaveAttribute(
-      'title',
-      expect.stringContaining('2026'),
-    )
     expect(screen.getByTestId('repo-topics').querySelectorAll('li')).toHaveLength(2)
     expect(screen.getByTestId('repo-activity')).toHaveAttribute('data-activity', 'active')
-    expect(screen.getByTestId('repo-pushed')).toHaveTextContent('yesterday')
     expect(screen.getByTestId('repo-forks')).toHaveTextContent('48000 forks')
     expect(screen.getByTestId('repo-issues')).toHaveTextContent('1100 open issues')
     expect(screen.getByTestId('repo-size')).toHaveTextContent('488.3 MB')
@@ -76,48 +72,33 @@ describe('RepositoryCard', () => {
   })
 
   it('omits missing facts instead of showing placeholders', () => {
-    render(
-      <ul>
-        <RepositoryCard
-          repo={{
-            ...full,
-            description: null,
-            license: null,
-            topics: [],
-            language: null,
-            avatarUrl: null,
-          }}
-        />
-      </ul>,
-    )
+    renderCard({
+      ...full,
+      description: null,
+      license: null,
+      topics: [],
+      language: null,
+      avatarUrl: null,
+      homepage: null,
+    })
     expect(screen.queryByTestId('repo-description')).toBeNull()
     expect(screen.queryByTestId('repo-license')).toBeNull()
     expect(screen.queryByTestId('repo-topics')).toBeNull()
     expect(screen.queryByTestId('repo-language')).toBeNull()
     expect(screen.queryByTestId('repo-avatar')).toBeNull()
+    expect(screen.queryByTestId('repo-homepage')).toBeNull()
     expect(screen.getByTestId('repo-stars')).toBeInTheDocument()
   })
 
-  it('shows an absolute date for pushes older than 30 days', () => {
-    render(
-      <ul>
-        <RepositoryCard repo={{ ...full, pushedAt: '2025-03-04T14:32:00Z' }} />
-      </ul>,
-    )
+  it('shows an absolute date for timestamps older than 30 days', () => {
+    renderCard({ ...full, pushedAt: '2025-03-04T14:32:00Z', updatedAt: '2025-06-01T00:00:00Z' })
     expect(screen.getByTestId('repo-pushed')).toHaveTextContent('Mar 4, 2025')
-    expect(screen.getByTestId('repo-pushed')).toHaveAttribute(
-      'title',
-      expect.stringMatching(/2025.*32/),
-    )
+    expect(screen.getByTestId('repo-updated')).toHaveTextContent('Jun 1, 2025')
     expect(screen.getByTestId('repo-activity')).toHaveAttribute('data-activity', 'inactive')
   })
 
   it('flags archived, fork and template repositories', () => {
-    render(
-      <ul>
-        <RepositoryCard repo={{ ...full, archived: true, isFork: true, isTemplate: true }} />
-      </ul>,
-    )
+    renderCard({ ...full, archived: true, isFork: true, isTemplate: true })
     expect(screen.getByTestId('repo-archived')).toBeInTheDocument()
     expect(screen.getByTestId('repo-fork')).toBeInTheDocument()
     expect(screen.getByTestId('repo-template')).toBeInTheDocument()
@@ -126,21 +107,13 @@ describe('RepositoryCard', () => {
 
   it('topic tags call onTopicClick with the topic name', async () => {
     const onTopicClick = vi.fn()
-    render(
-      <ul>
-        <RepositoryCard repo={full} onTopicClick={onTopicClick} />
-      </ul>,
-    )
+    renderCard(full, onTopicClick)
     await userEvent.click(screen.getByRole('button', { name: 'Search topic ui' }))
     expect(onTopicClick).toHaveBeenCalledWith('ui')
   })
 
   it('topic tags are plain text without a handler', () => {
-    render(
-      <ul>
-        <RepositoryCard repo={full} />
-      </ul>,
-    )
+    renderCard(full)
     expect(screen.queryByRole('button', { name: /Search topic/ })).toBeNull()
     expect(screen.getAllByTestId('repo-topic')).toHaveLength(2)
   })

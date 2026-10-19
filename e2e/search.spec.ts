@@ -118,6 +118,18 @@ test.describe('repository search', () => {
     await expect(page.getByTestId('page-next')).toBeDisabled()
   })
 
+  test('timestamps explain themselves in a styled tooltip on hover', async ({ page }) => {
+    await mockSearch(page, 'search-small')
+    await page.goto('/')
+    await search(page, 'react')
+    await page.getByTestId('repo-card').first().getByTestId('repo-pushed').hover()
+    const tip = page.getByTestId('tooltip')
+    await expect(tip).toBeVisible()
+    await expect(tip).toContainText('Last code push')
+    await expect(tip).toContainText(/\d{4}/)
+    await expect(tip).toHaveCSS('border-top-left-radius', /[1-9]/)
+  })
+
   test('clicking a topic tag searches topic:<name> from page 1', async ({ page }) => {
     const requests = await mockSearch(page, 'search-react')
     await page.goto('/')

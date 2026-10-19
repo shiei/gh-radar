@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { cx } from '../../../lib/cx'
 import { formatCompactNumber, formatDateTime, formatKb, formatTimestamp } from '../../../lib/format'
 import { activityOf, type Activity, type Repository } from '../../../lib/github'
-import { StarIcon, Tag, TagButton, Text } from '../../atoms'
+import { StarIcon, Tag, TagButton, Text, Tooltip } from '../../atoms'
 
 export interface RepositoryCardProps {
   repo: Repository
@@ -109,13 +109,11 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
           <span className={cx('h-2 w-2 rounded-full', activityDot[activity])} aria-hidden="true" />
           {t(`search.repo.activity.${activity}`)}
         </span>
-        <span
-          data-testid="repo-pushed"
-          className="cursor-default"
-          title={`${t('search.repo.pushedHint')} · ${formatDateTime(repo.pushedAt, lang)}`}
-        >
-          {t('search.repo.pushed', { time: formatTimestamp(repo.pushedAt, lang) })}
-        </span>
+        <Tooltip content={`${t('search.repo.pushedHint')}\n${formatDateTime(repo.pushedAt, lang)}`}>
+          <span data-testid="repo-pushed">
+            {t('search.repo.pushed', { time: formatTimestamp(repo.pushedAt, lang) })}
+          </span>
+        </Tooltip>
         {repo.language ? <span data-testid="repo-language">{repo.language}</span> : null}
         {repo.license ? (
           <span data-testid="repo-license">
@@ -133,13 +131,13 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
           {t('search.repo.size', { size: formatKb(repo.sizeKb, lang) })}
         </span>
         <span data-testid="repo-owner-type">{t(`search.repo.owner.${repo.ownerType}`)}</span>
-        <span
-          data-testid="repo-updated"
-          className="cursor-default"
-          title={`${t('search.repo.updatedHint')} · ${formatDateTime(repo.updatedAt, lang)}`}
+        <Tooltip
+          content={`${t('search.repo.updatedHint')}\n${formatDateTime(repo.updatedAt, lang)}`}
         >
-          {t('search.repo.updated', { time: formatTimestamp(repo.updatedAt, lang) })}
-        </span>
+          <span data-testid="repo-updated">
+            {t('search.repo.updated', { time: formatTimestamp(repo.updatedAt, lang) })}
+          </span>
+        </Tooltip>
         {repo.homepage ? (
           <a
             href={repo.homepage}
