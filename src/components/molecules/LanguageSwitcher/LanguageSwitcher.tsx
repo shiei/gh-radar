@@ -5,7 +5,7 @@ import { isLanguage, LANGUAGES, type Language } from '../../../lib/i18n'
 import { CheckIcon, ChevronDownIcon, GlobeIcon } from '../../atoms/icons'
 
 const triggerClass =
-  'inline-flex h-9 items-center gap-2 rounded-md border border-border bg-transparent px-3 text-sm text-text transition-colors hover:bg-surface-muted'
+  'inline-flex h-9 items-center gap-2 rounded-md border border-border bg-transparent px-3 text-sm whitespace-nowrap text-text transition-colors hover:bg-surface-muted'
 const popupClass =
   'min-w-36 rounded-md border border-border bg-surface-raised p-1 shadow-lg outline-none'
 const itemClass =

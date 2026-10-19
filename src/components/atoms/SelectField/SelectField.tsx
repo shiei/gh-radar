@@ -18,9 +18,10 @@ export interface SelectFieldProps<T extends string> {
 }
 
 const triggerClass =
-  'inline-flex h-11 items-center gap-2 rounded-md border border-border bg-surface px-3 text-sm text-text transition-colors hover:bg-surface-muted disabled:opacity-50'
+  'inline-flex h-11 items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 text-sm whitespace-nowrap text-text transition-colors hover:bg-surface-muted disabled:opacity-50'
+/* Popup is at least as wide as its trigger (--anchor-width comes from Base UI's positioner). */
 const popupClass =
-  'min-w-40 rounded-md border border-border bg-surface-raised p-1 shadow-lg outline-none'
+  'w-[var(--anchor-width)] min-w-40 rounded-md border border-border bg-surface-raised p-1 shadow-lg outline-none'
 const itemClass =
   'grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-text outline-none data-[highlighted]:bg-surface-muted'
 
@@ -50,7 +51,7 @@ export function SelectField<T extends string>({
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal>
-        <Select.Positioner sideOffset={6} align="end" className="z-50">
+        <Select.Positioner sideOffset={6} align="start" className="z-50">
           <Select.Popup className={popupClass}>
             <Select.List>
               {options.map((option) => (

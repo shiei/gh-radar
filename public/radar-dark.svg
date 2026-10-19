@@ -120,8 +120,8 @@
       <circle r="22" fill="url(#g-blip)"/>
       <circle r="7" fill="url(#g-dot)"/>
       <path class="bracket" d="M-16 -10v-6h6M10 -16h6v6M16 10v6h-6M-10 16h-6v-6"/>
-      <rect x="25" y="-36" width="38" height="22" rx="6" fill="#0d1117"/>
-      <text class="label" x="28" y="-20" fill="#00add8" font-size="18" font-style="italic">GO</text>
+      <rect x="26" y="-33" width="38" height="23" rx="6" fill="#0d1117"/>
+      <text x="31" y="-15" fill="#00add8" style="font: 900 17px ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'Hiragino Maru Gothic ProN', 'Varela Round', sans-serif; letter-spacing: 0.5px">GO</text>
     </g>
     <!-- Beyond the rings, along the rays -->
     <g transform="translate(118 212)">

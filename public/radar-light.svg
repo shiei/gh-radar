@@ -58,7 +58,7 @@
   <g id="blips">
     <!-- Inner ring -->
     <g transform="translate(275 372)">
-      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="13" fill="url(#g-blip)"/>
       <circle r="6" fill="url(#g-dot)"/>
       <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
       <g transform="translate(-56 -4) scale(1.35)" fill="none" stroke="#7e22ce" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -69,7 +69,7 @@
       </g>
     </g>
     <g transform="translate(368 262)">
-      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="13" fill="url(#g-blip)"/>
       <circle r="6" fill="url(#g-dot)"/>
       <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
       <g transform="translate(26 -10) scale(1.25)" fill="none" stroke="#1366ff" stroke-width="2.3" stroke-linecap="round">
@@ -80,7 +80,7 @@
     </g>
     <!-- Second ring -->
     <g transform="translate(238 252)">
-      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="13" fill="url(#g-blip)"/>
       <circle r="6" fill="url(#g-dot)"/>
       <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
       <g transform="translate(-60 -36) scale(1.25)">
@@ -89,7 +89,7 @@
       </g>
     </g>
     <g transform="translate(330 452)">
-      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="13" fill="url(#g-blip)"/>
       <circle r="6" fill="url(#g-dot)"/>
       <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
       <g transform="translate(26 -40) scale(1.25)" fill="none" stroke="#d61f8f" stroke-width="2.4" stroke-linejoin="round">
@@ -100,7 +100,7 @@
     </g>
     <!-- Third ring -->
     <g transform="translate(214 150)">
-      <circle r="22" fill="url(#g-blip)"/>
+      <circle r="16" fill="url(#g-blip)"/>
       <circle r="7" fill="url(#g-dot)"/>
       <path class="bracket" d="M-16 -10v-6h6M10 -16h6v6M16 10v6h-6M-10 16h-6v-6"/>
       <g transform="translate(26 -32) scale(1.25)">
@@ -109,7 +109,7 @@
       </g>
     </g>
     <g transform="translate(132 338)">
-      <circle r="22" fill="url(#g-blip)"/>
+      <circle r="16" fill="url(#g-blip)"/>
       <circle r="7" fill="url(#g-dot)"/>
       <path class="bracket" d="M-16 -10v-6h6M10 -16h6v6M16 10v6h-6M-10 16h-6v-6"/>
       <g transform="translate(26 8) scale(1.25)">
@@ -118,15 +118,15 @@
       </g>
     </g>
     <g transform="translate(176 470)">
-      <circle r="22" fill="url(#g-blip)"/>
+      <circle r="16" fill="url(#g-blip)"/>
       <circle r="7" fill="url(#g-dot)"/>
       <path class="bracket" d="M-16 -10v-6h6M10 -16h6v6M16 10v6h-6M-10 16h-6v-6"/>
-      <rect x="25" y="-36" width="38" height="22" rx="6" fill="#ffffff"/>
-      <text class="label" x="28" y="-20" fill="#0a7fa3" font-size="18" font-style="italic">GO</text>
+      <rect x="26" y="-33" width="38" height="23" rx="6" fill="#ffffff"/>
+      <text x="31" y="-15" fill="#0a7fa3" style="font: 900 17px ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'Hiragino Maru Gothic ProN', 'Varela Round', sans-serif; letter-spacing: 0.5px">GO</text>
     </g>
     <!-- Beyond the rings, along the rays -->
     <g transform="translate(118 212)">
-      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="13" fill="url(#g-blip)"/>
       <circle r="6" fill="url(#g-dot)"/>
       <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
       <g transform="translate(24 -36) scale(1.25)">
@@ -135,7 +135,7 @@
       </g>
     </g>
     <g transform="translate(300 88)">
-      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="13" fill="url(#g-blip)"/>
       <circle r="6" fill="url(#g-dot)"/>
       <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
       <g transform="translate(26 -22) scale(1.25)" fill="none" stroke="#1366ff" stroke-width="2.3" stroke-linejoin="round">
