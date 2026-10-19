@@ -60,7 +60,7 @@ export function SearchResults({ state, onPageChange, onRetry, onSearch }: Search
               </Text>
             ) : null}
           </div>
-          <ul className="flex flex-col" data-testid="result-list">
+          <ul className="flex flex-col gap-3" data-testid="result-list">
             {state.result.items.map((repo) => (
               <RepositoryCard
                 key={repo.id}

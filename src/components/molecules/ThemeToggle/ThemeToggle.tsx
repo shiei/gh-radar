@@ -5,11 +5,11 @@ import { useTheme } from '../../../lib/theme'
 import { MoonIcon, SunIcon } from '../../atoms/icons'
 
 const rootClass =
-  'relative inline-flex h-8 w-14 shrink-0 cursor-pointer items-center rounded-full border border-border bg-surface-muted p-0.5 transition-colors hover:border-border-strong'
+  'relative inline-flex h-9 w-16 shrink-0 cursor-pointer items-center rounded-md border border-border bg-surface-muted p-0.5 transition-colors hover:border-border-strong'
 const trackIconClass =
-  'pointer-events-none flex h-6 w-6 items-center justify-center text-text-muted transition-opacity duration-300'
+  'pointer-events-none flex h-7 w-7 items-center justify-center text-text-muted transition-opacity duration-300'
 const thumbClass =
-  'absolute left-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-surface-raised text-text shadow-md transition-transform duration-300 ease-out data-[checked]:translate-x-6 motion-reduce:transition-none'
+  'absolute left-0.5 flex h-7 w-7 items-center justify-center rounded-[5px] bg-surface-raised text-text shadow-md transition-transform duration-300 ease-out data-[checked]:translate-x-7 motion-reduce:transition-none'
 
 /** Sliding light/dark switch. Checked = dark. The thumb carries the active theme's icon. */
 export function ThemeToggle() {

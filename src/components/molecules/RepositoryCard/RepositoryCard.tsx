@@ -25,7 +25,7 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
   return (
     <li
       className={cx(
-        'border-border flex flex-col gap-2 border-b py-4 last:border-b-0',
+        'border-border bg-surface hover:border-border-strong flex flex-col gap-2 rounded-lg border p-4 transition-colors',
         repo.archived && 'opacity-60',
       )}
       data-testid="repo-card"
