@@ -69,8 +69,7 @@
         "active": "Active",
         "quiet": "Quiet",
         "inactive": "Inactive"
-      },
-      "starsPerMonth": "+{{rate}} / month"
+      }
     }
   }
 }

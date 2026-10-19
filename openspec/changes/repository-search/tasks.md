@@ -48,4 +48,4 @@
 - 下一个 change 候选：`github-token`（在 `headers.ts` 加 Authorization，并修改 `github-api-access` spec 的"未认证"要求）。
 - 已关闭：加载中的提交行为。去掉独立检索按钮后，加载中不再禁用任何控件，回车和输入框内图标都直接发起新检索并取消旧请求，spec 的 Loading state 需求已改写，见 design.md D7。
 - 待办：会话内结果缓存。现状不缓存，翻页回退或重复提交同样参数都会再请求一次，在未认证 60 次/小时的配额下浪费明显。建议作为 `github-token` change 的一部分实现：在 `useRepositorySearch` 内按 `query|sort|page` 建 Map，带时间戳，新鲜期约 5 分钟，命中直接 `succeeded` 不发请求；刷新即失效，不持久化。等出现多端点并发（详情页、比较页）再评估换 TanStack Query。
-- 待定：结果项附加信号实验中。卡片上临时加了 10 项数据（最近推送与活跃度、star 增速、Archived / Fork / Template 标签、fork 数、未关闭 issue 数、体积、组织或个人、官网），用于观察视觉密度。确定保留项后更新 spec 的 Result items 需求与 design D7，去掉不要的字段。
+- 待定：结果项附加信号实验中。卡片上临时加了数据（最近推送与活跃度、Archived / Fork / Template 标签、fork 数、未关闭 issue 数、体积、组织或个人、官网）。star 增速已于 2026-10-20 移除：它只是创建以来的平均值，不能反映近期趋势，真正的增量需要后端快照（见 proposal 的 Deferred），用于观察视觉密度。确定保留项后更新 spec 的 Result items 需求与 design D7，去掉不要的字段。

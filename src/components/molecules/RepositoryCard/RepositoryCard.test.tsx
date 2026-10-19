@@ -58,7 +58,6 @@ describe('RepositoryCard', () => {
     expect(screen.getByTestId('repo-topics').querySelectorAll('li')).toHaveLength(2)
     expect(screen.getByTestId('repo-activity')).toHaveAttribute('data-activity', 'active')
     expect(screen.getByTestId('repo-pushed')).toHaveTextContent('yesterday')
-    expect(screen.getByTestId('repo-rate')).toHaveTextContent('/ month')
     expect(screen.getByTestId('repo-forks')).toHaveTextContent('48000 forks')
     expect(screen.getByTestId('repo-issues')).toHaveTextContent('1100 open issues')
     expect(screen.getByTestId('repo-size')).toHaveTextContent('488.3 MB')

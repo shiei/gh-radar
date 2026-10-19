@@ -9,9 +9,3 @@ export function activityOf(pushedAt: string, now: Date = new Date()): Activity {
   if (days <= 180) return 'quiet'
   return 'inactive'
 }
-
-/** Average stars gained per month since creation; the Rising Stars approximation. */
-export function starsPerMonth(stars: number, createdAt: string, now: Date = new Date()): number {
-  const months = Math.max((now.getTime() - new Date(createdAt).getTime()) / (30 * DAY), 1)
-  return stars / months
-}

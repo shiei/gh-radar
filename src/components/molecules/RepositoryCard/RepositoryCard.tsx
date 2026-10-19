@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { cx } from '../../../lib/cx'
 import { formatCompactNumber, formatKb, formatRelativeTime } from '../../../lib/format'
-import { activityOf, starsPerMonth, type Activity, type Repository } from '../../../lib/github'
+import { activityOf, type Activity, type Repository } from '../../../lib/github'
 import { StarIcon, Tag, Text } from '../../atoms'
 
 export interface RepositoryCardProps {
@@ -19,7 +19,6 @@ export function RepositoryCard({ repo }: RepositoryCardProps) {
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
   const activity = activityOf(repo.pushedAt)
-  const rate = starsPerMonth(repo.stars, repo.createdAt)
 
   return (
     <li
@@ -70,13 +69,6 @@ export function RepositoryCard({ repo }: RepositoryCardProps) {
             <StarIcon size={14} />
             {formatCompactNumber(repo.stars, lang)}
           </span>
-          {repo.stars > 0 ? (
-            <span className="text-success" data-testid="repo-rate">
-              {t('search.repo.starsPerMonth', {
-                rate: formatCompactNumber(Math.round(rate), lang),
-              })}
-            </span>
-          ) : null}
         </div>
       </div>
 
