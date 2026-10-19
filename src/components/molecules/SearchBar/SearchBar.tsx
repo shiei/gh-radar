@@ -5,6 +5,8 @@ import type { SearchSort } from '../../../lib/github'
 import { ArrowRightIcon, Input, RadarSpinner, SearchIcon, SelectField } from '../../atoms'
 
 export interface SearchBarProps {
+  /** The query currently submitted (may come from a topic click); mirrored into the input. */
+  query: string
   sort: SearchSort
   loading: boolean
   onSubmit: (query: string) => void
@@ -19,9 +21,16 @@ const SORTS: readonly SearchSort[] = ['best', 'stars', 'updated']
  * becomes a spinner, but submitting stays possible so a newer search replaces the
  * one in flight.
  */
-export function SearchBar({ sort, loading, onSubmit, onSortChange }: SearchBarProps) {
+export function SearchBar({ query, sort, loading, onSubmit, onSortChange }: SearchBarProps) {
   const { t } = useTranslation()
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState(query)
+  // When the submitted query changes from outside (e.g. a topic click), mirror it into the
+  // input. Adjusting state during render is the React-sanctioned way to do this.
+  const [mirroredQuery, setMirroredQuery] = useState(query)
+  if (query !== mirroredQuery) {
+    setMirroredQuery(query)
+    setValue(query)
+  }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

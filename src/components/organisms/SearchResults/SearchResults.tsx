@@ -11,9 +11,10 @@ export interface SearchResultsProps {
   state: SearchState
   onPageChange: (page: number) => void
   onRetry: () => void
+  onSearch: (query: string) => void
 }
 
-export function SearchResults({ state, onPageChange, onRetry }: SearchResultsProps) {
+export function SearchResults({ state, onPageChange, onRetry, onSearch }: SearchResultsProps) {
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
   const sectionRef = useRef<HTMLElement>(null)
@@ -61,7 +62,11 @@ export function SearchResults({ state, onPageChange, onRetry }: SearchResultsPro
           </div>
           <ul className="flex flex-col" data-testid="result-list">
             {state.result.items.map((repo) => (
-              <RepositoryCard key={repo.id} repo={repo} />
+              <RepositoryCard
+                key={repo.id}
+                repo={repo}
+                onTopicClick={(topic) => onSearch(`topic:${topic}`)}
+              />
             ))}
           </ul>
           <Pagination

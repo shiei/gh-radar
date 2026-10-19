@@ -118,6 +118,22 @@ test.describe('repository search', () => {
     await expect(page.getByTestId('page-next')).toBeDisabled()
   })
 
+  test('clicking a topic tag searches topic:<name> from page 1', async ({ page }) => {
+    const requests = await mockSearch(page, 'search-react')
+    await page.goto('/')
+    await search(page, 'react')
+    await page.getByTestId('page-next').click()
+    await expect(page.getByTestId('page-current')).toHaveText('2')
+    const firstTopic = page.getByTestId('repo-card').first().getByTestId('repo-topic').first()
+    const name = (await firstTopic.textContent())!.trim()
+    await firstTopic.click()
+    await expect(page.getByTestId('search-input')).toHaveValue(`topic:${name}`)
+    await expect(page.getByTestId('page-current')).toHaveText('1')
+    const last = new URL(requests.at(-1)!.url())
+    expect(last.searchParams.get('q')).toBe(`topic:${name}`)
+    expect(last.searchParams.get('page')).toBe('1')
+  })
+
   test('numbered links jump to the last reachable page 100', async ({ page }) => {
     const requests = await mockSearchByPage(page, { 100: 'search-page100' }, 'search-react')
     await page.goto('/')

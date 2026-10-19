@@ -69,7 +69,8 @@
         "active": "活発",
         "quiet": "低調",
         "inactive": "停滞"
-      }
+      },
+      "searchTopic": "トピック {{topic}} を検索"
     }
   }
 }

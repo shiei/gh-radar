@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Repository } from '../../../lib/github'
@@ -87,5 +88,26 @@ describe('RepositoryCard', () => {
     expect(screen.queryByTestId('repo-language')).toBeNull()
     expect(screen.queryByTestId('repo-avatar')).toBeNull()
     expect(screen.getByTestId('repo-stars')).toBeInTheDocument()
+  })
+
+  it('topic tags call onTopicClick with the topic name', async () => {
+    const onTopicClick = vi.fn()
+    render(
+      <ul>
+        <RepositoryCard repo={full} onTopicClick={onTopicClick} />
+      </ul>,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Search topic ui' }))
+    expect(onTopicClick).toHaveBeenCalledWith('ui')
+  })
+
+  it('topic tags are plain text without a handler', () => {
+    render(
+      <ul>
+        <RepositoryCard repo={full} />
+      </ul>,
+    )
+    expect(screen.queryByRole('button', { name: /Search topic/ })).toBeNull()
+    expect(screen.getAllByTestId('repo-topic')).toHaveLength(2)
   })
 })

@@ -69,7 +69,8 @@
         "active": "Active",
         "quiet": "Quiet",
         "inactive": "Inactive"
-      }
+      },
+      "searchTopic": "Search topic {{topic}}"
     }
   }
 }

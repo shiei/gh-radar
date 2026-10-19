@@ -49,13 +49,25 @@ function success(totalCount: number, count: number): SearchState {
 describe('SearchResults', () => {
   it('renders nothing while idle', () => {
     const { container } = render(
-      <SearchResults state={initialSearchState} onPageChange={vi.fn()} onRetry={vi.fn()} />,
+      <SearchResults
+        state={initialSearchState}
+        onPageChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSearch={vi.fn()}
+      />,
     )
     expect(container).toBeEmptyDOMElement()
   })
 
   it('shows a plain count for small result sets', () => {
-    render(<SearchResults state={success(42, 10)} onPageChange={vi.fn()} onRetry={vi.fn()} />)
+    render(
+      <SearchResults
+        state={success(42, 10)}
+        onPageChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSearch={vi.fn()}
+      />,
+    )
     expect(screen.getByTestId('result-count')).toHaveTextContent('42 repositories matched')
     expect(screen.queryByTestId('result-capped')).toBeNull()
     expect(screen.getAllByTestId('repo-card')).toHaveLength(10)
@@ -64,7 +76,14 @@ describe('SearchResults', () => {
   })
 
   it('explains the 1000 cap for large result sets', () => {
-    render(<SearchResults state={success(120000, 10)} onPageChange={vi.fn()} onRetry={vi.fn()} />)
+    render(
+      <SearchResults
+        state={success(120000, 10)}
+        onPageChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSearch={vi.fn()}
+      />,
+    )
     expect(screen.getByTestId('result-count')).toHaveTextContent('120,000 repositories matched')
     expect(screen.getByTestId('result-capped')).toHaveTextContent('first 1,000')
     expect(screen.getByRole('button', { name: 'Page 100 of 100' })).toBeInTheDocument()
@@ -76,6 +95,7 @@ describe('SearchResults', () => {
         state={{ ...initialSearchState, query: 'x', status: 'loading', requestId: 1 }}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
+        onSearch={vi.fn()}
       />,
     )
     expect(screen.getByTestId('search-loading')).toBeInTheDocument()
@@ -84,6 +104,7 @@ describe('SearchResults', () => {
         state={{ ...initialSearchState, query: 'x', status: 'empty', requestId: 1 }}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
+        onSearch={vi.fn()}
       />,
     )
     expect(screen.getByTestId('search-empty')).toBeInTheDocument()
@@ -98,6 +119,7 @@ describe('SearchResults', () => {
         }}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
+        onSearch={vi.fn()}
       />,
     )
     expect(screen.getByTestId('search-error')).toBeInTheDocument()

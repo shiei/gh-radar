@@ -55,4 +55,5 @@
 - Most Popular 与 Rising Stars（近似版）排行榜。
 - 结构化的技术栈筛选器。
 - 项目比较（静态维度）。
+- 给仓库加星待定：需要用户 token 的写操作，`github-token` 之后单独评估（详见 tasks.md 的 Workflow follow-up）。
 - 会话内结果缓存待做：当前不缓存，重复参数会重新请求。建议并入 `github-token` change（详见 tasks.md 的 Workflow follow-up）。

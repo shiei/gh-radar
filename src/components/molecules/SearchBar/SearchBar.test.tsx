@@ -10,7 +10,13 @@ function setup(loading = false) {
   const onSubmit = vi.fn()
   const onSortChange = vi.fn()
   render(
-    <SearchBar sort="best" loading={loading} onSubmit={onSubmit} onSortChange={onSortChange} />,
+    <SearchBar
+      query=""
+      sort="best"
+      loading={loading}
+      onSubmit={onSubmit}
+      onSortChange={onSortChange}
+    />,
   )
   return { onSubmit, onSortChange, user: userEvent.setup() }
 }
@@ -56,6 +62,22 @@ describe('SearchBar', () => {
     expect(submit).toBeEnabled()
     await user.type(screen.getByTestId('search-input'), 'svelte{Enter}')
     expect(onSubmit).toHaveBeenCalledWith('svelte')
+  })
+
+  it('mirrors an externally submitted query into the input', () => {
+    const { rerender } = render(
+      <SearchBar query="" sort="best" loading={false} onSubmit={vi.fn()} onSortChange={vi.fn()} />,
+    )
+    rerender(
+      <SearchBar
+        query="topic:react"
+        sort="best"
+        loading={false}
+        onSubmit={vi.fn()}
+        onSortChange={vi.fn()}
+      />,
+    )
+    expect(screen.getByTestId('search-input')).toHaveValue('topic:react')
   })
 
   it('reports sort changes', async () => {

@@ -70,6 +70,17 @@
 - **WHEN** 当前界面语言为中文
 - **THEN** 相对时间与数字格式按中文习惯显示
 
+### Requirement: Topic tags are search shortcuts
+结果项中的每个 topic 标签 SHALL 可点击。点击后 SHALL 以 `topic:<名称>` 为查询、沿用当前排序、从第 1 页发起新的检索，输入框 SHALL 显示该查询以便用户继续修改。
+
+#### Scenario: Click a topic
+- **WHEN** 用户在某个结果项上点击 topic 标签 `react`
+- **THEN** 发起查询为 `topic:react` 的检索，页码回到第 1 页，输入框内容变为 `topic:react`
+
+#### Scenario: Topic tags are keyboard accessible
+- **WHEN** 用户用 Tab 聚焦到某个 topic 标签并按下 Enter
+- **THEN** 效果与点击相同
+
 ### Requirement: Result count is shown
 检索成功后 SHALL 显示匹配总数。当总数超过可访问上限（1000 条）时 SHALL 说明只能浏览前 1000 条。
 

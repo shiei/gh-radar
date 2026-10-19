@@ -69,7 +69,8 @@
         "active": "活跃",
         "quiet": "低频",
         "inactive": "停滞"
-      }
+      },
+      "searchTopic": "搜索主题 {{topic}}"
     }
   }
 }

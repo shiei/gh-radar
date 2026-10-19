@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { cx } from '../../../lib/cx'
 import { formatCompactNumber, formatKb, formatRelativeTime } from '../../../lib/format'
 import { activityOf, type Activity, type Repository } from '../../../lib/github'
-import { StarIcon, Tag, Text } from '../../atoms'
+import { StarIcon, Tag, TagButton, Text } from '../../atoms'
 
 export interface RepositoryCardProps {
   repo: Repository
+  /** Called with the topic name; the page turns it into a `topic:<name>` search. */
+  onTopicClick?: (topic: string) => void
 }
 
 const activityDot: Record<Activity, string> = {
@@ -15,7 +17,7 @@ const activityDot: Record<Activity, string> = {
   inactive: 'bg-danger',
 }
 
-export function RepositoryCard({ repo }: RepositoryCardProps) {
+export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
   const activity = activityOf(repo.pushedAt)
@@ -82,7 +84,17 @@ export function RepositoryCard({ repo }: RepositoryCardProps) {
         <ul className="flex flex-wrap gap-1" data-testid="repo-topics">
           {repo.topics.map((topic) => (
             <li key={topic}>
-              <Tag>{topic}</Tag>
+              {onTopicClick ? (
+                <TagButton
+                  onClick={() => onTopicClick(topic)}
+                  aria-label={t('search.repo.searchTopic', { topic })}
+                  data-testid="repo-topic"
+                >
+                  {topic}
+                </TagButton>
+              ) : (
+                <Tag data-testid="repo-topic">{topic}</Tag>
+              )}
             </li>
           ))}
         </ul>

@@ -42,12 +42,13 @@ export function HomePage() {
         </div>
       </section>
       <SearchBar
+        query={state.query}
         sort={state.sort}
         loading={state.status === 'loading'}
         onSubmit={submit}
         onSortChange={setSort}
       />
-      <SearchResults state={state} onPageChange={goToPage} onRetry={retry} />
+      <SearchResults state={state} onPageChange={goToPage} onRetry={retry} onSearch={submit} />
     </div>
   )
 }
