@@ -1,0 +1,6 @@
+export type { IconProps } from './Icon'
+export { CheckIcon } from './CheckIcon'
+export { ChevronDownIcon } from './ChevronDownIcon'
+export { GlobeIcon } from './GlobeIcon'
+export { MoonIcon } from './MoonIcon'
+export { SunIcon } from './SunIcon'

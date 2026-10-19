@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenSource Radar</title>
+    <script>
+      // Theme bootstrap: runs before first paint so the page never flashes the wrong theme.
+      // Keep in sync with src/lib/theme/constants.ts and resolveInitialTheme.ts.
+      ;(function () {
+        var key = 'osr.theme'
+        var stored = null
+        try {
+          stored = window.localStorage.getItem(key)
+        } catch (e) {
+          stored = null
+        }
+        var theme = stored === 'light' || stored === 'dark' ? stored : null
+        if (!theme && window.matchMedia) {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+        document.documentElement.setAttribute('data-theme', theme || 'light')
+      })()
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

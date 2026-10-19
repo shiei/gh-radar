@@ -1,0 +1,59 @@
+/*
+ * Design tokens: the single source of visual truth.
+ * Components never use raw colors; they use the semantic utilities
+ * generated from these variables in globals.css.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --surface: #fff;
+  --surface-muted: #f6f8fa;
+  --surface-raised: #fff;
+
+  /* Text */
+  --text: #1f2328;
+  --text-muted: #59636e;
+
+  /* Lines */
+  --border: #d1d9e0;
+  --border-strong: #8b949e;
+
+  /* Accent */
+  --accent: #0969da;
+  --accent-hover: #0860ca;
+  --accent-text: #fff;
+
+  /* Semantic */
+  --success: #1a7f37;
+  --danger: #cf222e;
+  --focus-ring: #0969da;
+
+  /* Shape */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --surface: #0d1117;
+  --surface-muted: #161b22;
+  --surface-raised: #1c2128;
+
+  --text: #e6edf3;
+  --text-muted: #9198a1;
+
+  --border: #30363d;
+  --border-strong: #6e7681;
+
+  --accent: #4493f8;
+  --accent-hover: #58a6ff;
+  --accent-text: #0d1117;
+
+  --success: #3fb950;
+  --danger: #f85149;
+  --focus-ring: #4493f8;
+}

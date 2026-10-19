@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "OpenSource Radar",
+    "tagline": "发现开发者正在构建什么。"
+  },
+  "theme": {
+    "toggle": {
+      "label": "夜间模式",
+      "toDark": "切换到夜间模式",
+      "toLight": "切换到日间模式"
+    }
+  },
+  "language": {
+    "label": "语言",
+    "names": {
+      "en": "English",
+      "ja": "日本語",
+      "zh": "中文"
+    }
+  },
+  "home": {
+    "welcome": "探索开源项目、框架和新兴技术。"
+  }
+}

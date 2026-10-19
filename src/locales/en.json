@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "OpenSource Radar",
+    "tagline": "Discover what developers are building."
+  },
+  "theme": {
+    "toggle": {
+      "label": "Dark mode",
+      "toDark": "Switch to dark mode",
+      "toLight": "Switch to light mode"
+    }
+  },
+  "language": {
+    "label": "Language",
+    "names": {
+      "en": "English",
+      "ja": "日本語",
+      "zh": "中文"
+    }
+  },
+  "home": {
+    "welcome": "Explore open-source projects, frameworks and emerging technologies."
+  }
+}

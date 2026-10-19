@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "OpenSource Radar",
+    "tagline": "開発者が今つくっているものを見つけよう。"
+  },
+  "theme": {
+    "toggle": {
+      "label": "ダークモード",
+      "toDark": "ダークモードに切り替える",
+      "toLight": "ライトモードに切り替える"
+    }
+  },
+  "language": {
+    "label": "言語",
+    "names": {
+      "en": "English",
+      "ja": "日本語",
+      "zh": "中文"
+    }
+  },
+  "home": {
+    "welcome": "オープンソースのプロジェクト、フレームワーク、新しい技術を探索しましょう。"
+  }
+}
