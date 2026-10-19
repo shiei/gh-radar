@@ -52,11 +52,15 @@
 - **THEN** 不发起请求；之后的首次检索使用 recently updated
 
 ### Requirement: Result items show repository facts
-每个结果项 SHALL 显示：owner 头像、`owner/name`、描述、star 数、主语言、最近更新时间、topics、license。头像来自 GitHub 的公开头像地址，不占用 API 配额。缺失的字段 SHALL 省略而不是显示占位文本。点击结果项的名称 SHALL 在新标签页打开该仓库的 GitHub 页面。
+每个结果项 SHALL 显示：owner 头像、`owner/name`、描述、star 数、主语言、最近推送时间、元数据更新时间、topics、license。两个时间 SHALL 用可区分的标签，并在悬浮提示中说明含义。头像来自 GitHub 的公开头像地址，不占用 API 配额。缺失的字段 SHALL 省略而不是显示占位文本。点击结果项的名称 SHALL 在新标签页打开该仓库的 GitHub 页面。
 
 #### Scenario: Full item
 - **WHEN** 结果中有一个仓库，其头像、描述、语言、topics、license 均存在
-- **THEN** 结果项显示上述全部字段，头像为圆形小图，star 数以紧凑格式显示（如 12.8k），更新时间以相对时间显示（如 3 days ago）
+- **THEN** 结果项显示上述全部字段，头像为圆形小图，star 数以紧凑格式显示（如 12.8k），30 天内的推送时间以相对时间显示（如 3 days ago），悬浮可见精确到分钟的完整时间
+
+#### Scenario: Older timestamps are absolute dates
+- **WHEN** 某个仓库最近推送时间在 30 天之前
+- **THEN** 以本地化的绝对日期显示（英文 Mar 4, 2025，中文与日文 2025年3月4日），悬浮仍可见完整时间；元数据更新时间遵循同样的显示规则
 
 #### Scenario: Partial item
 - **WHEN** 结果中有一个仓库没有描述、没有 license、topics 为空

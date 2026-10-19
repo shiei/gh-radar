@@ -51,7 +51,6 @@
     },
     "repo": {
       "stars": "{{count}} stars",
-      "updated": "Updated {{time}}",
       "license": "License",
       "archived": "Archived",
       "fork": "Fork",
@@ -70,7 +69,10 @@
         "quiet": "Quiet",
         "inactive": "Inactive"
       },
-      "searchTopic": "Search topic {{topic}}"
+      "searchTopic": "Search topic {{topic}}",
+      "updated": "Metadata updated {{time}}",
+      "pushedHint": "Last code push to any branch",
+      "updatedHint": "Last change to the repository itself: description, topics, settings"
     }
   }
 }

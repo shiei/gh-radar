@@ -98,6 +98,7 @@ LanguageSwitcher 暂不改用 SelectField，避免扩大范围；后续可以统
 ### D8. 文案与格式化
 - 新增键放在 `search.*` 命名空间下：`search.placeholder`、`search.submit`、`search.sort.{label,best,stars,updated}`、`search.count`（带 `{{count}}` 插值）、`search.countCapped`、`search.pagination.{previous,next,page}`（previous / next 文案不含 page 字样，用户要求）、`search.state.{loading,empty}`、`search.error.{rateLimited,rateLimitedUntil,invalidQuery,network,api,retry}`、`search.repo.{stars,updated,license}`。
 - 数字、相对时间、时刻全部用 `Intl` 并传入当前语言，不手写格式。单元测试固定 `en` 并用 `vi.setSystemTime` 固定当前时间。
+- 时间显示采用 GitHub 式混合策略（`formatTimestamp`）：30 天内相对时间，超过则 `Intl.DateTimeFormat` 的绝对日期；元素 `title` 带精确到分钟的完整时间。卡片同时显示 `pushed_at`（Last push，代码推送）与 `updated_at`（Metadata updated，仓库元数据变更），两者格式规则相同，标签措辞区分，`title` 里先说明含义再给完整时间。
 
 ### D9. 测试策略
 - `lib/github` 单元测试用 `vi.stubGlobal('fetch', vi.fn())` 构造 `Response`，覆盖每种状态码与标头组合；不引入 msw。
@@ -115,4 +116,4 @@ LanguageSwitcher 暂不改用 SelectField，避免扩大范围；后续可以统
 
 ## Open Questions
 
-- 相对时间阈值（例如超过 30 天是否改显示绝对日期）可以在实施时按观感决定，不影响 spec。
+- （已解决）相对时间阈值定为 30 天，见 D8。

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { cx } from '../../../lib/cx'
-import { formatCompactNumber, formatKb, formatRelativeTime } from '../../../lib/format'
+import { formatCompactNumber, formatDateTime, formatKb, formatTimestamp } from '../../../lib/format'
 import { activityOf, type Activity, type Repository } from '../../../lib/github'
 import { StarIcon, Tag, TagButton, Text } from '../../atoms'
 
@@ -109,8 +109,12 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
           <span className={cx('h-2 w-2 rounded-full', activityDot[activity])} aria-hidden="true" />
           {t(`search.repo.activity.${activity}`)}
         </span>
-        <span data-testid="repo-pushed">
-          {t('search.repo.pushed', { time: formatRelativeTime(repo.pushedAt, lang) })}
+        <span
+          data-testid="repo-pushed"
+          className="cursor-default"
+          title={`${t('search.repo.pushedHint')} · ${formatDateTime(repo.pushedAt, lang)}`}
+        >
+          {t('search.repo.pushed', { time: formatTimestamp(repo.pushedAt, lang) })}
         </span>
         {repo.language ? <span data-testid="repo-language">{repo.language}</span> : null}
         {repo.license ? (
@@ -129,6 +133,13 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
           {t('search.repo.size', { size: formatKb(repo.sizeKb, lang) })}
         </span>
         <span data-testid="repo-owner-type">{t(`search.repo.owner.${repo.ownerType}`)}</span>
+        <span
+          data-testid="repo-updated"
+          className="cursor-default"
+          title={`${t('search.repo.updatedHint')} · ${formatDateTime(repo.updatedAt, lang)}`}
+        >
+          {t('search.repo.updated', { time: formatTimestamp(repo.updatedAt, lang) })}
+        </span>
         {repo.homepage ? (
           <a
             href={repo.homepage}
@@ -140,9 +151,6 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
             {t('search.repo.homepage')}
           </a>
         ) : null}
-        <span data-testid="repo-updated">
-          {t('search.repo.updated', { time: formatRelativeTime(repo.updatedAt, lang) })}
-        </span>
       </div>
     </li>
   )

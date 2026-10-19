@@ -1,6 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { formatCompactNumber, formatNumber, formatRelativeTime, formatTime } from './index'
+import {
+  formatCompactNumber,
+  formatDate,
+  formatDateTime,
+  formatNumber,
+  formatRelativeTime,
+  formatTime,
+  formatTimestamp,
+} from './index'
 
 const LANGS = ['en', 'ja', 'zh'] as const
 
@@ -32,6 +40,25 @@ describe('format helpers', () => {
     expect(formatRelativeTime('2026-10-19T09:00:00Z', 'en')).toBe('3 hours ago')
     expect(formatRelativeTime('2025-08-19T12:00:00Z', 'en')).toBe('last year')
     expect(formatRelativeTime('2026-10-19T11:59:50Z', 'en')).toBe('now')
+  })
+
+  it('formatTimestamp is relative within 30 days and absolute beyond', () => {
+    expect(formatTimestamp('2026-10-16T12:00:00Z', 'en')).toBe('3 days ago')
+    expect(formatTimestamp('2026-09-19T12:00:00Z', 'en')).toBe('last month')
+    expect(formatTimestamp('2026-09-18T12:00:00Z', 'en')).toBe('Sep 18, 2026')
+    expect(formatTimestamp('2025-03-04T12:00:00Z', 'en')).toBe('Mar 4, 2025')
+  })
+
+  it('formatDate is localised', () => {
+    expect(formatDate('2025-03-04T12:00:00Z', 'zh')).toBe('2025年3月4日')
+    expect(formatDate('2025-03-04T12:00:00Z', 'ja')).toBe('2025年3月4日')
+    expect(formatDate('2025-03-04T12:00:00Z', 'en')).toBe('Mar 4, 2025')
+  })
+
+  it.each(LANGS)('formatDateTime in %s includes the year and the minute', (lang) => {
+    const out = formatDateTime('2025-03-04T14:32:00Z', lang)
+    expect(out).toContain('2025')
+    expect(out).toMatch(/32/)
   })
 
   it.each(LANGS)('formatTime in %s contains hour and minute', (lang) => {

@@ -51,7 +51,6 @@
     },
     "repo": {
       "stars": "スター {{count}}",
-      "updated": "{{time}}に更新",
       "license": "ライセンス",
       "archived": "アーカイブ済み",
       "fork": "フォーク",
@@ -70,7 +69,10 @@
         "quiet": "低調",
         "inactive": "停滞"
       },
-      "searchTopic": "トピック {{topic}} を検索"
+      "searchTopic": "トピック {{topic}} を検索",
+      "updated": "メタデータ更新 {{time}}",
+      "pushedHint": "いずれかのブランチへの最終 push",
+      "updatedHint": "リポジトリ自体の最終変更：説明、トピック、設定など"
     }
   }
 }

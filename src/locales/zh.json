@@ -51,7 +51,6 @@
     },
     "repo": {
       "stars": "{{count}} 个 star",
-      "updated": "更新于{{time}}",
       "license": "许可证",
       "archived": "已归档",
       "fork": "Fork",
@@ -70,7 +69,10 @@
         "quiet": "低频",
         "inactive": "停滞"
       },
-      "searchTopic": "搜索主题 {{topic}}"
+      "searchTopic": "搜索主题 {{topic}}",
+      "updated": "元数据更新于{{time}}",
+      "pushedHint": "最近一次向任意分支推送代码",
+      "updatedHint": "仓库本身最近一次变更：描述、topics、设置等"
     }
   }
 }

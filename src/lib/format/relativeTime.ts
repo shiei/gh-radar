@@ -1,8 +1,12 @@
+const DAY_SECONDS = 24 * 60 * 60
+/** Dates older than this are shown as absolute dates, like GitHub does. */
+export const RELATIVE_WINDOW_DAYS = 30
+
 const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
-  ['year', 365 * 24 * 60 * 60],
-  ['month', 30 * 24 * 60 * 60],
-  ['week', 7 * 24 * 60 * 60],
-  ['day', 24 * 60 * 60],
+  ['year', 365 * DAY_SECONDS],
+  ['month', 30 * DAY_SECONDS],
+  ['week', 7 * DAY_SECONDS],
+  ['day', DAY_SECONDS],
   ['hour', 60 * 60],
   ['minute', 60],
 ]
@@ -18,4 +22,29 @@ export function formatRelativeTime(iso: string, lang: string, now: Date = new Da
     }
   }
   return rtf.format(0, 'second')
+}
+
+/** "Mar 4, 2025" / "2025年3月4日". */
+export function formatDate(iso: string, lang: string): string {
+  return new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric' }).format(
+    new Date(iso),
+  )
+}
+
+/** Full timestamp to the minute, for tooltips: "Mar 4, 2025, 2:32 PM" / "2025年3月4日 14:32". */
+export function formatDateTime(iso: string, lang: string): string {
+  return new Intl.DateTimeFormat(lang, { dateStyle: 'medium', timeStyle: 'short' }).format(
+    new Date(iso),
+  )
+}
+
+/**
+ * GitHub-style hybrid: relative wording within the last 30 days ("3 days ago"),
+ * an absolute date beyond that ("Mar 4, 2025").
+ */
+export function formatTimestamp(iso: string, lang: string, now: Date = new Date()): string {
+  const ageDays = (now.getTime() - new Date(iso).getTime()) / (DAY_SECONDS * 1000)
+  return ageDays <= RELATIVE_WINDOW_DAYS
+    ? formatRelativeTime(iso, lang, now)
+    : formatDate(iso, lang)
 }
