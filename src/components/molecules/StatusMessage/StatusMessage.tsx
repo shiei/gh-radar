@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { formatTime } from '../../../lib/format'
 import type { GitHubError } from '../../../lib/github'
-import { Button, SpinnerIcon, Text } from '../../atoms'
+import { Button, RadarSpinner, Text } from '../../atoms'
 
 export type StatusMessageProps =
   | { status: 'loading' }
@@ -54,7 +54,7 @@ export function StatusMessage(props: StatusMessageProps) {
         role="status"
         data-testid="search-loading"
       >
-        <SpinnerIcon size={18} />
+        <RadarSpinner size={22} className="text-accent" />
         <span>{t('search.state.loading')}</span>
       </div>
     )

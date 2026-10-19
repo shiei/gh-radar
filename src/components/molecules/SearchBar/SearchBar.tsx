@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { SearchSort } from '../../../lib/github'
-import { ArrowRightIcon, Input, SearchIcon, SelectField, SpinnerIcon } from '../../atoms'
+import { ArrowRightIcon, Input, RadarSpinner, SearchIcon, SelectField } from '../../atoms'
 
 export interface SearchBarProps {
   sort: SearchSort
@@ -58,7 +58,11 @@ export function SearchBar({ sort, loading, onSubmit, onSortChange }: SearchBarPr
           className="text-text-muted hover:bg-surface-muted hover:text-text absolute top-1/2 right-1.5 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md transition-colors"
           data-testid="search-submit"
         >
-          {loading ? <SpinnerIcon size={18} /> : <ArrowRightIcon size={18} />}
+          {loading ? (
+            <RadarSpinner size={18} className="text-accent" />
+          ) : (
+            <ArrowRightIcon size={18} />
+          )}
         </button>
       </div>
       <SelectField
