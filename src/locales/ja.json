@@ -20,5 +20,57 @@
   },
   "home": {
     "welcome": "オープンソースのプロジェクト、フレームワーク、新しい技術を探索しましょう。"
+  },
+  "search": {
+    "placeholder": "リポジトリ、技術、トピックを検索...",
+    "submit": "検索",
+    "sort": {
+      "label": "並び替え",
+      "best": "関連度順",
+      "stars": "スター数順",
+      "updated": "更新日順"
+    },
+    "count": "{{total}} 件のリポジトリが見つかりました",
+    "countCapped": "閲覧できるのは先頭の 1,000 件までです。",
+    "pagination": {
+      "previous": "前へ",
+      "next": "次へ",
+      "page": "{{total}} ページ中 {{page}} ページ目"
+    },
+    "state": {
+      "loading": "検索中...",
+      "empty": "該当するリポジトリはありません。"
+    },
+    "error": {
+      "rateLimited": "GitHub のリクエスト上限に達しました。",
+      "rateLimitedUntil": "{{time}} 以降に再試行できます。",
+      "invalidQuery": "GitHub がこのクエリを解釈できませんでした。検索構文を確認してください。",
+      "network": "GitHub に接続できません。ネットワークを確認してください。",
+      "api": "GitHub からエラーが返されました（{{status}}）。",
+      "retry": "再試行"
+    },
+    "repo": {
+      "stars": "スター {{count}}",
+      "updated": "{{time}}に更新",
+      "license": "ライセンス",
+      "archived": "アーカイブ済み",
+      "fork": "フォーク",
+      "template": "テンプレート",
+      "forks": "フォーク {{count}}",
+      "issues": "未解決 issue {{count}}",
+      "size": "サイズ {{size}}",
+      "owner": {
+        "Organization": "組織",
+        "User": "個人"
+      },
+      "homepage": "Web サイト",
+      "pushed": "最終 push {{time}}",
+      "activity": {
+        "active": "活発",
+        "quiet": "低調",
+        "inactive": "停滞"
+      },
+      "starsPerMonth": "+{{rate}} / 月"
+    }
   }
 }

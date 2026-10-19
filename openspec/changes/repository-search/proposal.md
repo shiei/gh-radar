@@ -6,7 +6,7 @@
 
 ## What Changes
 
-- 首页加入搜索框。用户输入关键字并显式提交（按钮或回车）后，调用 `GET https://api.github.com/search/repositories` 获取结果。
+- 首页加入搜索框，不设独立检索按钮。用户输入关键字并显式提交（回车或点击输入框内的提交图标）后，调用 `GET https://api.github.com/search/repositories` 获取结果。
 - 搜索框内容原样作为 `q` 参数透传，因此用户可以直接使用 GitHub 的 qualifier 语法（例如 `language:rust cli`）。
 - 提供排序选择：best match（默认）、stars、recently updated，对应 API 原生的 sort 参数。
 - 结果以列表展示，每项包含：owner / name、描述、stars、主语言、最近更新时间、topics、license。点击跳转到 GitHub 仓库页面。
@@ -55,3 +55,4 @@
 - Most Popular 与 Rising Stars（近似版）排行榜。
 - 结构化的技术栈筛选器。
 - 项目比较（静态维度）。
+- 会话内结果缓存待做：当前不缓存，重复参数会重新请求。建议并入 `github-token` change（详见 tasks.md 的 Workflow follow-up）。

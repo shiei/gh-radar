@@ -20,5 +20,57 @@
   },
   "home": {
     "welcome": "探索开源项目、框架和新兴技术。"
+  },
+  "search": {
+    "placeholder": "搜索仓库、技术、主题...",
+    "submit": "搜索",
+    "sort": {
+      "label": "排序",
+      "best": "最佳匹配",
+      "stars": "Star 最多",
+      "updated": "最近更新"
+    },
+    "count": "匹配到 {{total}} 个仓库",
+    "countCapped": "只能浏览前 1,000 条结果。",
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页",
+      "page": "第 {{page}} 页，共 {{total}} 页"
+    },
+    "state": {
+      "loading": "搜索中...",
+      "empty": "没有匹配的仓库。"
+    },
+    "error": {
+      "rateLimited": "已达到 GitHub 的请求次数上限。",
+      "rateLimitedUntil": "{{time}} 之后可以重试。",
+      "invalidQuery": "GitHub 无法理解这个查询，请检查搜索语法后重试。",
+      "network": "无法连接到 GitHub，请检查网络。",
+      "api": "GitHub 返回了错误（{{status}}）。",
+      "retry": "重试"
+    },
+    "repo": {
+      "stars": "{{count}} 个 star",
+      "updated": "更新于{{time}}",
+      "license": "许可证",
+      "archived": "已归档",
+      "fork": "Fork",
+      "template": "模板",
+      "forks": "{{count}} 个 fork",
+      "issues": "{{count}} 个未关闭 issue",
+      "size": "大小 {{size}}",
+      "owner": {
+        "Organization": "组织",
+        "User": "个人"
+      },
+      "homepage": "官网",
+      "pushed": "最近推送{{time}}",
+      "activity": {
+        "active": "活跃",
+        "quiet": "低频",
+        "inactive": "停滞"
+      },
+      "starsPerMonth": "+{{rate}} / 月"
+    }
   }
 }

@@ -2,10 +2,11 @@ import type { ComponentPropsWithoutRef, ElementType } from 'react'
 
 import { cx } from '../../../lib/cx'
 
-export type TextVariant = 'body' | 'muted' | 'title' | 'heading'
+export type TextVariant = 'body' | 'lead' | 'muted' | 'title' | 'heading'
 
 const variantClass: Record<TextVariant, string> = {
   body: 'text-base text-text',
+  lead: 'text-lg font-bold tracking-[-0.02em] text-text-secondary',
   muted: 'text-sm text-text-muted',
   title: 'text-2xl font-semibold text-text',
   heading: 'text-lg font-semibold text-text',

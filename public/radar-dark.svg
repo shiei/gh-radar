@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="Radar sweep discovering repositories">
+  <defs>
+    <linearGradient id="g-line" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#47bfff"/>
+      <stop offset="1" stop-color="#7e14ff"/>
+    </linearGradient>
+    <!-- Bright at the leading edge (bottom of the wedge's box), fading toward the trailing edge -->
+    <linearGradient id="g-beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7e14ff" stop-opacity="0"/>
+      <stop offset="0.55" stop-color="#7e14ff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#47bfff" stop-opacity="0.6"/>
+    </linearGradient>
+    <radialGradient id="g-blip" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#47bfff" stop-opacity="0.9"/>
+      <stop offset="0.45" stop-color="#7e14ff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#7e14ff" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Soft white core: a gradient instead of a blur filter, so animation frames stay cheap -->
+    <radialGradient id="g-dot" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.4" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="disc"><circle cx="320" cy="320" r="290"/></clipPath>
+    <style>
+      .ring { fill: none; stroke: url(#g-line); stroke-width: 5; stroke-dasharray: 6 16; stroke-linecap: round; }
+      .axis { stroke: url(#g-line); stroke-width: 4; stroke-dasharray: 5 15; stroke-linecap: round; }
+      .tick { font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #47bfff; opacity: 0.8; }
+      .label { font: 700 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .bracket { fill: none; stroke: #47bfff; stroke-width: 2.2; stroke-linecap: round; }
+      @media (prefers-reduced-motion: reduce) { .sweep { animation: none; } }
+    </style>
+  </defs>
+
+
+  <!-- Rings and axes -->
+  <g>
+    <circle class="ring" cx="320" cy="320" r="220"/>
+    <circle class="ring" cx="320" cy="320" r="150"/>
+    <circle class="ring" cx="320" cy="320" r="80"/>
+    <path class="axis" d="M320 30V610M30 320H610M115 115l410 410M525 115 115 525"/>
+  </g>
+
+  <!-- Bearing ticks -->
+  <g class="tick" text-anchor="middle">
+    <text x="320" y="84">0</text>
+    <text x="562" y="324">90</text>
+    <text x="320" y="566">180</text>
+    <text x="78" y="324">270</text>
+  </g>
+
+  <!-- Centre -->
+  <circle cx="320" cy="320" r="10" fill="url(#g-blip)"/>
+  <circle cx="320" cy="320" r="5" fill="url(#g-line)"/>
+
+  <!-- Blips: glow + dot + brackets + a small badge -->
+  <g id="blips">
+    <!-- Inner ring -->
+    <g transform="translate(275 372)">
+      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="6" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
+      <g transform="translate(-56 -4) scale(1.35)" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="0" y="0" width="24" height="23" rx="6" fill="#0d1117" stroke="none"/>
+        <path d="M12 4a3 3 0 0 0-3-2 3 3 0 0 0-3 3 3 3 0 0 0-2.5 4A3 3 0 0 0 4 13a3 3 0 0 0 1.5 4A3 3 0 0 0 9 20a3 3 0 0 0 3-2z"/>
+        <path d="M12 4a3 3 0 0 1 3-2 3 3 0 0 1 3 3 3 3 0 0 1 2.5 4A3 3 0 0 1 20 13a3 3 0 0 1-1.5 4A3 3 0 0 1 15 20a3 3 0 0 1-3-2z"/>
+        <path d="M12 4v14M6 9h2.5M15.5 9H18M7 14h2M15 14h2"/>
+      </g>
+    </g>
+    <g transform="translate(368 262)">
+      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="6" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
+      <g transform="translate(26 -10) scale(1.25)" fill="none" stroke="#47bfff" stroke-width="2.3" stroke-linecap="round">
+        <rect x="-1" y="-2" width="24" height="28" rx="6" fill="#0d1117" stroke="none"/>
+        <circle cx="5" cy="4" r="2.5"/><circle cx="5" cy="20" r="2.5"/><circle cx="17" cy="8" r="2.5"/>
+        <path d="M5 6.5v11M17 10.5c0 5-12 3-12 7"/>
+      </g>
+    </g>
+    <!-- Second ring -->
+    <g transform="translate(238 252)">
+      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="6" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
+      <g transform="translate(-60 -36) scale(1.25)">
+        <rect width="26" height="26" rx="5" fill="#f7df1e"/>
+        <text class="label" x="13.0" y="18.0" text-anchor="middle" fill="#111">JS</text>
+      </g>
+    </g>
+    <g transform="translate(330 452)">
+      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="6" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
+      <g transform="translate(26 -40) scale(1.25)" fill="none" stroke="#e535ab" stroke-width="2.4" stroke-linejoin="round">
+        <rect x="-3" y="-2" width="32" height="34" rx="7" fill="#0d1117" stroke="none"/>
+        <path d="M13 2l11 6.5v13L13 28 2 21.5v-13z"/>
+        <path d="M13 2l11 19.5H2z"/>
+      </g>
+    </g>
+    <!-- Third ring -->
+    <g transform="translate(214 150)">
+      <circle r="22" fill="url(#g-blip)"/>
+      <circle r="7" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-16 -10v-6h6M10 -16h6v6M16 10v6h-6M-10 16h-6v-6"/>
+      <g transform="translate(26 -32) scale(1.25)">
+        <rect width="26" height="26" rx="5" fill="#3178c6"/>
+        <text class="label" x="13.0" y="18.0" text-anchor="middle" fill="#fff">TS</text>
+      </g>
+    </g>
+    <g transform="translate(132 338)">
+      <circle r="22" fill="url(#g-blip)"/>
+      <circle r="7" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-16 -10v-6h6M10 -16h6v6M16 10v6h-6M-10 16h-6v-6"/>
+      <g transform="translate(26 8) scale(1.25)">
+        <rect width="24" height="24" rx="5" fill="#0d1117" stroke="#a66bff" stroke-width="2"/>
+        <text class="label" x="12" y="16" text-anchor="middle" fill="#a66bff" font-size="11">Fn</text>
+      </g>
+    </g>
+    <g transform="translate(176 470)">
+      <circle r="22" fill="url(#g-blip)"/>
+      <circle r="7" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-16 -10v-6h6M10 -16h6v6M16 10v6h-6M-10 16h-6v-6"/>
+      <rect x="25" y="-36" width="38" height="22" rx="6" fill="#0d1117"/>
+      <text class="label" x="28" y="-20" fill="#00add8" font-size="18" font-style="italic">GO</text>
+    </g>
+    <!-- Beyond the rings, along the rays -->
+    <g transform="translate(118 212)">
+      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="6" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
+      <g transform="translate(24 -36) scale(1.25)">
+        <rect width="26" height="26" rx="6" fill="#0d1117" stroke="url(#g-line)" stroke-width="2"/>
+        <text class="label" x="13" y="18" text-anchor="middle" fill="url(#g-line)">AI</text>
+      </g>
+    </g>
+    <g transform="translate(300 88)">
+      <circle r="18" fill="url(#g-blip)"/>
+      <circle r="6" fill="url(#g-dot)"/>
+      <path class="bracket" d="M-14 -8v-6h6M8 -14h6v6M14 8v6h-6M-8 14h-6v-6"/>
+      <g transform="translate(26 -22) scale(1.25)" fill="none" stroke="#47bfff" stroke-width="2.3" stroke-linejoin="round">
+        <rect x="-1" y="0" width="26" height="24" rx="6" fill="#0d1117" stroke="none"/>
+        <path d="M2 6a2 2 0 0 1 2-2h6l3 3h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/>
+      </g>
+    </g>
+    <!-- Sparkles: small four-point stars marking fresh finds -->
+    <g fill="#cfe9ff" stroke="#cfe9ff" stroke-width="1.2" stroke-linejoin="round">
+      <path d="M372 196l2.2 5.8 5.8 2.2-5.8 2.2-2.2 5.8-2.2-5.8-5.8-2.2 5.8-2.2z" opacity="0.9"/>
+      <path d="M248 520l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" opacity="0.7"/>
+      <path d="M166 268l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" opacity="0.6"/>
+    </g>
+    <!-- Faint, unlabelled echoes -->
+    <circle cx="222" cy="548" r="14" fill="url(#g-blip)" opacity="0.6"/>
+    <circle cx="222" cy="548" r="2.5" fill="#cfe9ff" opacity="0.8"/>
+    <circle cx="372" cy="330" r="11" fill="url(#g-blip)" opacity="0.5"/>
+    <circle cx="372" cy="330" r="2" fill="#cfe9ff" opacity="0.7"/>
+    <circle cx="96" cy="430" r="12" fill="url(#g-blip)" opacity="0.55"/>
+    <circle cx="96" cy="430" r="2.2" fill="#cfe9ff" opacity="0.75"/>
+  </g>
+  <!-- Sweep: a 70° wedge with a bright leading edge, rotating slowly -->
+  <g class="sweep" clip-path="url(#disc)">
+    <g transform="translate(320 320)">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="225 0 0" dur="4.4s" repeatCount="1" fill="freeze" additive="sum"/>
+      <path d="M0 0 L220 0 A220 220 0 0 0 75.2 -206.7 Z" fill="url(#g-beam)"/>
+      <line x1="0" y1="0" x2="220" y2="0" stroke="#47bfff" stroke-width="6" stroke-opacity="0.25" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="220" y2="0" stroke="#47bfff" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </g>
+
+</svg>

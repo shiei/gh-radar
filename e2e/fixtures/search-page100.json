@@ -1,0 +1,309 @@
+{
+  "total_count": 5000,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 11270250,
+      "name": "react",
+      "full_name": "react/react",
+      "html_url": "https://github.com/react/react",
+      "description": "The library for web and native user interfaces.",
+      "stargazers_count": 251354,
+      "language": "JavaScript",
+      "updated_at": "2026-10-19T08:32:45Z",
+      "pushed_at": "2026-10-19T00:36:28Z",
+      "created_at": "2013-05-24T16:15:54Z",
+      "topics": ["declarative", "frontend", "javascript", "library", "react", "ui"],
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT"
+      },
+      "archived": false,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 1466,
+      "forks_count": 51539,
+      "homepage": "https://react.dev",
+      "size": 1118977,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/102812?v=4",
+        "type": "Organization"
+      }
+    },
+    {
+      "id": 136786093,
+      "name": "react",
+      "full_name": "typescript-cheatsheets/react",
+      "html_url": "https://github.com/typescript-cheatsheets/react",
+      "description": null,
+      "stargazers_count": 47098,
+      "language": "TypeScript",
+      "updated_at": "2026-10-19T02:38:17Z",
+      "pushed_at": "2026-09-09T17:26:52Z",
+      "created_at": "2018-06-02T04:08:16Z",
+      "topics": [],
+      "license": null,
+      "archived": false,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 0,
+      "forks_count": 4270,
+      "homepage": null,
+      "size": 3737,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/50188264?v=4",
+        "type": "Organization"
+      }
+    },
+    {
+      "id": 76396575,
+      "name": "react",
+      "full_name": "duxianwei520/react",
+      "html_url": "https://github.com/duxianwei520/react",
+      "description": " React+vite+redux+ant design+axios+less全家桶后台管理框架",
+      "stargazers_count": 5343,
+      "language": "JavaScript",
+      "updated_at": "2026-10-13T18:57:45Z",
+      "pushed_at": "2026-07-22T03:25:44Z",
+      "created_at": "2016-12-02T13:08:43Z",
+      "topics": ["ant-design-pro", "antd", "babel", "es6", "es7", "react", "redux", "vite"],
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT"
+      },
+      "archived": true,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 22,
+      "forks_count": 1826,
+      "homepage": "",
+      "size": 2961,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/3249653?v=4",
+        "type": "User"
+      }
+    },
+    {
+      "id": 122814210,
+      "name": "react",
+      "full_name": "primer/react",
+      "html_url": "https://github.com/primer/react",
+      "description": "An implementation of GitHub's Primer Design System using React",
+      "stargazers_count": 3919,
+      "language": "TypeScript",
+      "updated_at": "2026-10-19T04:24:35Z",
+      "pushed_at": "2026-10-16T19:18:11Z",
+      "created_at": "2018-02-17T00:09:05Z",
+      "topics": ["component-library", "design-system", "primer", "react"],
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT"
+      },
+      "archived": false,
+      "fork": true,
+      "is_template": false,
+      "open_issues_count": 74,
+      "forks_count": 703,
+      "homepage": "https://primer.style/product/getting-started/react/",
+      "size": 408633,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/7143434?v=4",
+        "type": "Organization"
+      }
+    },
+    {
+      "id": 566563619,
+      "name": "ReAct",
+      "full_name": "ysymyth/ReAct",
+      "html_url": "https://github.com/ysymyth/ReAct",
+      "description": "[ICLR 2023] ReAct: Synergizing Reasoning and Acting in Language Models",
+      "stargazers_count": 4232,
+      "language": "Jupyter Notebook",
+      "updated_at": "2026-10-19T07:47:03Z",
+      "pushed_at": "2024-02-06T02:34:32Z",
+      "created_at": "2022-11-13T19:51:09Z",
+      "topics": ["decision-making", "large-language-models", "llm", "prompting", "reasoning"],
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT"
+      },
+      "archived": false,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 5,
+      "forks_count": 404,
+      "homepage": "",
+      "size": 6459,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/4877252?v=4",
+        "type": "User"
+      }
+    },
+    {
+      "id": 91759930,
+      "name": "react",
+      "full_name": "discountry/react",
+      "html_url": "https://github.com/discountry/react",
+      "description": "React docs in Chinese | React 中文文档翻译",
+      "stargazers_count": 1373,
+      "language": "JavaScript",
+      "updated_at": "2026-10-18T13:12:39Z",
+      "pushed_at": "2026-03-07T03:40:57Z",
+      "created_at": "2017-05-09T15:09:00Z",
+      "topics": ["docs", "react"],
+      "license": {
+        "key": "cc-by-4.0",
+        "name": "Creative Commons Attribution 4.0 International",
+        "spdx_id": "CC-BY-4.0"
+      },
+      "archived": false,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 43,
+      "forks_count": 559,
+      "homepage": "https://zh-hans.react.dev/",
+      "size": 34997,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/4507101?v=4",
+        "type": "User"
+      }
+    },
+    {
+      "id": 78513419,
+      "name": "react",
+      "full_name": "react-redux-antd-es6/react",
+      "html_url": "https://github.com/react-redux-antd-es6/react",
+      "description": "基于react的企业后台管理开发框架",
+      "stargazers_count": 1299,
+      "language": "JavaScript",
+      "updated_at": "2026-10-09T01:39:47Z",
+      "pushed_at": "2024-03-17T01:32:30Z",
+      "created_at": "2016-12-28T07:44:04Z",
+      "topics": ["antd", "react", "webpack"],
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT"
+      },
+      "archived": false,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 22,
+      "forks_count": 489,
+      "homepage": "",
+      "size": 43796,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/24805142?v=4",
+        "type": "Organization"
+      }
+    },
+    {
+      "id": 94503545,
+      "name": "React",
+      "full_name": "HackYourFuture/React",
+      "html_url": "https://github.com/HackYourFuture/React",
+      "description": "This repository contains all the material for the HackYourFuture module \"React.js: Building dynamic UIs with modern JavaScript\"",
+      "stargazers_count": 471,
+      "language": "JavaScript",
+      "updated_at": "2026-10-18T17:14:51Z",
+      "pushed_at": "2026-01-09T04:34:57Z",
+      "created_at": "2017-06-06T09:58:23Z",
+      "topics": ["hyf", "mobx", "react"],
+      "license": null,
+      "archived": false,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 7,
+      "forks_count": 740,
+      "homepage": "",
+      "size": 11259,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/20858568?v=4",
+        "type": "Organization"
+      }
+    },
+    {
+      "id": 73628285,
+      "name": "react",
+      "full_name": "Cathy0807/react",
+      "html_url": "https://github.com/Cathy0807/react",
+      "description": "京东首页构建",
+      "stargazers_count": 907,
+      "language": "JavaScript",
+      "updated_at": "2026-10-06T07:59:27Z",
+      "pushed_at": "2020-10-16T19:58:42Z",
+      "created_at": "2016-11-02T10:18:45Z",
+      "topics": [],
+      "license": null,
+      "archived": false,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 2,
+      "forks_count": 460,
+      "homepage": null,
+      "size": 940,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/20653643?v=4",
+        "type": "User"
+      }
+    },
+    {
+      "id": 71107786,
+      "name": "next.js",
+      "full_name": "vercel/next.js",
+      "html_url": "https://github.com/vercel/next.js",
+      "description": "The React Framework",
+      "stargazers_count": 143086,
+      "language": "JavaScript",
+      "updated_at": "2026-10-19T08:34:18Z",
+      "pushed_at": "2026-10-19T08:33:53Z",
+      "created_at": "2016-10-05T23:32:51Z",
+      "topics": [
+        "blog",
+        "browser",
+        "compiler",
+        "components",
+        "hybrid",
+        "nextjs",
+        "node",
+        "react",
+        "server-rendering",
+        "ssg",
+        "static",
+        "static-site-generator",
+        "universal",
+        "vercel"
+      ],
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT"
+      },
+      "archived": false,
+      "fork": false,
+      "is_template": false,
+      "open_issues_count": 3700,
+      "forks_count": 35231,
+      "homepage": "https://nextjs.org",
+      "size": 2598139,
+      "owner": {
+        "login": "p100",
+        "avatar_url": "https://avatars.githubusercontent.com/u/14985020?v=4",
+        "type": "Organization"
+      }
+    }
+  ]
+}

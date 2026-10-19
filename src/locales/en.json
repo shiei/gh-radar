@@ -20,5 +20,57 @@
   },
   "home": {
     "welcome": "Explore open-source projects, frameworks and emerging technologies."
+  },
+  "search": {
+    "placeholder": "Search repositories, technologies, topics...",
+    "submit": "Search",
+    "sort": {
+      "label": "Sort",
+      "best": "Best match",
+      "stars": "Most stars",
+      "updated": "Recently updated"
+    },
+    "count": "{{total}} repositories matched",
+    "countCapped": "Only the first 1,000 results can be browsed.",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{page}} of {{total}}"
+    },
+    "state": {
+      "loading": "Searching...",
+      "empty": "No repositories matched your search."
+    },
+    "error": {
+      "rateLimited": "GitHub's request limit has been reached.",
+      "rateLimitedUntil": "You can try again after {{time}}.",
+      "invalidQuery": "GitHub could not understand this query. Check the search syntax and try again.",
+      "network": "Could not reach GitHub. Check your connection.",
+      "api": "GitHub returned an error ({{status}}).",
+      "retry": "Retry"
+    },
+    "repo": {
+      "stars": "{{count}} stars",
+      "updated": "Updated {{time}}",
+      "license": "License",
+      "archived": "Archived",
+      "fork": "Fork",
+      "template": "Template",
+      "forks": "{{count}} forks",
+      "issues": "{{count}} open issues",
+      "size": "Size {{size}}",
+      "owner": {
+        "Organization": "Organization",
+        "User": "Individual"
+      },
+      "homepage": "Website",
+      "pushed": "Last push {{time}}",
+      "activity": {
+        "active": "Active",
+        "quiet": "Quiet",
+        "inactive": "Inactive"
+      },
+      "starsPerMonth": "+{{rate}} / month"
+    }
   }
 }

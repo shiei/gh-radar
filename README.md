@@ -2,7 +2,7 @@
 
 一个帮助开发者发现、评估、比较开源项目的纯前端站点。数据直接来自 GitHub REST API，没有后端。
 
-当前状态：工程地基已完成（主题、多语言、测试与代码质量工具）。检索等业务功能按 `openspec/changes/` 中的 change 逐个推进。
+当前状态：工程地基（主题、多语言、测试与代码质量工具）和仓库检索已完成。后续功能按 `openspec/changes/` 中的 change 逐个推进。
 
 ## 技术栈
 
@@ -49,7 +49,11 @@ src/
     organisms/    页面区块（Header）
     templates/    页面布局骨架（AppShell）
   pages/          页面（HomePage）
+  features/
+    search/       检索状态机：searchReducer（纯函数）与 useRepositorySearch（hook）
   lib/
+    github/       GitHub REST 访问层：请求头、错误分类、配额解析、search 端点（不依赖 React）
+    format/       Intl 封装：紧凑数字、相对时间、时刻
     theme/        主题解析、持久化、ThemeProvider / useTheme
     i18n/         i18next 初始化、语言持久化、键类型扩展
     cx.ts         class 名拼接
@@ -57,10 +61,22 @@ src/
   styles/         tokens.css（Design Tokens）、globals.css（Tailwind 映射与基础样式）
   test/           Vitest setup
 e2e/              Playwright 测试
+  fixtures/       mock 的 GitHub 响应
+  helpers/        共享 test（含 GitHub 请求兜底拦截）与 mock 工具
 openspec/         规划文件（proposal / specs / design / tasks）
 ```
 
-新组件必须落在 Atomic Design 的某一层；非 UI 逻辑放 `src/lib/`。
+分层约定：`components/` 只放 UI（Atomic Design）；不依赖 React 的代码放 `lib/`；某个功能的 React 状态逻辑放 `features/<name>/`。
+
+## GitHub API 与配额
+
+检索直接从浏览器调用 `https://api.github.com/search/repositories`，目前不带任何凭据。未认证配额为每分钟 10 次 search 请求、每小时每个出口 IP 60 次请求。配额用尽时界面会显示恢复时刻，本地反复手测很容易触发。配置个人 token 的功能在后续 change 中实现。
+
+### e2e 的 mock 约定
+
+所有 Playwright 用例都从 `e2e/helpers/test.ts` 导入 `test`。它为每个页面自动挂一条 abort 所有 `api.github.com` 请求的兜底 route，任何用例都不会打到真实 API。需要响应时用 `e2e/helpers/mockGitHub.ts` 的 `mockSearch` / `mockSearchByPage` 返回 `e2e/fixtures/` 里的 JSON；用例自己注册的 route 优先于兜底。
+
+`e2e/fixtures/search-react.json` 来自一次真实响应，只保留了界面用到的字段。
 
 ## 约定
 

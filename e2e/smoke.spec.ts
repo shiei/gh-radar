@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './helpers/test'
 
 test('home page loads with header controls and no console errors', async ({ page }) => {
   const errors: string[] = []

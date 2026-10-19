@@ -31,7 +31,7 @@ src/lib/github/
   rateLimit.ts      parseRateLimit(headers) 与当前配额状态的读写（模块级变量 + 订阅函数）
   request.ts        request<T>(path, init, signal): 发 fetch、解析配额、按状态分类错误
   search.ts         searchRepositories({ query, sort, page }, signal) -> SearchResult
-  types.ts          Repository / SearchResult（仅保留 UI 需要的字段）
+  types.ts          Repository / SearchResult（仅保留 UI 需要的字段，含 owner.avatar_url）
   index.ts
 src/lib/format/
   compactNumber.ts  Intl.NumberFormat(lang, { notation: 'compact' })
@@ -75,7 +75,7 @@ actions: submit(query) | setSort(sort) | goToPage(page) | retry()
 - 输入框内容是 SearchBar 的本地 state，只有提交才进入 reducer。
 - `setSort` 在 `query` 为空时只改 sort，不触发请求；否则重置 page=1 并请求。
 - 每次请求前 `abort()` 上一个 controller；响应到达时若 controller 已不是当前的则丢弃（双重保险：abort 会让 fetch reject 为 aborted，reducer 对 aborted 不做任何事）。
-- 每页 30 条，最大页数 `min(ceil(total/30), 34)`（34 × 30 = 1020 > 1000，GitHub 对第 34 页返回前 10 条；若实测 34 页报 422 则改为 33）。
+- 每页 10 条，最大页数 `min(ceil(total/10), 100)`。实测（2026-10-19，当时 per_page=30，`page=34`）返回 200 且完整 30 条，说明 GitHub 的 1000 条限制按起始偏移判断（`(page-1)*per_page < 1000`）；换算到 per_page=10 即第 100 页可完整访问，第 101 页按文档会返回 422。用户在实施后把每页从 30 改为 10，以缩短单页长度。
 
 ### D6. 请求参数映射
 | UI 排序 | API 参数 |
@@ -84,24 +84,25 @@ actions: submit(query) | setSort(sort) | goToPage(page) | retry()
 | stars | `sort=stars&order=desc` |
 | updated | `sort=updated&order=desc` |
 
-`q` 直接 `encodeURIComponent(query.trim())`。`per_page=30`。
+`q` 直接 `encodeURIComponent(query.trim())`。`per_page=10`。
 
 ### D7. UI 组件
 - atoms：`Input`（原生 input，token 样式）、`Tag`（topic 标签）、`SelectField`（Base UI Select 的通用封装，带 label 与 options；排序选择使用它）、icons：`SearchIcon`、`StarIcon`、`ChevronLeftIcon`、`ChevronRightIcon`、`SpinnerIcon`。
-- molecules：`SearchBar`（Input + SelectField + Button，受控提交）、`RepositoryCard`、`Pagination`、`StatusMessage`（loading / empty / error 三态，error 带重试按钮）。
+- molecules：`SearchBar`（Input + SelectField，无独立检索按钮：回车提交，输入框内右侧一个箭头图标作为提示兼点击提交；`type="search"` + `enterKeyHint="search"` 让手机软键盘显示"搜索"键；加载中箭头变 spinner 但不禁用任何东西，新提交直接取消旧请求）、`RepositoryCard`、`Pagination`（Previous / 页码 / Next 使用 ghost 按钮与页码按钮，当前页 accent 底色白字、悬浮不变，`pageRange()` 负责首尾加当前页 ±2 的窗口与省略号）、`StatusMessage`（loading / empty / error 三态，error 带重试按钮）。
+  - 历史记录：最初有独立 Search 按钮，加载中用原生 `disabled`，但这会同时禁用浏览器的隐式提交（回车），与"进行中提交新检索要取消旧请求"冲突；`aria-disabled` 加 click 的 `preventDefault` 在真实浏览器里同样会挡掉回车。去掉独立按钮后这个矛盾不复存在，原待办随之关闭。
 - organisms：`SearchResults`（计数、列表、分页的组合）。
 - `HomePage` 组合 SearchBar + SearchResults，标语保留在搜索框上方（与草图一致）。
 LanguageSwitcher 暂不改用 SelectField，避免扩大范围；后续可以统一。
 
 ### D8. 文案与格式化
-- 新增键放在 `search.*` 命名空间下：`search.placeholder`、`search.submit`、`search.sort.{label,best,stars,updated}`、`search.count`（带 `{{count}}` 插值）、`search.countCapped`、`search.pagination.{previous,next,page}`、`search.state.{loading,empty}`、`search.error.{rateLimited,rateLimitedUntil,invalidQuery,network,api,retry}`、`search.repo.{stars,updated,license}`。
+- 新增键放在 `search.*` 命名空间下：`search.placeholder`、`search.submit`、`search.sort.{label,best,stars,updated}`、`search.count`（带 `{{count}}` 插值）、`search.countCapped`、`search.pagination.{previous,next,page}`（previous / next 文案不含 page 字样，用户要求）、`search.state.{loading,empty}`、`search.error.{rateLimited,rateLimitedUntil,invalidQuery,network,api,retry}`、`search.repo.{stars,updated,license}`。
 - 数字、相对时间、时刻全部用 `Intl` 并传入当前语言，不手写格式。单元测试固定 `en` 并用 `vi.setSystemTime` 固定当前时间。
 
 ### D9. 测试策略
 - `lib/github` 单元测试用 `vi.stubGlobal('fetch', vi.fn())` 构造 `Response`，覆盖每种状态码与标头组合；不引入 msw。
 - reducer 单独测试状态转移；hook 用 Testing Library 的 `renderHook` 配 stub fetch 测取消与过期响应。
 - e2e 用 `page.route('https://api.github.com/**', ...)` 返回 `e2e/fixtures/*.json`，用例：成功检索与字段显示、排序触发重检索、翻页与边界、无结果、配额用尽提示、422、断网（`route.abort()`）。
-- e2e 必须在任何用例中都拦截 GitHub 域名，避免误打真实 API 消耗配额；在 Playwright 配置里加一个全局 `beforeEach` 兜底拦截，未被用例覆盖的请求一律 abort。
+- e2e 必须在任何用例中都拦截 GitHub 域名，避免误打真实 API 消耗配额。实施方式是 `e2e/helpers/test.ts` 用 `test.extend` 注册一个 `auto` fixture，为每个页面先挂一条 abort 所有 `api.github.com` 请求的 route；所有 spec 从该文件导入 `test`。用例自己注册的 route 后注册先匹配，因此可以覆盖兜底。
 
 ## Risks / Trade-offs
 
