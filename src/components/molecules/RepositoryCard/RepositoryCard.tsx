@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { cx } from '../../../lib/cx'
 import { formatCompactNumber, formatDateTime, formatKb, formatTimestamp } from '../../../lib/format'
 import { activityOf, type Activity, type Repository } from '../../../lib/github'
-import { StarIcon, Tag, TagButton, Text, Tooltip } from '../../atoms'
+import { ExternalLinkIcon, StarIcon, Tag, TagButton, Text, Tooltip } from '../../atoms'
 
 export interface RepositoryCardProps {
   repo: Repository
@@ -143,10 +143,11 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
             href={repo.homepage}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent hover:underline"
+            className="text-accent inline-flex items-center gap-1 hover:underline"
             data-testid="repo-homepage"
           >
             {t('search.repo.homepage')}
+            <ExternalLinkIcon size={11} />
           </a>
         ) : null}
       </div>

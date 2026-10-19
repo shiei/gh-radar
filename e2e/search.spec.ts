@@ -118,6 +118,15 @@ test.describe('repository search', () => {
     await expect(page.getByTestId('page-next')).toBeDisabled()
   })
 
+  test('example chips fill the input and search', async ({ page }) => {
+    const requests = await mockSearch(page, 'search-small')
+    await page.goto('/')
+    await page.getByTestId('search-hint').first().click()
+    await expect(page.getByTestId('search-input')).toHaveValue('language:rust')
+    await expect(page.getByTestId('repo-card')).toHaveCount(7)
+    expect(new URL(requests[0].url()).searchParams.get('q')).toBe('language:rust')
+  })
+
   test('timestamps explain themselves in a styled tooltip on hover', async ({ page }) => {
     await mockSearch(page, 'search-small')
     await page.goto('/')

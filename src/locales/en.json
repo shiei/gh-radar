@@ -73,6 +73,10 @@
       "updated": "Metadata updated {{time}}",
       "pushedHint": "Last code push to any branch",
       "updatedHint": "Last change to the repository itself: description, topics, settings"
+    },
+    "hints": {
+      "label": "Try:",
+      "syntax": "Search syntax"
     }
   }
 }

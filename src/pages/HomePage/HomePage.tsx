@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useRepositorySearch } from '../../features/search'
 import { useTheme, type Theme } from '../../lib/theme'
 import { Text } from '../../components/atoms'
-import { SearchBar } from '../../components/molecules'
+import { SearchBar, SearchHints } from '../../components/molecules'
 import { SearchResults } from '../../components/organisms'
 
 // Browsers reuse a cached <img> SVG together with its finished SMIL timeline, so a plain
@@ -21,7 +21,7 @@ export function HomePage() {
   const { theme } = useTheme()
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <section className="relative flex min-h-56 flex-col items-center justify-center gap-3 overflow-hidden text-center md:min-h-80">
         <img
           src={RADAR_SRC[theme]}
@@ -41,13 +41,18 @@ export function HomePage() {
           </Text>
         </div>
       </section>
-      <SearchBar
-        query={state.query}
-        sort={state.sort}
-        loading={state.status === 'loading'}
-        onSubmit={submit}
-        onSortChange={setSort}
-      />
+      <div className="flex flex-col gap-2">
+        <SearchBar
+          query={state.query}
+          sort={state.sort}
+          loading={state.status === 'loading'}
+          onSubmit={submit}
+          onSortChange={setSort}
+        />
+        <SearchHints onPick={submit} />
+        {/* 8px gap + 19px margin = 27px above the rule; the rule spans 90% of the width. */}
+        <hr className="border-border mx-auto mt-[19px] w-[98%] border-0 border-t" />
+      </div>
       <SearchResults state={state} onPageChange={goToPage} onRetry={retry} onSearch={submit} />
     </div>
   )

@@ -73,6 +73,10 @@
       "updated": "メタデータ更新 {{time}}",
       "pushedHint": "いずれかのブランチへの最終 push",
       "updatedHint": "リポジトリ自体の最終変更：説明、トピック、設定など"
+    },
+    "hints": {
+      "label": "例：",
+      "syntax": "検索構文"
     }
   }
 }

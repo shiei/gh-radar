@@ -73,6 +73,10 @@
       "updated": "元数据更新于{{time}}",
       "pushedHint": "最近一次向任意分支推送代码",
       "updatedHint": "仓库本身最近一次变更：描述、topics、设置等"
+    },
+    "hints": {
+      "label": "试试：",
+      "syntax": "检索语法"
     }
   }
 }

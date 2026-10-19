@@ -88,7 +88,7 @@ actions: submit(query) | setSort(sort) | goToPage(page) | retry()
 
 ### D7. UI 组件
 - atoms：`Input`（原生 input，token 样式）、`Tag`（topic 标签）、`SelectField`（Base UI Select 的通用封装，带 label 与 options；排序选择使用它）、icons：`SearchIcon`、`StarIcon`、`ChevronLeftIcon`、`ChevronRightIcon`、`SpinnerIcon`。
-- molecules：`SearchBar`（Input + SelectField，无独立检索按钮：回车提交，输入框内右侧一个箭头图标作为提示兼点击提交；`type="search"` + `enterKeyHint="search"` 让手机软键盘显示"搜索"键；加载中箭头变 spinner 但不禁用任何东西，新提交直接取消旧请求）、`RepositoryCard`、`Pagination`（Previous / 页码 / Next 使用 ghost 按钮与页码按钮，当前页 accent 底色白字、悬浮不变，`pageRange()` 负责首尾加当前页 ±2 的窗口与省略号）、`StatusMessage`（loading / empty / error 三态，error 带重试按钮）。
+- molecules：`SearchHints`（搜索框下方的示例查询 chip 与语法文档链接，点击 chip 走和输入框相同的 `submit`）、`SearchBar`（Input + SelectField，无独立检索按钮：回车提交，输入框内右侧一个箭头图标作为提示兼点击提交；`type="search"` + `enterKeyHint="search"` 让手机软键盘显示"搜索"键；加载中箭头变 spinner 但不禁用任何东西，新提交直接取消旧请求）、`RepositoryCard`、`Pagination`（Previous / 页码 / Next 使用 ghost 按钮与页码按钮，当前页 accent 底色白字、悬浮不变，`pageRange()` 负责首尾加当前页 ±2 的窗口与省略号）、`StatusMessage`（loading / empty / error 三态，error 带重试按钮）。
   - 历史记录：最初有独立 Search 按钮，加载中用原生 `disabled`，但这会同时禁用浏览器的隐式提交（回车），与"进行中提交新检索要取消旧请求"冲突；`aria-disabled` 加 click 的 `preventDefault` 在真实浏览器里同样会挡掉回车。去掉独立按钮后这个矛盾不复存在，原待办随之关闭。
 - organisms：`SearchResults`（计数、列表、分页的组合）。
 - topic 标签是 `<button>`，点击后通过 `onSearch` 回调把 `topic:<名称>` 交给 `useRepositorySearch().submit`，与输入框提交走同一条路径；`SearchBar` 接收已提交的 `query` 并同步到本地输入值，所以无论检索从哪里发起，输入框都显示当前查询。

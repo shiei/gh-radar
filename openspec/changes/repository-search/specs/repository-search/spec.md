@@ -29,6 +29,17 @@
 - **WHEN** 用户提交仅包含空格的输入
 - **THEN** 不发起请求，输入框保持可编辑，不显示错误
 
+### Requirement: Example queries are offered
+搜索框下方 SHALL 展示若干示例查询，用于让用户发现 qualifier 语法。点击示例 SHALL 把该查询填入输入框并立即检索。SHALL 同时提供指向 GitHub 检索语法文档的链接。
+
+#### Scenario: Click an example
+- **WHEN** 用户点击示例 `language:rust`
+- **THEN** 输入框内容变为 `language:rust`，并以此发起检索
+
+#### Scenario: Syntax help link
+- **WHEN** 用户点击语法帮助链接
+- **THEN** 在新标签页打开 GitHub 的仓库检索语法文档
+
 ### Requirement: Query text is passed through unchanged
 用户提交的文本（去除首尾空白后）SHALL 原样作为查询发送，不做改写、拆分或转义以外的处理，因此 GitHub 的 qualifier 语法可以直接使用。
 

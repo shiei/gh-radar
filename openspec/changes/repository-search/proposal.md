@@ -50,10 +50,10 @@
 ## Not in this change (planned as later frontend-only changes)
 
 - `github-token`：用户配置个人 token，存于 localStorage，用 `GET /rate_limit` 校验，将 search 配额提升到每分钟 30 次。
-- `category-browse`：六个分类（Frontend、Backend、AI/ML、DevOps、Database、Design）到 topic 查询的映射文件与分类导航页。
+- `category-browse`：六个分类（Frontend、Backend、AI/ML、DevOps、Database、Design）到 topic 查询的映射文件与分类导航页。也是让不懂 qualifier 语法的用户能探索的主要入口。
 - `repository-detail`：项目详情页。
 - Most Popular 与 Rising Stars（近似版）排行榜。
-- 结构化的技术栈筛选器。
+- 结构化的技术栈筛选器（语言、最低 star、排除 fork 等），由程序拼出 qualifier，让手写语法退化为高级功能。
 - 项目比较（静态维度）。
 - 给仓库加星待定：需要用户 token 的写操作，`github-token` 之后单独评估（详见 tasks.md 的 Workflow follow-up）。
 - 会话内结果缓存待做：当前不缓存，重复参数会重新请求。建议并入 `github-token` change（详见 tasks.md 的 Workflow follow-up）。
