@@ -135,5 +135,18 @@
     "delta": "+{{count}} in 30 days",
     "empty": "Nothing to rank yet",
     "popularHint": "Repositories in the snapshot ordered by total stars."
+  },
+  "footer": {
+    "alternatives": "Looking for something else?",
+    "project": "Open source on GitHub",
+    "tagline": "A radar for open-source activity, not a code search engine.",
+    "links": {
+      "githubSearch": "Official search across code, issues, users and more",
+      "githubTrending": "Official daily and weekly trending lists",
+      "grepApp": "Regex code search over popular repositories, fast and login-free",
+      "sourcegraph": "Cross-repository code search and navigation for large codebases",
+      "ossInsight": "Repository trends and developer analytics built on GH Archive",
+      "librariesIo": "Package-level dependency graphs and dependents counts"
+    }
   }
 }

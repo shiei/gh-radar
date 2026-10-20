@@ -135,5 +135,18 @@
     "delta": "30 天 +{{count}}",
     "empty": "暂无可排序的项目",
     "popularHint": "快照内仓库按总 star 数排序。"
+  },
+  "footer": {
+    "alternatives": "要找别的？",
+    "project": "在 GitHub 上开源",
+    "tagline": "这是观察开源动态的雷达，不是代码搜索引擎。",
+    "links": {
+      "githubSearch": "官方检索，覆盖代码、issue、用户等全部类型",
+      "githubTrending": "官方的每日、每周热门榜",
+      "grepApp": "在热门仓库里按正则搜代码，快且免登录",
+      "sourcegraph": "面向大型代码库的跨仓库代码搜索与跳转",
+      "ossInsight": "基于 GH Archive 的仓库趋势与开发者分析",
+      "librariesIo": "以包为单位的依赖关系与被依赖数"
+    }
   }
 }

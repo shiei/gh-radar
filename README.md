@@ -4,6 +4,10 @@
 
 当前状态：工程地基（主题、多语言、测试与代码质量工具）和仓库检索已完成。后续功能按 `openspec/changes/` 中的 change 逐个推进，整体待办见 `ROADMAP.md`。
 
+## 相关项目
+
+页脚列出了覆盖本站刻意不做的领域的工具：GitHub Search 与 Trending（官方全类型检索与榜单）、grep.app 与 Sourcegraph（代码搜索）、OSS Insight（基于 GH Archive 的趋势分析）、Libraries.io（包级依赖关系）。本站只做开源动态的雷达。
+
 ## 技术栈
 
 - React 19 + Vite 8 + TypeScript 6
