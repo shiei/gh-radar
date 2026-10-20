@@ -6,14 +6,9 @@
 ## 已完成
 
 - [x] `project-foundation`：React + Vite + TS、Tailwind tokens、日夜主题、三语、测试与 lint（2026-10-19 归档）
-- [x] `repository-search`：未认证的 GitHub REST 仓库检索、排序、页码分页、结果卡片、示例查询、首页插图（已实现，待归档）
+- [x] `repository-search`：未认证的 GitHub REST 仓库检索、排序、页码分页、结果卡片（含活跃度等附加信号）、示例查询、首页插图（已实现，待归档）
 
 ## 第二阶段（纯前端）
-
-### 待定项（归档 `repository-search` 前要定）
-
-- [ ] 结果卡片附加信号的保留范围：最近推送与活跃度、元数据更新、Archived / Fork / Template 标签、fork 数、未关闭 issue 数、体积、组织或个人、官网。定下后重写 spec 的 Result items 需求与 design D7。star 增速已于 2026-10-20 移除（只是创建以来的平均值，近期增量需要后端快照）。
-- [ ] 验证 star 是否会刷新 `updated_at`（用自己的仓库做一次实验）。
 
 ### `github-token`
 
@@ -37,6 +32,7 @@
 - [ ] 语言标签可点击（`language:xxx`），机制与 topic 标签相同。
 - [ ] 给仓库加星：需要带 `repo` 权限的 token 调 `PUT /user/starred/{owner}/{repo}`，是写操作，`github-token` 之后单独评估。
 - [ ] 检索状态同步到 URL（刷新与分享）。
+- [ ] 验证 star 是否会刷新 `updated_at`（用自己的仓库做一次实验，只影响提示文案）。
 - [ ] 按类型显示计数（users、topics 等）：每种类型一次独立请求，共用 search 配额，`github-token` 之后只挑一两种。
 
 ## 第三阶段（需要后端）

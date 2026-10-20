@@ -63,11 +63,19 @@
 - **THEN** 不发起请求；之后的首次检索使用 recently updated
 
 ### Requirement: Result items show repository facts
-每个结果项 SHALL 显示：owner 头像、`owner/name`、描述、star 数、主语言、最近推送时间、元数据更新时间、topics、license。两个时间 SHALL 用可区分的标签，并在悬浮提示中说明含义。头像来自 GitHub 的公开头像地址，不占用 API 配额。缺失的字段 SHALL 省略而不是显示占位文本。点击结果项的名称 SHALL 在新标签页打开该仓库的 GitHub 页面。
+每个结果项 SHALL 显示：owner 头像、`owner/name`、描述、star 数、topics、活跃度标签、最近推送时间、元数据更新时间、主语言、license、fork 数、未关闭 issue 数（含 PR）、代码体积、owner 类型（组织或个人）、官网链接；仓库为 Archived、Fork 或 Template 时 SHALL 显示对应标签，Archived 的条目 SHALL 整体淡化。两个时间 SHALL 用可区分的标签并在悬浮提示中说明含义。头像来自 GitHub 的公开头像地址，不占用 API 配额。缺失的字段 SHALL 省略而不是显示占位文本。点击名称 SHALL 在新标签页打开该仓库的 GitHub 页面。
 
 #### Scenario: Full item
 - **WHEN** 结果中有一个仓库，其头像、描述、语言、topics、license 均存在
 - **THEN** 结果项显示上述全部字段，头像为圆形小图，star 数以紧凑格式显示（如 12.8k），30 天内的推送时间以相对时间显示（如 3 days ago），悬浮可见精确到分钟的完整时间
+
+#### Scenario: Activity label follows the last push
+- **WHEN** 仓库最近推送在 30 天内
+- **THEN** 活跃度显示为 Active；31 到 180 天显示 Quiet；超过 180 天显示 Inactive，三者用不同颜色的圆点区分
+
+#### Scenario: Repository flags
+- **WHEN** 仓库被归档、是 fork、或是模板仓库
+- **THEN** 名称旁分别显示 Archived、Fork、Template 标签；归档的条目整体降低不透明度
 
 #### Scenario: Older timestamps are absolute dates
 - **WHEN** 某个仓库最近推送时间在 30 天之前
