@@ -8,7 +8,7 @@ export function Header() {
   const { t } = useTranslation()
   return (
     <header className="border-border bg-surface border-b">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-[30px] lg:px-4">
         {/* Plain link to "/": clicking the brand reloads the app. Name hides on narrow screens. */}
         <a
           href={import.meta.env.BASE_URL}
