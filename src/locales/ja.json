@@ -76,7 +76,7 @@
       "activityHint": "最終 push からの経過日数で判定：30 日以内は Active、180 日以内は Quiet、それ以降は Inactive。GitHub の値ではなく当サイト独自の目安です。"
     },
     "hints": {
-      "label": "例：",
+      "label": "お試し（例）：",
       "syntax": "検索構文"
     }
   },
