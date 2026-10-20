@@ -1,3 +1,4 @@
 export { Header } from './Header/Header'
+export { SettingsDrawer } from './SettingsDrawer/SettingsDrawer'
 export { SearchResults } from './SearchResults/SearchResults'
 export type { SearchResultsProps } from './SearchResults/SearchResults'

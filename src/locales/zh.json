@@ -100,5 +100,13 @@
     "rememberHint": "会写入本浏览器的 localStorage，页面上运行的任何脚本或浏览器扩展都可能读到。共用电脑请不要勾选。",
     "remembered": "已配置 token（已在此设备记住）",
     "leastPrivilege": "※ 为了降低泄露后的风险，推荐如下设置。\n・只读\n・仅公开仓库\n・短期过期"
+  },
+  "menu": {
+    "open": "打开菜单",
+    "title": "设置",
+    "close": "关闭菜单",
+    "token": "GitHub token",
+    "language": "语言",
+    "theme": "外观"
   }
 }

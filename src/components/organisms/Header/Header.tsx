@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { RadarMark, Text } from '../../atoms'
 import { LanguageSwitcher, ThemeToggle, TokenMenu } from '../../molecules'
+import { SettingsDrawer } from '../SettingsDrawer/SettingsDrawer'
 
 export function Header() {
   const { t } = useTranslation()
@@ -25,7 +26,8 @@ export function Header() {
             {t('app.name')}
           </Text>
         </a>
-        <nav className="flex items-center gap-2" aria-label="Settings">
+        {/* Inline controls from 650px up; a drawer below that. */}
+        <nav className="hidden items-center gap-2 min-[650px]:flex" aria-label="Settings">
           <TokenMenu />
           <span
             aria-hidden="true"
@@ -34,6 +36,9 @@ export function Header() {
           <LanguageSwitcher />
           <ThemeToggle />
         </nav>
+        <div className="min-[650px]:hidden">
+          <SettingsDrawer />
+        </div>
       </div>
     </header>
   )
