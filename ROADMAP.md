@@ -10,30 +10,31 @@
 
 ## 第二阶段（纯前端）
 
-### `github-token`
+2026-10-20 调整：去掉详情页（点仓库名即可到 GitHub），项目比较移入第三阶段（没有 LLM 分析就没有新意）。按三个 change 推进。
 
-- [ ] 用户配置个人 token，存 localStorage，`GET /rate_limit` 校验，search 配额提到每分钟 30 次；在 `headers.ts` 加 Authorization，并修改 `github-api-access` spec 的"未认证"要求。
-- [ ] 会话内结果缓存：在 `useRepositorySearch` 内按 `query|sort|page` 建 Map，带时间戳，新鲜期约 5 分钟，命中不发请求；刷新即失效。出现多端点并发时再评估 TanStack Query。
-- [ ] （可选）显示剩余配额，配额状态已在 `rateLimit.ts` 记录。
+### A. `github-token`
 
-### `category-browse`
+- [ ] 用户配置个人 token，存 localStorage，`GET /rate_limit` 校验；在 `headers.ts` 加 Authorization，并修改 `github-api-access` spec 的"未认证"要求。
+- [ ] 会话内结果缓存：按 `query|sort|page` 缓存约 5 分钟，命中不发请求；刷新即失效。
+- [ ] 显示剩余配额（`rateLimit.ts` 已记录状态）。
 
-- [ ] 六个分类（Frontend、Backend、AI/ML、DevOps、Database、Design）到 topic 查询的映射文件与分类导航页。也是不懂 qualifier 语法的用户的主要探索入口。
+### B. `discovery-home`
 
-### 结构化筛选器
+- [ ] 三栏布局骨架：左侧类型切换与筛选、中间结果、右侧预留。窄屏退化为单栏。
+- [ ] 六个分类（Frontend、Backend、AI/ML、DevOps、Database、Design）到 topic 查询的映射文件与分类导航。
+- [ ] Most Popular 与 Rising Stars（近似版，`created:>日期` + `sort=stars`）榜单。
 
-- [ ] 语言、最低 star、排除 fork 等控件，由程序拼出 qualifier，让手写语法退化为高级功能。
+### C. `search-facets`
 
-### 其他
+- [ ] Users / Topics 检索类型切换，各自的结果卡片；类型计数每种一次请求，仅在有 token 时显示。
+- [ ] 结构化筛选器：语言、最低 star、排除 fork、排除归档，由程序拼出 qualifier。
+- [ ] 语言标签可点击（`language:xxx`）。
 
-- [ ] `repository-detail`：项目详情页。
-- [ ] Most Popular 与 Rising Stars（近似版，`created:>日期`）排行榜。
-- [ ] 项目比较（静态维度）。
-- [ ] 语言标签可点击（`language:xxx`），机制与 topic 标签相同。
-- [ ] 给仓库加星：需要带 `repo` 权限的 token 调 `PUT /user/starred/{owner}/{repo}`，是写操作，`github-token` 之后单独评估。
+### 其他（排期待定）
+
+- [ ] 给仓库加星：需要带 `repo` 权限的 token 的写操作，单独评估。
 - [ ] 检索状态同步到 URL（刷新与分享）。
-- [ ] 验证 star 是否会刷新 `updated_at`（用自己的仓库做一次实验，只影响提示文案）。
-- [ ] 按类型显示计数（users、topics 等）：每种类型一次独立请求，共用 search 配额，`github-token` 之后只挑一两种。
+- [ ] 验证 star 是否会刷新 `updated_at`（只影响提示文案）。
 
 ## 第三阶段（需要后端）
 
