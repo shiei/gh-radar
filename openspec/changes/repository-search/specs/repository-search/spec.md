@@ -71,7 +71,7 @@
 
 #### Scenario: Activity label follows the last push
 - **WHEN** 仓库最近推送在 30 天内
-- **THEN** 活跃度显示为 Active；31 到 180 天显示 Quiet；超过 180 天显示 Inactive，三者用不同颜色的圆点区分
+- **THEN** 活跃度显示为 Active；31 到 180 天显示 Quiet；超过 180 天显示 Inactive，三者用不同颜色的圆点区分；悬浮在标签上 SHALL 看到这条判定规则的简短说明，并注明它是本站自定的参考而非 GitHub 的值
 
 #### Scenario: Repository flags
 - **WHEN** 仓库被归档、是 fork、或是模板仓库

@@ -72,7 +72,8 @@
       "searchTopic": "搜索主题 {{topic}}",
       "updated": "元数据更新于{{time}}",
       "pushedHint": "最近一次向任意分支推送代码",
-      "updatedHint": "仓库本身最近一次变更：描述、topics、设置等"
+      "updatedHint": "仓库本身最近一次变更：描述、topics、设置等",
+      "activityHint": "按最近一次代码推送距今的天数判断：30 天内为 Active，180 天内为 Quiet，更久为 Inactive。这是本站自定的参考规则，不是 GitHub 提供的值。"
     },
     "hints": {
       "label": "试试：",

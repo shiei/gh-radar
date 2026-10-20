@@ -72,7 +72,8 @@
       "searchTopic": "Search topic {{topic}}",
       "updated": "Metadata updated {{time}}",
       "pushedHint": "Last code push to any branch",
-      "updatedHint": "Last change to the repository itself: description, topics, settings"
+      "updatedHint": "Last change to the repository itself: description, topics, settings",
+      "activityHint": "Based on the last code push: within 30 days = Active, within 180 days = Quiet, otherwise Inactive. Our own rule of thumb, not a GitHub value."
     },
     "hints": {
       "label": "Try:",

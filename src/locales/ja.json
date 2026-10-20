@@ -72,7 +72,8 @@
       "searchTopic": "トピック {{topic}} を検索",
       "updated": "メタデータ更新 {{time}}",
       "pushedHint": "いずれかのブランチへの最終 push",
-      "updatedHint": "リポジトリ自体の最終変更：説明、トピック、設定など"
+      "updatedHint": "リポジトリ自体の最終変更：説明、トピック、設定など",
+      "activityHint": "最終 push からの経過日数で判定：30 日以内は Active、180 日以内は Quiet、それ以降は Inactive。GitHub の値ではなく当サイト独自の目安です。"
     },
     "hints": {
       "label": "例：",

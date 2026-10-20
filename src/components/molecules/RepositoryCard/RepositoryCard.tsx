@@ -101,14 +101,19 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
       ) : null}
 
       <div className="text-text-muted flex flex-wrap gap-x-4 gap-y-1 text-xs">
-        <span
-          className="inline-flex items-center gap-1"
-          data-testid="repo-activity"
-          data-activity={activity}
-        >
-          <span className={cx('h-2 w-2 rounded-full', activityDot[activity])} aria-hidden="true" />
-          {t(`search.repo.activity.${activity}`)}
-        </span>
+        <Tooltip content={t('search.repo.activityHint')}>
+          <span
+            className="inline-flex items-center gap-1"
+            data-testid="repo-activity"
+            data-activity={activity}
+          >
+            <span
+              className={cx('h-2 w-2 rounded-full', activityDot[activity])}
+              aria-hidden="true"
+            />
+            {t(`search.repo.activity.${activity}`)}
+          </span>
+        </Tooltip>
         <Tooltip content={`${t('search.repo.pushedHint')}\n${formatDateTime(repo.pushedAt, lang)}`}>
           <span data-testid="repo-pushed">
             {t('search.repo.pushed', { time: formatTimestamp(repo.pushedAt, lang) })}
