@@ -43,6 +43,7 @@
 
 ## Workflow follow-up
 
+- 跨 change 的待办已合并到仓库根目录的 `ROADMAP.md`，以后以它为准；下面的条目保留作为本 change 的记录。
 - 全部任务完成后执行一次 git commit（每个 change 单独提交）。
 - 归档本 change 并同步两份主 spec。
 - 下一个 change 候选：`github-token`（在 `headers.ts` 加 Authorization，并修改 `github-api-access` spec 的"未认证"要求）。
