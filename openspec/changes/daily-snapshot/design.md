@@ -31,6 +31,52 @@ data/watchlist.txt           手工关注列表，每行 owner/name，# 注释
 ```
 用 `tsx` 运行脚本，不单独编译。脚本自己实现一个最小的 search 客户端，不复用 `src/lib/github/request.ts`，因为后者绑定浏览器 token 存储；两者共享的只有常量（API 版本标头）。
 
+### D1b. 脚本流程
+
+脚本是 TypeScript，用 `tsx` 在 Node 24 下直接运行。整体分三段：抓取（唯一有副作用的网络段）、变换（纯函数）、写入（只在非 dry-run 且全部成功时发生）。
+
+```mermaid
+flowchart TD
+  A([npm run snapshot]) --> B[解析参数<br/>--dry-run / 日期]
+  B --> C[读取 src/lib/categories.ts<br/>与 data/watchlist.txt]
+  C --> D[读取现有 public/data<br/>latest / series / meta]
+  D --> E{还有未抓取的来源?}
+  E -- 是 --> F[构造查询<br/>分类 × 热门/新秀 或 watchlist]
+  F --> G[请求一页<br/>per_page=100]
+  G --> H{响应}
+  H -- 2xx --> I[读取 X-RateLimit-*<br/>累加结果]
+  I --> J{剩余配额 = 0?}
+  J -- 是 --> K[sleep 到 Reset 时刻] --> L
+  J -- 否 --> L{已满 3 页<br/>或本页不足 100?}
+  L -- 否 --> G
+  L -- 是 --> E
+  H -- 422 --> E
+  H -- 5xx / 网络错误 --> M{重试 < 3?}
+  M -- 是 --> N[指数退避] --> G
+  M -- 否 --> X([退出码 1<br/>不写任何文件])
+  H -- 403/429 配额 --> K
+  E -- 否 --> O[mergeSources<br/>按 owner/name 去重并标注来源]
+  O --> P[toRecord<br/>裁剪为单字母键的记录]
+  P --> Q[appendSeries<br/>同日期幂等追加]
+  Q --> R[pruneDaily 30 天<br/>downsampleSeries 365 天后按周]
+  R --> S{dry-run?}
+  S -- 是 --> T[打印各来源数量与总数] --> Y([退出码 0])
+  S -- 否 --> U[写 latest.json / daily/日期.json<br/>series/分类.json / meta.json]
+  U --> Y
+```
+
+Actions 工作流在脚本之外再包一层：
+
+```mermaid
+flowchart LR
+  S([cron 00:00 UTC<br/>或手动触发]) --> C[checkout + setup-node + npm ci]
+  C --> R[npm run snapshot]
+  R -- 非零退出 --> F([工作流失败<br/>数据文件保持上次状态])
+  R -- 成功 --> G{git status 有变化?}
+  G -- 否 --> N([结束，无 commit])
+  G -- 是 --> P[commit 'data: snapshot 日期 (N repos)'<br/>push 到 master]
+```
+
 ### D2. 抓取策略
 每个来源 `per_page=100` 取 3 页；每次响应后读 `X-RateLimit-Remaining`，为 0 时 sleep 到 `X-RateLimit-Reset`；请求串行；5xx 与网络错误指数退避重试 3 次；422（超出 1000 条）视为该来源到头。watchlist 用 `GET /repos/{owner}/{repo}` 逐个取，走核心池。整次运行约 40 次 search 加 watchlist 数量次核心请求。
 
