@@ -1,3 +1,4 @@
+# Runs scripts/snapshot.ts once a day and commits public/data. Manual runs: Actions > Daily snapshot > Run workflow.
 name: Daily snapshot
 
 on:
