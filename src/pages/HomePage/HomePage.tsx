@@ -17,8 +17,8 @@ import { useTheme, type Theme } from '../../lib/theme'
 // One file per theme: an <img> cannot see our data-theme attribute.
 const CACHE_BUST = `?v=${String(Date.now())}`
 const RADAR_SRC: Record<Theme, string> = {
-  dark: `/radar-dark.svg${CACHE_BUST}`,
-  light: `/radar-light.svg${CACHE_BUST}`,
+  dark: `${import.meta.env.BASE_URL}radar-dark.svg${CACHE_BUST}`,
+  light: `${import.meta.env.BASE_URL}radar-light.svg${CACHE_BUST}`,
 }
 
 function RankingsPanel({ activeCategory }: { activeCategory: CategoryId | null }) {

@@ -45,6 +45,8 @@ function cspPlugin(): Plugin {
 }
 
 export default defineConfig({
+  // GitHub Pages serves a project site under /<repo>/; the deploy workflow sets VITE_BASE.
+  base: process.env.VITE_BASE ?? '/',
   plugins: [react(), tailwindcss(), cspPlugin()],
   test: {
     environment: 'jsdom',

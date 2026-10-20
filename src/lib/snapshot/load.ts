@@ -1,7 +1,8 @@
 import { CATEGORY_IDS } from '../categories'
 import type { Series, SnapshotLatest, SnapshotMeta } from './types'
 
-export const DATA_BASE = '/data'
+/** Base-aware so the site also works under a project path such as /gh-radar/. */
+export const DATA_BASE = `${import.meta.env.BASE_URL}data`
 export const SERIES_BUCKETS = [...CATEGORY_IDS, 'watchlist'] as const
 
 export interface SnapshotBundle {

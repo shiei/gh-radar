@@ -11,7 +11,7 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         {/* Plain link to "/": clicking the brand reloads the app. Name hides on narrow screens. */}
         <a
-          href="/"
+          href={import.meta.env.BASE_URL}
           className="inline-flex items-center gap-2 rounded-md"
           aria-label={t('app.name')}
           data-testid="brand-link"
