@@ -11,7 +11,7 @@ function Probe() {
     <div>
       <span data-testid="theme">{theme}</span>
       <button onClick={toggle}>toggle</button>
-      <button onClick={() => setTheme('dark')}>dark</button>
+      <button onClick={() => setTheme('light')}>light</button>
     </div>
   )
 }
@@ -51,14 +51,14 @@ describe('ThemeProvider', () => {
         <Probe />
       </ThemeProvider>,
     )
-    expect(screen.getByTestId('theme')).toHaveTextContent('light')
-    act(() => screen.getByText('toggle').click())
     expect(screen.getByTestId('theme')).toHaveTextContent('dark')
-    expect(document.documentElement).toHaveAttribute(THEME_ATTRIBUTE, 'dark')
-    expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark')
     act(() => screen.getByText('toggle').click())
+    expect(screen.getByTestId('theme')).toHaveTextContent('light')
     expect(document.documentElement).toHaveAttribute(THEME_ATTRIBUTE, 'light')
     expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe('light')
+    act(() => screen.getByText('toggle').click())
+    expect(document.documentElement).toHaveAttribute(THEME_ATTRIBUTE, 'dark')
+    expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark')
   })
 
   it('setTheme sets an explicit value', () => {
@@ -67,7 +67,7 @@ describe('ThemeProvider', () => {
         <Probe />
       </ThemeProvider>,
     )
-    act(() => screen.getByText('dark').click())
-    expect(document.documentElement).toHaveAttribute(THEME_ATTRIBUTE, 'dark')
+    act(() => screen.getByText('light').click())
+    expect(document.documentElement).toHaveAttribute(THEME_ATTRIBUTE, 'light')
   })
 })

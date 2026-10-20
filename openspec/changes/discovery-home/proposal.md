@@ -23,7 +23,7 @@
 
 ### Modified Capabilities
 
-（无。分类与榜单都通过已有的检索提交路径工作，不改变 `repository-search` 的要求。）
+- `ui-theme`: 首访默认改为夜间，不再跟随系统偏好（2026-10-21 布局与显示调整阶段追加）。
 
 ## Impact
 

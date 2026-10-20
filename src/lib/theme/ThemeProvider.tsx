@@ -12,11 +12,6 @@ function readStored(): string | null {
   }
 }
 
-function readSystemPreference(): boolean | null {
-  if (typeof window.matchMedia !== 'function') return null
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-}
-
 function applyTheme(theme: Theme) {
   document.documentElement.setAttribute(THEME_ATTRIBUTE, theme)
   try {
@@ -29,7 +24,7 @@ function applyTheme(theme: Theme) {
 /** Initial value: trust what the inline bootstrap script already set on <html>, else resolve. */
 function readInitialTheme(): Theme {
   const current = document.documentElement.getAttribute(THEME_ATTRIBUTE)
-  return resolveInitialTheme(current ?? readStored(), readSystemPreference())
+  return resolveInitialTheme(current ?? readStored())
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

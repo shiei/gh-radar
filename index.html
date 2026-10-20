@@ -15,11 +15,9 @@
         } catch (e) {
           stored = null
         }
-        var theme = stored === 'light' || stored === 'dark' ? stored : null
-        if (!theme && window.matchMedia) {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-        }
-        document.documentElement.setAttribute('data-theme', theme || 'light')
+        // Stored choice wins; otherwise the site default is dark (system preference is not consulted).
+        var theme = stored === 'light' || stored === 'dark' ? stored : 'dark'
+        document.documentElement.setAttribute('data-theme', theme)
       })()
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
