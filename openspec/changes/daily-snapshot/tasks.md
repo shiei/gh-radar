@@ -16,5 +16,5 @@
 
 ## 4. 自动化
 
-- [ ] 4.1 新增 `.github/workflows/snapshot.yml`（每日 cron、手动触发、失败不提交、成功提交 `public/data/`）；工作流文件已写好，但只能在推送到 GitHub 后用 workflow_dispatch 验证，本地无 GitHub 远端，暂留未勾选
+- [x] 4.1 新增 `.github/workflows/snapshot.yml`（每日 cron、手动触发、失败不提交、成功提交 `public/data/`）；2026-10-20 23:14 UTC 在 shiei/gh-radar 上手动触发验证：1 分 17 秒完成，产生 commit `data: snapshot 2026-10-20 (2079 repos)` 并联动触发 Pages 部署
 - [x] 4.2 README 补充数据集说明（范围、文件格式、保留策略、如何加 watchlist）；ROADMAP 增加 `daily-snapshot` 为已完成

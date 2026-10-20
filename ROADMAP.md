@@ -5,6 +5,8 @@
 
 ## 已完成
 
+- [x] 部署：GitHub Pages（Actions 模式），地址 https://shiei.github.io/gh-radar/ ，推送与每日快照后自动部署（2026-10-21）
+
 - [x] `project-foundation`：React + Vite + TS、Tailwind tokens、日夜主题、三语、测试与 lint（2026-10-19 归档）
 - [x] `repository-search`：未认证的 GitHub REST 仓库检索、排序、页码分页、结果卡片（含活跃度等附加信号）、示例查询、首页插图（已实现，待归档）
 
@@ -22,7 +24,7 @@
 
 ### A2. `daily-snapshot`（2026-10-21 新增，排在 B 之前）
 
-- [x] GitHub Actions 每日快照：六个分类 × 热门 / 新秀各 300 条加 watchlist，写入 `public/data/`（latest、daily 30 天、series 一年按天后按周、meta）。（2026-10-21，工作流待推送到 GitHub 后手动触发验证）
+- [x] GitHub Actions 每日快照：六个分类 × 热门 / 新秀各 300 条加 watchlist，写入 `public/data/`（latest、daily 30 天、series 一年按天后按周、meta）。（2026-10-21，已在 GitHub 上手动触发验证通过）
 - [x] 脚本可本地 `--dry-run`；失败不提交；配额等待与重试。（2026-10-21）
 
 ### B. `discovery-home`（2026-10-21 改为读快照）
