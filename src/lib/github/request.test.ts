@@ -44,7 +44,11 @@ describe('request', () => {
       ),
     )
     await request('/x')
-    expect(getRateLimit()).toEqual({ remaining: 9, resetAt: new Date(1760000000 * 1000) })
+    expect(getRateLimit()).toEqual({
+      limit: null,
+      remaining: 9,
+      resetAt: new Date(1760000000 * 1000),
+    })
   })
 
   it('records rate limit headers on failure too', async () => {
@@ -118,7 +122,7 @@ describe('request', () => {
   })
 
   it('an aborted fetch is aborted and does not touch rate limit state', async () => {
-    const before = { remaining: 42, resetAt: new Date(0) }
+    const before = { limit: null, remaining: 42, resetAt: new Date(0) }
     setRateLimit(before)
     fetchMock.mockRejectedValue(new DOMException('The operation was aborted.', 'AbortError'))
     expect(await request('/x', { signal: new AbortController().signal })).toEqual({

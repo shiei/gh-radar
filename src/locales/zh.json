@@ -79,5 +79,21 @@
       "label": "试试：",
       "syntax": "检索语法"
     }
+  },
+  "token": {
+    "connect": "连接 GitHub",
+    "connected": "已配置 GitHub token",
+    "quota": "检索配额 {{remaining}} / {{limit}}",
+    "quotaUnknownLimit": "检索配额剩余 {{remaining}}",
+    "title": "GitHub 个人访问 token",
+    "description": "把检索上限从每分钟 10 次提高到 30 次。token 只保存在本浏览器，只会发往 api.github.com。",
+    "createLink": "在 GitHub 创建只读 token",
+    "placeholder": "粘贴你的 token",
+    "save": "保存",
+    "checking": "校验中...",
+    "remove": "移除 token",
+    "invalid": "GitHub 拒绝了这个 token。请确认复制完整且未过期。",
+    "failed": "无法连接 GitHub 校验 token，请重试。",
+    "status": "已配置 token"
   }
 }

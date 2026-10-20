@@ -30,7 +30,7 @@ test.describe('repository search', () => {
     await expect(first.getByTestId('repo-description')).toBeVisible()
     await expect(first.getByTestId('repo-language')).toHaveText('JavaScript')
     await expect(first.getByTestId('repo-license')).toContainText('MIT')
-    await expect(first.getByTestId('repo-pushed')).toContainText('ago')
+    await expect(first.getByTestId('repo-pushed')).toContainText('Last push')
     await expect(first.getByTestId('repo-topics')).toBeVisible()
 
     // Second fixture item has no description, license or topics: those blocks are absent.

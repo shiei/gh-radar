@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { RadarMark, Text } from '../../atoms'
-import { LanguageSwitcher, ThemeToggle } from '../../molecules'
+import { LanguageSwitcher, ThemeToggle, TokenMenu } from '../../molecules'
 
 export function Header() {
   const { t } = useTranslation()
@@ -26,6 +26,7 @@ export function Header() {
           </Text>
         </a>
         <nav className="flex items-center gap-2" aria-label="Settings">
+          <TokenMenu />
           <LanguageSwitcher />
           <ThemeToggle />
         </nav>

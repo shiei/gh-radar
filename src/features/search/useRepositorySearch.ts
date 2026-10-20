@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
 import { searchRepositories, type SearchSort } from '../../lib/github'
+import { getCached, invalidateCached, setCached } from './searchCache'
 import { initialSearchState, searchReducer, type SearchState } from './searchReducer'
 
 export interface RepositorySearch {
@@ -24,13 +25,27 @@ export function useRepositorySearch(): RepositorySearch {
   useEffect(() => {
     if (requestId === 0) return
     controllerRef.current?.abort()
+    const params = { query, sort, page }
+
+    // Session cache: a fresh hit answers without a request (and without an AbortController).
+    const cached = getCached(params)
+    if (cached) {
+      controllerRef.current = null
+      dispatch({ type: 'succeeded', requestId, result: cached })
+      return
+    }
+
     const controller = new AbortController()
     controllerRef.current = controller
 
-    void searchRepositories({ query, sort, page }, controller.signal).then((result) => {
+    void searchRepositories(params, controller.signal).then((result) => {
       if (controllerRef.current !== controller) return
-      if (result.ok) dispatch({ type: 'succeeded', requestId, result: result.data })
-      else dispatch({ type: 'failed', requestId, error: result.error })
+      if (result.ok) {
+        setCached(params, result.data)
+        dispatch({ type: 'succeeded', requestId, result: result.data })
+      } else {
+        dispatch({ type: 'failed', requestId, error: result.error })
+      }
     })
 
     return () => controller.abort()
@@ -41,7 +56,10 @@ export function useRepositorySearch(): RepositorySearch {
   const submit = useCallback((q: string) => dispatch({ type: 'submit', query: q }), [])
   const setSort = useCallback((s: SearchSort) => dispatch({ type: 'setSort', sort: s }), [])
   const goToPage = useCallback((p: number) => dispatch({ type: 'goToPage', page: p }), [])
-  const retry = useCallback(() => dispatch({ type: 'retry' }), [])
+  const retry = useCallback(() => {
+    invalidateCached({ query, sort, page })
+    dispatch({ type: 'retry' })
+  }, [query, sort, page])
 
   return { state, submit, setSort, goToPage, retry }
 }

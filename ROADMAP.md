@@ -14,9 +14,9 @@
 
 ### A. `github-token`
 
-- [ ] 用户配置个人 token，存 localStorage，`GET /rate_limit` 校验；在 `headers.ts` 加 Authorization，并修改 `github-api-access` spec 的"未认证"要求。
-- [ ] 会话内结果缓存：按 `query|sort|page` 缓存约 5 分钟，命中不发请求；刷新即失效。
-- [ ] 显示剩余配额（`rateLimit.ts` 已记录状态）。
+- [x] 用户配置个人 token，存 localStorage，`GET /rate_limit` 校验；在 `headers.ts` 加 Authorization，并修改 `github-api-access` spec 的"未认证"要求。（2026-10-20）
+- [x] 会话内结果缓存：按 `query|sort|page` 缓存约 5 分钟，命中不发请求；刷新即失效。（2026-10-20）
+- [x] 显示剩余配额。（2026-10-20）
 
 ### B. `discovery-home`
 

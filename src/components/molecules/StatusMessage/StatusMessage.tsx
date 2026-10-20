@@ -26,6 +26,8 @@ function useErrorCopy(error: GitHubError): string {
       return t('search.error.api', { status: error.status })
     case 'aborted':
       return t('search.error.network')
+    case 'invalid_token':
+      return t('token.invalid')
   }
 }
 

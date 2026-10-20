@@ -8,6 +8,7 @@ export type GitHubError =
   | { kind: 'network' }
   | { kind: 'api'; status: number }
   | { kind: 'aborted' }
+  | { kind: 'invalid_token' }
 
 export type GitHubErrorKind = GitHubError['kind']
 
@@ -29,6 +30,7 @@ export function isGitHubError(value: unknown): value is GitHubError {
     kind === 'invalid_query' ||
     kind === 'network' ||
     kind === 'api' ||
-    kind === 'aborted'
+    kind === 'aborted' ||
+    kind === 'invalid_token'
   )
 }

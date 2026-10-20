@@ -79,5 +79,21 @@
       "label": "Try:",
       "syntax": "Search syntax"
     }
+  },
+  "token": {
+    "connect": "Connect GitHub",
+    "connected": "GitHub token set",
+    "quota": "Search quota {{remaining}} / {{limit}}",
+    "quotaUnknownLimit": "Search quota {{remaining}} left",
+    "title": "GitHub personal token",
+    "description": "Raises the search limit from 10 to 30 requests per minute. The token is stored only in this browser and sent only to api.github.com.",
+    "createLink": "Create a read-only token on GitHub",
+    "placeholder": "Paste your token",
+    "save": "Save",
+    "checking": "Checking...",
+    "remove": "Remove token",
+    "invalid": "GitHub rejected this token. Check that it was copied completely and has not expired.",
+    "failed": "Could not reach GitHub to check the token. Try again.",
+    "status": "Token configured"
   }
 }

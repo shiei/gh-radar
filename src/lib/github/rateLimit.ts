@@ -1,4 +1,6 @@
 export interface RateLimit {
+  /** Null when X-RateLimit-Limit is absent. */
+  limit: number | null
   remaining: number
   resetAt: Date
 }
@@ -9,7 +11,7 @@ type Listener = (state: RateLimit | null) => void
 let current: RateLimit | null = null
 const listeners = new Set<Listener>()
 
-/** Parse X-RateLimit-* headers. Returns null when either is missing or malformed. */
+/** Parse X-RateLimit-* headers. Returns null when remaining or reset is missing or malformed. */
 export function parseRateLimit(headers: Headers): RateLimit | null {
   const remainingRaw = headers.get('x-ratelimit-remaining')
   const resetRaw = headers.get('x-ratelimit-reset')
@@ -17,7 +19,9 @@ export function parseRateLimit(headers: Headers): RateLimit | null {
   const remaining = Number(remainingRaw)
   const resetEpoch = Number(resetRaw)
   if (!Number.isFinite(remaining) || !Number.isFinite(resetEpoch)) return null
-  return { remaining, resetAt: new Date(resetEpoch * 1000) }
+  const limitRaw = headers.get('x-ratelimit-limit')
+  const limit = limitRaw !== null && Number.isFinite(Number(limitRaw)) ? Number(limitRaw) : null
+  return { limit, remaining, resetAt: new Date(resetEpoch * 1000) }
 }
 
 export function getRateLimit(): RateLimit | null {

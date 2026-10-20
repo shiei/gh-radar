@@ -2,9 +2,18 @@ export type { GitHubError, GitHubErrorKind, Result } from './errors'
 export { isGitHubError } from './errors'
 export { buildHeaders, GITHUB_API_BASE } from './headers'
 export type { RateLimit } from './rateLimit'
-export { getRateLimit, parseRateLimit, subscribeRateLimit } from './rateLimit'
+export { getRateLimit, parseRateLimit, setRateLimit, subscribeRateLimit } from './rateLimit'
 export { buildSearchPath, searchRepositories } from './search'
 export type { Repository, SearchParams, SearchResult, SearchSort } from './types'
 export { MAX_PAGE, MAX_RESULTS, PAGE_SIZE } from './types'
 export type { Activity } from './signals'
 export { activityOf } from './signals'
+export {
+  clearToken,
+  getToken,
+  resetTokenForTests,
+  setToken,
+  subscribeToken,
+  TOKEN_STORAGE_KEY,
+} from './token'
+export { validateToken } from './validateToken'

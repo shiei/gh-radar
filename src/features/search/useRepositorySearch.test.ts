@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { clearSearchCache } from './searchCache'
 import { useRepositorySearch } from './useRepositorySearch'
 
 interface Deferred {
@@ -46,6 +47,7 @@ describe('useRepositorySearch', () => {
   })
 
   beforeEach(() => {
+    clearSearchCache()
     pending.length = 0
     fetchMock.mockClear()
     vi.stubGlobal('fetch', fetchMock)
@@ -83,6 +85,23 @@ describe('useRepositorySearch', () => {
     expect(retryUrl).toBe(firstUrl)
     expect(retryUrl).toContain('sort=stars')
     expect(result.current.state.status).toBe('loading')
+  })
+
+  it('answers repeated params from the session cache without a request', async () => {
+    const { result } = renderHook(() => useRepositorySearch())
+    act(() => result.current.submit('react'))
+    pending[0]!.resolve(new Response(payload('react', 50), { status: 200 }))
+    await waitFor(() => expect(result.current.state.status).toBe('success'))
+    act(() => result.current.goToPage(2))
+    pending[1]!.resolve(new Response(payload('react-p2', 50), { status: 200 }))
+    await waitFor(() => expect(result.current.state.page).toBe(2))
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+
+    act(() => result.current.goToPage(1))
+    await waitFor(() => expect(result.current.state.page).toBe(1))
+    expect(result.current.state.status).toBe('success')
+    expect(result.current.state.result?.items[0]?.name).toBe('react')
+    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 
   it('marks zero results as empty', async () => {

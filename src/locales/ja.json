@@ -79,5 +79,21 @@
       "label": "例：",
       "syntax": "検索構文"
     }
+  },
+  "token": {
+    "connect": "GitHub と接続",
+    "connected": "GitHub トークン設定済み",
+    "quota": "検索枠 {{remaining}} / {{limit}}",
+    "quotaUnknownLimit": "検索枠 残り {{remaining}}",
+    "title": "GitHub 個人アクセストークン",
+    "description": "検索上限が毎分 10 回から 30 回に上がります。トークンはこのブラウザにのみ保存され、api.github.com にしか送信されません。",
+    "createLink": "GitHub で読み取り専用トークンを作成",
+    "placeholder": "トークンを貼り付け",
+    "save": "保存",
+    "checking": "確認中...",
+    "remove": "トークンを削除",
+    "invalid": "GitHub がこのトークンを拒否しました。完全にコピーされているか、期限切れでないか確認してください。",
+    "failed": "トークンの確認のため GitHub に接続できませんでした。もう一度お試しください。",
+    "status": "トークン設定済み"
   }
 }
