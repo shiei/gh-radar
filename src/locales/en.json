@@ -99,6 +99,6 @@
     "remember": "Remember on this device",
     "rememberHint": "Stores the token in this browser's localStorage, where any script running on this page or any browser extension could read it. Leave off on shared computers.",
     "remembered": "Token configured and remembered on this device",
-    "leastPrivilege": "To limit the damage if the token ever leaks, we recommend: read-only access, public repositories only, and a short expiry."
+    "leastPrivilege": "※ To limit the damage if the token ever leaks, we recommend: read-only access, public repositories only, and a short expiry."
   }
 }

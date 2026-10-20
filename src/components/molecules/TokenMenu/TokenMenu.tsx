@@ -114,7 +114,11 @@ export function TokenMenu() {
                   {t('token.createLink')}
                   <ExternalLinkIcon size={11} />
                 </a>
-                <Text variant="muted" className="text-xs" data-testid="token-least-privilege">
+                <Text
+                  variant="muted"
+                  className="text-xs font-semibold"
+                  data-testid="token-least-privilege"
+                >
                   {t('token.leastPrivilege')}
                 </Text>
                 {token ? (
