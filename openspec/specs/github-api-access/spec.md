@@ -13,24 +13,16 @@
 - **WHEN** 应用检索仓库
 - **THEN** 请求为 `GET https://api.github.com/search/repositories`，带 `Accept: application/vnd.github+json` 与 `X-GitHub-Api-Version` 标头
 
-### Requirement: Requests are unauthenticated
-本阶段的请求 MUST NOT 携带任何凭据或 `Authorization` 标头。应用 MUST NOT 要求用户登录或提供 token 才能检索。
-
-#### Scenario: No credentials attached
-- **WHEN** 应用发出任意 GitHub API 请求
-- **THEN** 请求中没有 `Authorization` 标头
-
 ### Requirement: Rate limit information is read from every response
-每个响应的 `X-RateLimit-Remaining` 与 `X-RateLimit-Reset` 标头 SHALL 被解析并保存为当前配额状态，供界面查询。标头缺失时配额状态 SHALL 视为未知。
+每个响应的 `X-RateLimit-Limit`、`X-RateLimit-Remaining` 与 `X-RateLimit-Reset` 标头 SHALL 被解析并保存为当前配额状态（上限、剩余、恢复时刻），供界面查询。Remaining 或 Reset 缺失时配额状态 SHALL 视为未知；Limit 缺失时上限视为未知但不影响其余字段。
 
 #### Scenario: Headers present
-- **WHEN** 响应带有 `X-RateLimit-Remaining: 7` 与 `X-RateLimit-Reset: 1760000000`
-- **THEN** 配额状态为剩余 7 次、恢复时间为该时间戳对应的时刻
+- **WHEN** 响应带有 `X-RateLimit-Limit: 30`、`X-RateLimit-Remaining: 7` 与 `X-RateLimit-Reset: 1760000000`
+- **THEN** 配额状态为上限 30、剩余 7、恢复时间为该时间戳对应的时刻
 
 #### Scenario: Headers absent
 - **WHEN** 响应没有配额标头
 - **THEN** 配额状态为未知，不报错
-
 ### Requirement: Rate limit exhaustion is reported with a reset time
 当响应状态为 403 且剩余配额为 0，或状态为 429 时，请求 SHALL 以"配额用尽"失败，并附带可重试的时刻。该时刻 SHALL 优先取自 `Retry-After` 标头（秒），否则取自 `X-RateLimit-Reset`。两者都缺失时 SHALL 仍报告配额用尽但不附带时刻。
 
@@ -67,3 +59,25 @@
 #### Scenario: Cancelled before response
 - **WHEN** 调用方在响应到达前取消请求
 - **THEN** 请求以已取消结束，不更新配额状态，不报告错误
+
+### Requirement: Requests carry the user's token when configured
+当用户已配置 token 时，所有 GitHub API 请求 SHALL 携带 `Authorization: Bearer <token>` 标头；未配置时 MUST NOT 携带任何凭据。token MUST NOT 发往 `api.github.com` 以外的任何地址。
+
+#### Scenario: Token configured
+- **WHEN** 用户已保存有效 token 并发起检索
+- **THEN** 请求带 `Authorization: Bearer` 标头，值为该 token
+
+#### Scenario: No token
+- **WHEN** 用户未配置 token
+- **THEN** 请求中没有 `Authorization` 标头
+
+### Requirement: Token can be validated without spending quota
+应用 SHALL 通过 `GET /rate_limit` 校验 token：200 视为有效并同时更新配额状态；401 视为无效。该请求不计入配额。
+
+#### Scenario: Valid token
+- **WHEN** 用 token 请求 `/rate_limit` 返回 200
+- **THEN** 校验通过，配额状态更新为响应中 search 资源的上限与剩余
+
+#### Scenario: Invalid token
+- **WHEN** 用 token 请求 `/rate_limit` 返回 401
+- **THEN** 校验失败，报告 token 无效，配额状态不变
