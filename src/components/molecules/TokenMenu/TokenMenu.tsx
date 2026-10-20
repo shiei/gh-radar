@@ -116,7 +116,7 @@ export function TokenMenu() {
                 </a>
                 <Text
                   variant="muted"
-                  className="text-xs font-semibold"
+                  className="text-xs whitespace-pre-line"
                   data-testid="token-least-privilege"
                 >
                   {t('token.leastPrivilege')}
