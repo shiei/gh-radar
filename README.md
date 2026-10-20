@@ -13,6 +13,10 @@
 - Vitest + Testing Library 做单元测试，Playwright 做端到端测试
 - ESLint、Prettier、Stylelint、`tsc` 做静态检查
 
+## 部署
+
+站点发布在 https://shiei.github.io/gh-radar/ ，推送到 master 与每日快照完成后自动部署。首次设置、日常操作与排错见 `docs/deploy.md`。
+
 ## 快速开始
 
 ```bash
