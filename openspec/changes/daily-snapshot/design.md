@@ -78,7 +78,7 @@ flowchart LR
 ```
 
 ### D2. 抓取策略
-每个来源 `per_page=100` 取 3 页；每次响应后读 `X-RateLimit-Remaining`，为 0 时 sleep 到 `X-RateLimit-Reset`；请求串行；5xx 与网络错误指数退避重试 3 次；422（超出 1000 条）视为该来源到头。watchlist 用 `GET /repos/{owner}/{repo}` 逐个取，走核心池。整次运行约 40 次 search 加 watchlist 数量次核心请求。
+每个来源 `per_page=100` 取 3 页（新秀查询的 star 门槛降为 20，否则三个月内的新项目几乎没有能过分类门槛的）；每次响应后读 `X-RateLimit-Remaining`，为 0 时 sleep 到 `X-RateLimit-Reset`；请求串行；5xx 与网络错误指数退避重试 3 次；422（超出 1000 条）视为该来源到头。watchlist 用 `GET /repos/{owner}/{repo}` 逐个取，走核心池。整次运行约 40 次 search 加 watchlist 数量次核心请求。
 
 ### D3. 文件格式
 ```jsonc
@@ -89,7 +89,7 @@ flowchart LR
 // meta.json
 { "lastRun": "2026-10-21T00:04:12Z", "date": "2026-10-21", "total": 2140, "sources": { "frontend:popular": 300, ... } }
 ```
-键名用单字母是为了把 `latest.json` 控制在 200 KB 量级；前端有一个解码函数把它展开成有名字的类型。序列只存 star，是因为它是唯一需要画曲线的量；其余字段看 `latest.json` 即可。
+键名用单字母是为了压缩体积；首次实测（2026-10-20，2079 个仓库）`latest.json` 为 635 KB，大头是 topics 数组，gzip 后约 100 KB，由 Pages 压缩传输。若将来超过 1 MB 再考虑把 topics 截断到前 10 个；前端有一个解码函数把它展开成有名字的类型。序列只存 star，是因为它是唯一需要画曲线的量；其余字段看 `latest.json` 即可。
 
 ### D4. 保留与降采样
 `prune(dailyDir, today, 30)` 删除超过 30 天的日文件。`downsample(series, today)`：365 天以内逐日保留；更早的按 ISO 周分组，每组保留最后一个点。序列追加前先删除同日期的点，保证幂等。

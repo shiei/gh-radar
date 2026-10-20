@@ -7,7 +7,7 @@
 ## ADDED Requirements
 
 ### Requirement: Snapshot scope follows the category map
-快照 SHALL 覆盖：六个分类各自的"热门"查询（分类查询按 star 降序）与"新秀"查询（分类查询加近 90 天创建，按 star 降序）各前 300 条，以及 `data/watchlist.txt` 中手工列出的仓库。分类及其查询 SHALL 与站点共用同一个映射文件。同一仓库出现在多个来源时 SHALL 只记录一次并标注全部来源。
+快照 SHALL 覆盖：六个分类各自的"热门"查询（分类查询按 star 降序）与"新秀"查询（分类的 topic 加近 90 天创建、star 不低于 20，按 star 降序）各前 300 条，以及 `data/watchlist.txt` 中手工列出的仓库。分类及其查询 SHALL 与站点共用同一个映射文件。同一仓库出现在多个来源时 SHALL 只记录一次并标注全部来源。
 
 #### Scenario: Sources are tagged
 - **WHEN** 仓库 `vercel/next.js` 同时出现在 Frontend 热门与 watchlist

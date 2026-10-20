@@ -1,0 +1,7 @@
+# Repositories to snapshot every day in addition to the category queries.
+# One "owner/name" per line. Lines starting with # are ignored.
+vercel/next.js
+facebook/react
+vuejs/core
+sveltejs/svelte
+microsoft/TypeScript

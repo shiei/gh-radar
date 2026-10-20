@@ -52,6 +52,7 @@ src/
   features/
     search/       检索状态机：searchReducer（纯函数）与 useRepositorySearch（hook）
   lib/
+    categories.ts 六个分类与查询（站点与快照脚本共用）
     github/       GitHub REST 访问层：请求头、错误分类、配额解析、search 端点（不依赖 React）
     format/       Intl 封装：紧凑数字、相对时间、时刻
     theme/        主题解析、持久化、ThemeProvider / useTheme
@@ -60,6 +61,9 @@ src/
   locales/        en.json / ja.json / zh.json
   styles/         tokens.css（Design Tokens）、globals.css（Tailwind 映射与基础样式）
   test/           Vitest setup
+scripts/          每日快照脚本（见 scripts/README.md）
+data/             watchlist.txt 手工关注列表
+public/data/      快照数据集（由 Actions 提交）
 e2e/              Playwright 测试
   fixtures/       mock 的 GitHub 响应
   helpers/        共享 test（含 GitHub 请求兜底拦截）与 mock 工具
@@ -67,6 +71,10 @@ openspec/         规划文件（proposal / specs / design / tasks）
 ```
 
 分层约定：`components/` 只放 UI（Atomic Design）；不依赖 React 的代码放 `lib/`；某个功能的 React 状态逻辑放 `features/<name>/`。
+
+## 每日快照数据集
+
+`scripts/snapshot.ts` 每天通过 GitHub Actions 抓取六个分类的热门与新秀仓库和 `data/watchlist.txt` 中的仓库，写入 `public/data/`（`latest.json`、`daily/` 保留 30 天、`series/` 一年按天之后按周、`meta.json`）。这些 JSON 随站点一起发布，是榜单与趋势的数据来源，不消耗访问者的 API 配额。文件格式、保留策略与本地运行方式见 `scripts/README.md`。
 
 ## GitHub API 与配额
 

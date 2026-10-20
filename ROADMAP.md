@@ -22,8 +22,8 @@
 
 ### A2. `daily-snapshot`（2026-10-21 新增，排在 B 之前）
 
-- [ ] GitHub Actions 每日快照：六个分类 × 热门 / 新秀各 300 条加 watchlist，写入 `public/data/`（latest、daily 30 天、series 一年按天后按周、meta）。
-- [ ] 脚本可本地 `--dry-run`；失败不提交；配额等待与重试。
+- [x] GitHub Actions 每日快照：六个分类 × 热门 / 新秀各 300 条加 watchlist，写入 `public/data/`（latest、daily 30 天、series 一年按天后按周、meta）。（2026-10-21，工作流待推送到 GitHub 后手动触发验证）
+- [x] 脚本可本地 `--dry-run`；失败不提交；配额等待与重试。（2026-10-21）
 
 ### B. `discovery-home`（2026-10-21 改为读快照）
 
