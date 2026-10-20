@@ -87,7 +87,7 @@
     "quotaUnknownLimit": "Search quota {{remaining}} left",
     "title": "GitHub personal token",
     "description": "Raises the search limit from 10 to 30 requests per minute. The token is sent only to api.github.com and by default lives in memory until you close this tab.",
-    "createLink": "Create a fine-grained token on GitHub: read-only, public repositories only, short expiry",
+    "createLink": "Create a fine-grained token on GitHub",
     "placeholder": "Paste your token",
     "save": "Save",
     "checking": "Checking...",
@@ -98,6 +98,7 @@
     "quotaHelp": "GitHub has two separate quota pools.\nSearch (/search/*): 10 requests per minute without a token, 30 with one.\nCore (everything else): 60 per hour per IP without a token, 5,000 per hour with one.\nThis site mostly uses the search pool, so the number shown is the search quota left this minute.",
     "remember": "Remember on this device",
     "rememberHint": "Stores the token in this browser's localStorage, where any script running on this page or any browser extension could read it. Leave off on shared computers.",
-    "remembered": "Token configured and remembered on this device"
+    "remembered": "Token configured and remembered on this device",
+    "leastPrivilege": "To limit the damage if the token ever leaks, we recommend: read-only access, public repositories only, and a short expiry."
   }
 }

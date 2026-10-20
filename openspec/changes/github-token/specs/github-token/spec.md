@@ -48,11 +48,11 @@
 - **THEN** 看到"默认只在内存、只发往 GitHub"的说明，以及勾选项旁关于脚本与扩展可读的提示
 
 ### Requirement: Guidance asks for a least-privilege token
-弹层 SHALL 提供指向 GitHub 新建 fine-grained token 页面的链接，并明确要求：只读、仅公开仓库、短期过期。
+弹层 SHALL 提供指向 GitHub 新建 fine-grained token 页面的链接，链接文案只说明用途；链接下方 SHALL 另起一条注意说明，解释为降低泄露后的风险推荐：只读、仅公开仓库、短期过期。
 
 #### Scenario: Link and wording
 - **WHEN** 用户打开弹层
-- **THEN** 看到创建链接，文案包含只读、仅公开仓库、短期过期三点
+- **THEN** 看到创建链接，其下方的注意说明包含只读、仅公开仓库、短期过期三点
 
 ### Requirement: Production page restricts script and connection origins
 生产构建的页面 SHALL 带有 Content Security Policy：脚本只允许本站来源（内联的主题启动脚本以哈希放行），网络连接只允许本站与 `api.github.com`，图片只允许本站与 GitHub 头像域名，禁止 object 与外部 base。开发模式不受此约束。

@@ -114,6 +114,9 @@ export function TokenMenu() {
                   {t('token.createLink')}
                   <ExternalLinkIcon size={11} />
                 </a>
+                <Text variant="muted" className="text-xs" data-testid="token-least-privilege">
+                  {t('token.leastPrivilege')}
+                </Text>
                 {token ? (
                   <Text variant="muted" className="text-xs" data-testid="token-status">
                     {t(remembered ? 'token.remembered' : 'token.status')}

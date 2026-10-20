@@ -87,7 +87,7 @@
     "quotaUnknownLimit": "检索配额剩余 {{remaining}}",
     "title": "GitHub 个人访问 token",
     "description": "把检索上限从每分钟 10 次提高到 30 次。token 只会发往 api.github.com，默认只保存在内存里，关闭标签页即消失。",
-    "createLink": "在 GitHub 创建 fine-grained token：只读、仅公开仓库、短期过期",
+    "createLink": "在 GitHub 创建 fine-grained token",
     "placeholder": "粘贴你的 token",
     "save": "保存",
     "checking": "校验中...",
@@ -98,6 +98,7 @@
     "quotaHelp": "GitHub 的 API 配额分两个独立的池。\n搜索（/search/*）：未配置 token 每分钟 10 次，配置后 30 次。\n核心（其余端点）：未配置每小时每 IP 60 次，配置后每小时 5000 次。\n本站主要使用搜索池，这里显示的是这一分钟剩余的搜索次数。",
     "remember": "在此设备记住",
     "rememberHint": "会写入本浏览器的 localStorage，页面上运行的任何脚本或浏览器扩展都可能读到。共用电脑请不要勾选。",
-    "remembered": "已配置 token（已在此设备记住）"
+    "remembered": "已配置 token（已在此设备记住）",
+    "leastPrivilege": "为了降低泄露后的风险，推荐如下设置：只读、仅公开仓库、短期过期。"
   }
 }
