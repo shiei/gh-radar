@@ -137,7 +137,7 @@
     "popularHint": "快照内仓库按总 star 数排序。"
   },
   "footer": {
-    "alternatives": "要找别的？",
+    "alternatives": "想查得更深？",
     "links": {
       "githubSearch": "官方检索，覆盖代码、issue、用户等全部类型",
       "githubTrending": "官方的每日、每周热门榜",
@@ -146,6 +146,6 @@
       "ossInsight": "基于 GH Archive 的仓库趋势与开发者分析",
       "librariesIo": "以包为单位的依赖关系与被依赖数"
     },
-    "about": "OpenSource Radar 是一个个人维护的开源小工具。源码在 <link>GitHub</link>。"
+    "about": "OpenSource Radar 是一个个人维护的开源小工具，用每日快照观察开源项目的动向。源码在 <link>GitHub</link>。"
   }
 }

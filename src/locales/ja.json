@@ -137,7 +137,7 @@
     "popularHint": "スナップショット内のリポジトリを総スター数順に並べています。"
   },
   "footer": {
-    "alternatives": "他のツールをお探しですか？",
+    "alternatives": "もっと深く調べたいときは",
     "links": {
       "githubSearch": "公式検索。コード・Issue・ユーザーなど全種類に対応",
       "githubTrending": "公式の日次・週次トレンド",
@@ -146,6 +146,6 @@
       "ossInsight": "GH Archive に基づくリポジトリ動向と開発者分析",
       "librariesIo": "パッケージ単位の依存関係と被依存数"
     },
-    "about": "OpenSource Radar は個人で作っているオープンソースのツールです。ソースコードは <link>GitHub</link> にあります。"
+    "about": "OpenSource Radar は、毎日のスナップショットからオープンソースの動向を眺めるための個人製ツールです。ソースコードは <link>GitHub</link> にあります。"
   }
 }
