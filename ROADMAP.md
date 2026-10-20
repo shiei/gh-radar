@@ -20,11 +20,16 @@
 - [x] token 安全：默认只存内存、可选记住；生产构建注入 CSP；引导最小权限 token。（2026-10-20）
 - [ ] （可选）口令加密后落盘：WebCrypto PBKDF2 + AES-GCM，解锁后仍在内存明文，只改善静止状态。
 
-### B. `discovery-home`
+### A2. `daily-snapshot`（2026-10-21 新增，排在 B 之前）
+
+- [ ] GitHub Actions 每日快照：六个分类 × 热门 / 新秀各 300 条加 watchlist，写入 `public/data/`（latest、daily 30 天、series 一年按天后按周、meta）。
+- [ ] 脚本可本地 `--dry-run`；失败不提交；配额等待与重试。
+
+### B. `discovery-home`（2026-10-21 改为读快照）
 
 - [ ] 三栏布局骨架：左侧类型切换与筛选、中间结果、右侧预留。窄屏退化为单栏。
 - [ ] 六个分类（Frontend、Backend、AI/ML、DevOps、Database、Design）到 topic 查询的映射文件与分类导航。
-- [ ] Most Popular 与 Rising Stars（近似版，`created:>日期` + `sort=stars`）榜单。
+- [ ] Most Popular 与 Rising Stars 榜单：读快照，Rising 用真实 30 天增量，序列不足 7 天时退化为创建日期近似。
 
 ### C. `search-facets`
 
