@@ -108,5 +108,32 @@
     "token": "GitHub token",
     "language": "Language",
     "theme": "Appearance"
+  },
+  "category": {
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "ai-ml": "AI / ML",
+    "devops": "DevOps",
+    "database": "Database",
+    "design": "Design",
+    "title": "Browse by category",
+    "all": "All categories"
+  },
+  "ranking": {
+    "popular": "Most Popular",
+    "rising": "Rising Stars",
+    "viewAll": "View all",
+    "collapse": "Show less",
+    "dataDate": "Snapshot {{date}}",
+    "stale": "Data is {{days}} days old",
+    "missing": "No snapshot data yet",
+    "loading": "Loading rankings...",
+    "error": "Could not load rankings",
+    "retry": "Retry",
+    "fallback": "Collecting history. Showing repositories created in the last 90 days by stars for now.",
+    "risingHint": "Stars gained in the last 30 days, computed from the daily snapshot.",
+    "delta": "+{{count}} in 30 days",
+    "empty": "Nothing to rank yet",
+    "popularHint": "Repositories in the snapshot ordered by total stars."
   }
 }

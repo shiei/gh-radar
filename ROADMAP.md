@@ -27,9 +27,9 @@
 
 ### B. `discovery-home`（2026-10-21 改为读快照）
 
-- [ ] 三栏布局骨架：左侧类型切换与筛选、中间结果、右侧预留。窄屏退化为单栏。
-- [ ] 六个分类（Frontend、Backend、AI/ML、DevOps、Database、Design）到 topic 查询的映射文件与分类导航。
-- [ ] Most Popular 与 Rising Stars 榜单：读快照，Rising 用真实 30 天增量，序列不足 7 天时退化为创建日期近似。
+- [x] 三栏布局骨架：左栏分类、中栏结果、右栏榜单。窄屏退化为单栏。（2026-10-21）
+- [x] 六个分类（Frontend、Backend、AI/ML、DevOps、Database、Design）到 topic 查询的映射文件与分类导航。（2026-10-21）
+- [x] Most Popular 与 Rising Stars 榜单：读快照，Rising 用真实 30 天增量，序列不足 7 天时退化为创建日期近似。（2026-10-21）
 
 ### C. `search-facets`
 

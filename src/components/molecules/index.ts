@@ -1,4 +1,8 @@
+export { CategoryNav } from './CategoryNav/CategoryNav'
+export type { CategoryNavProps } from './CategoryNav/CategoryNav'
 export { LanguageSwitcher } from './LanguageSwitcher/LanguageSwitcher'
+export { RankingList } from './RankingList/RankingList'
+export type { RankingListProps } from './RankingList/RankingList'
 export { Pagination, pageRange } from './Pagination'
 export type { PaginationProps } from './Pagination'
 export { RepositoryCard } from './RepositoryCard/RepositoryCard'

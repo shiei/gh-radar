@@ -108,5 +108,32 @@
     "token": "GitHub トークン",
     "language": "言語",
     "theme": "表示モード"
+  },
+  "category": {
+    "frontend": "フロントエンド",
+    "backend": "バックエンド",
+    "ai-ml": "AI / ML",
+    "devops": "DevOps",
+    "database": "データベース",
+    "design": "デザイン",
+    "title": "カテゴリから探す",
+    "all": "すべてのカテゴリ"
+  },
+  "ranking": {
+    "popular": "Most Popular",
+    "rising": "Rising Stars",
+    "viewAll": "すべて表示",
+    "collapse": "閉じる",
+    "dataDate": "スナップショット {{date}}",
+    "stale": "データが {{days}} 日更新されていません",
+    "missing": "スナップショットデータはまだありません",
+    "loading": "ランキングを読み込み中...",
+    "error": "ランキングを読み込めませんでした",
+    "retry": "再試行",
+    "fallback": "履歴を蓄積中です。当面は過去 90 日に作成されたリポジトリをスター数順で表示しています。",
+    "risingHint": "日次スナップショットから算出した、直近 30 日間のスター増加数です。",
+    "delta": "30 日で +{{count}}",
+    "empty": "まだ順位付けできる項目がありません",
+    "popularHint": "スナップショット内のリポジトリを総スター数順に並べています。"
   }
 }

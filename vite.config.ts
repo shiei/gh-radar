@@ -26,7 +26,7 @@ function cspPlugin(): Plugin {
         "default-src 'self'",
         `script-src 'self' ${hashes.join(' ')}`.trim(),
         "style-src 'self' 'unsafe-inline'",
-        "img-src 'self' data: https://avatars.githubusercontent.com",
+        "img-src 'self' data: https://avatars.githubusercontent.com https://github.com",
         "connect-src 'self' https://api.github.com",
         "font-src 'self'",
         "object-src 'none'",

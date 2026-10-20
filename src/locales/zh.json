@@ -108,5 +108,32 @@
     "token": "GitHub token",
     "language": "语言",
     "theme": "外观"
+  },
+  "category": {
+    "frontend": "前端",
+    "backend": "后端",
+    "ai-ml": "AI / ML",
+    "devops": "DevOps",
+    "database": "数据库",
+    "design": "设计",
+    "title": "按分类浏览",
+    "all": "全部分类"
+  },
+  "ranking": {
+    "popular": "Most Popular",
+    "rising": "Rising Stars",
+    "viewAll": "查看全部",
+    "collapse": "收起",
+    "dataDate": "快照 {{date}}",
+    "stale": "数据已 {{days}} 天未更新",
+    "missing": "尚无快照数据",
+    "loading": "正在加载榜单...",
+    "error": "榜单加载失败",
+    "retry": "重试",
+    "fallback": "数据积累中，暂按近 90 天创建的仓库以 star 排序。",
+    "risingHint": "根据每日快照计算的最近 30 天 star 增量。",
+    "delta": "30 天 +{{count}}",
+    "empty": "暂无可排序的项目",
+    "popularHint": "快照内仓库按总 star 数排序。"
   }
 }

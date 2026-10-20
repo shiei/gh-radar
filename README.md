@@ -72,6 +72,10 @@ openspec/         规划文件（proposal / specs / design / tasks）
 
 分层约定：`components/` 只放 UI（Atomic Design）；不依赖 React 的代码放 `lib/`；某个功能的 React 状态逻辑放 `features/<name>/`。
 
+## 首页的分类与榜单
+
+左栏六个分类来自 `src/lib/categories.ts`，点击即提交该分类的查询。右栏两个榜单读取 `public/data/`：Most Popular 按快照 star 数排序；Rising Stars 按最近 30 天的 star 增量排序（序列不足 7 天时退化为近 90 天创建的仓库按 star 排序，并标注"数据积累中"）。榜单随选中的分类过滤，不消耗 API 配额；快照缺失或超过 3 天未更新时会提示。
+
 ## 每日快照数据集
 
 `scripts/snapshot.ts` 每天通过 GitHub Actions 抓取六个分类的热门与新秀仓库和 `data/watchlist.txt` 中的仓库，写入 `public/data/`（`latest.json`、`daily/` 保留 30 天、`series/` 一年按天之后按周、`meta.json`）。这些 JSON 随站点一起发布，是榜单与趋势的数据来源，不消耗访问者的 API 配额。文件格式、保留策略与本地运行方式见 `scripts/README.md`。

@@ -1,0 +1,20 @@
+{
+  "lastRun": "2026-10-20T00:05:00Z",
+  "date": "2026-10-20",
+  "total": 30,
+  "sources": {
+    "frontend:popular": 4,
+    "backend:popular": 4,
+    "ai-ml:popular": 4,
+    "devops:popular": 4,
+    "database:popular": 4,
+    "design:popular": 4,
+    "frontend:rising": 1,
+    "backend:rising": 1,
+    "ai-ml:rising": 1,
+    "devops:rising": 1,
+    "database:rising": 1,
+    "design:rising": 1
+  },
+  "mapVersion": 1
+}
