@@ -32,16 +32,38 @@
 - **WHEN** 用户未输入任何内容就保存
 - **THEN** 不发起校验，不保存
 
-### Requirement: Token is stored locally only
-token SHALL 只保存在当前浏览器的本机存储中，MUST NOT 发往本站或任何第三方服务。弹层 SHALL 用一句话说明这一点，并提供创建只读 fine-grained token 的 GitHub 链接。
+### Requirement: Token lives in memory unless the user opts to remember it
+保存的 token 默认 SHALL 只保存在内存中，关闭标签页即消失，MUST NOT 写入任何持久化存储。弹层 SHALL 提供"在此设备记住"的勾选，默认不勾选；勾选后 token 才写入本浏览器的 localStorage，勾选旁 SHALL 说明页面脚本与浏览器扩展可能读取、共用电脑不要勾选。无论哪种方式，token MUST NOT 发往 `api.github.com` 以外的任何地址。
 
-#### Scenario: Persists across reload
-- **WHEN** 用户保存 token 后刷新页面
-- **THEN** 页头入口仍显示已配置状态，后续请求仍携带该 token
+#### Scenario: Default is memory only
+- **WHEN** 用户保存 token 且未勾选"在此设备记住"
+- **THEN** 本标签页内的请求携带该 token，localStorage 中没有 token，刷新页面后回到未配置状态
 
-#### Scenario: Guidance is shown
+#### Scenario: Remember on this device
+- **WHEN** 用户勾选"在此设备记住"后保存
+- **THEN** token 写入 localStorage，刷新页面后仍为已配置状态，弹层显示"已在此设备记住"
+
+#### Scenario: Risk note is shown
 - **WHEN** 用户打开弹层
-- **THEN** 看到"仅存于本机，只发往 GitHub"的说明和创建 token 的链接
+- **THEN** 看到"默认只在内存、只发往 GitHub"的说明，以及勾选项旁关于脚本与扩展可读的提示
+
+### Requirement: Guidance asks for a least-privilege token
+弹层 SHALL 提供指向 GitHub 新建 fine-grained token 页面的链接，并明确要求：只读、仅公开仓库、短期过期。
+
+#### Scenario: Link and wording
+- **WHEN** 用户打开弹层
+- **THEN** 看到创建链接，文案包含只读、仅公开仓库、短期过期三点
+
+### Requirement: Production page restricts script and connection origins
+生产构建的页面 SHALL 带有 Content Security Policy：脚本只允许本站来源（内联的主题启动脚本以哈希放行），网络连接只允许本站与 `api.github.com`，图片只允许本站与 GitHub 头像域名，禁止 object 与外部 base。开发模式不受此约束。
+
+#### Scenario: Policy present in the built page
+- **WHEN** 加载生产构建的首页
+- **THEN** 页面声明了上述策略，主题启动脚本仍正常执行，检索与头像加载不受影响
+
+#### Scenario: Injected script is blocked
+- **WHEN** 页面中出现来自其他域名的脚本或未放行的内联脚本
+- **THEN** 浏览器拒绝执行
 
 ### Requirement: Token can be removed
 已配置时弹层 SHALL 提供移除操作。移除后 SHALL 清除本机存储中的 token，配额状态重置为未知，后续请求不再携带凭据。

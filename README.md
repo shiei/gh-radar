@@ -72,7 +72,9 @@ openspec/         规划文件（proposal / specs / design / tasks）
 
 检索直接从浏览器调用 `https://api.github.com/search/repositories`。未认证配额为每分钟 10 次 search 请求、每小时每个出口 IP 60 次请求；配额用尽时界面会显示恢复时刻。
 
-页头的 "Connect GitHub" 可以配置个人 token：只保存在本浏览器的 `localStorage['osr.token']`，只发往 `api.github.com`，保存前用 `GET /rate_limit` 校验（不计配额）。配置后 search 配额提到每分钟 30 次，页头显示剩余次数。建议创建只读的 fine-grained token。
+页头的 "Connect GitHub" 可以配置个人 token：保存前用 `GET /rate_limit` 校验（不计配额），配置后 search 配额提到每分钟 30 次，页头显示剩余次数。token 只发往 `api.github.com`；默认只保存在内存，关闭标签页即消失，勾选"在此设备记住"才写入 `localStorage['osr.token']`。请创建只读、仅公开仓库、短期过期的 fine-grained token。
+
+生产构建会在 `index.html` 注入 Content Security Policy（脚本仅本站、连接仅 `api.github.com`，由 `vite.config.ts` 的 `cspPlugin` 生成）；部署时建议改为 HTTP 响应头。
 
 相同的查询、排序、页码在会话内缓存 5 分钟，命中不发请求，刷新页面即失效。
 

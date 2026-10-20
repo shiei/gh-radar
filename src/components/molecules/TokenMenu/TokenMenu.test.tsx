@@ -39,8 +39,21 @@ describe('TokenMenu', () => {
     await user.type(await screen.findByTestId('token-input'), 'ghp_valid')
     await user.click(screen.getByTestId('token-save'))
     await waitFor(() => expect(getToken()).toBe('ghp_valid'))
+    expect(window.localStorage.getItem('osr.token')).toBeNull()
     expect(screen.getByTestId('token-label')).toHaveTextContent('29 / 30')
     expect(screen.queryByTestId('token-popup')).toBeNull()
+  })
+
+  it('persists the token only when "remember" is checked', async () => {
+    const user = userEvent.setup()
+    fetchMock.mockResolvedValue(okRateLimit())
+    render(<TokenMenu />)
+    await user.click(screen.getByTestId('token-trigger'))
+    await user.type(await screen.findByTestId('token-input'), 'ghp_keep')
+    await user.click(screen.getByTestId('token-remember'))
+    await user.click(screen.getByTestId('token-save'))
+    await waitFor(() => expect(getToken()).toBe('ghp_keep'))
+    expect(window.localStorage.getItem('osr.token')).toBe('ghp_keep')
   })
 
   it('rejects an invalid token and keeps the input', async () => {
@@ -66,7 +79,7 @@ describe('TokenMenu', () => {
 
   it('removes a saved token', async () => {
     const user = userEvent.setup()
-    setToken('ghp_saved')
+    setToken('ghp_saved', { remember: true })
     render(<TokenMenu />)
     expect(screen.getByTestId('token-label')).toHaveTextContent('GitHub token set')
     await user.click(screen.getByTestId('token-trigger'))

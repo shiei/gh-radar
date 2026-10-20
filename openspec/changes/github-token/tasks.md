@@ -17,6 +17,12 @@
 - [x] 3.2 实现 `TokenMenu` molecule（Base UI Popover、密码输入、保存校验、错误、移除、配额显示）并接入 `Header`，单元测试覆盖保存有效 / 无效、移除、空输入
 - [x] 3.3 e2e `e2e/token.spec.ts`：mock `/rate_limit`，保存有效 token 后检索带 Authorization、无效 token 不保存、刷新后仍配置、移除后无 Authorization、相同参数二次检索不发请求
 
-## 4. 收尾
+## 4. 安全加固（2026-10-20 追加）
 
-- [x] 4.1 `npm run check` 与 `npm run test:e2e` 全部通过；README 补充 token 说明；ROADMAP 勾选 A
+- [x] 4.1 token 默认只存内存，弹层加"在此设备记住"勾选与风险提示；单元测试与 e2e 覆盖默认不落盘与记住两种路径
+- [x] 4.2 Vite 构建注入 CSP meta（脚本 self + 内联哈希、连接仅 api.github.com）；e2e 验证生产页面带策略且主题脚本仍执行
+- [x] 4.3 文案改为要求只读、仅公开仓库、短期过期的 fine-grained token
+
+## 5. 收尾
+
+- [x] 5.1 `npm run check` 与 `npm run test:e2e` 全部通过；README 补充 token 说明；ROADMAP 勾选 A

@@ -11,9 +11,11 @@ export { activityOf } from './signals'
 export {
   clearToken,
   getToken,
+  getTokenState,
   resetTokenForTests,
   setToken,
   subscribeToken,
   TOKEN_STORAGE_KEY,
 } from './token'
+export type { TokenState } from './token'
 export { validateToken } from './validateToken'

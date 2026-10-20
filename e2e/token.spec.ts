@@ -20,7 +20,7 @@ async function mockRateLimit(page: import('@playwright/test').Page, status: numb
 }
 
 test.describe('github token', () => {
-  test('saving a valid token authenticates later searches and survives reload', async ({
+  test('a saved token authenticates searches; without remember it is gone after reload', async ({
     page,
   }) => {
     const rateLimitCalls = await mockRateLimit(page, 200)
@@ -38,8 +38,42 @@ test.describe('github token', () => {
     await expect(page.getByTestId('repo-card')).toHaveCount(7)
     expect((await requests[0].allHeaders()).authorization).toBe('Bearer ghp_e2e_token')
 
+    expect(await page.evaluate(() => localStorage.getItem('osr.token'))).toBeNull()
+    await page.reload()
+    await expect(page.getByTestId('token-trigger')).toHaveAttribute('data-token-state', 'none')
+  })
+
+  test('remember on this device persists the token across reloads', async ({ page }) => {
+    await mockRateLimit(page, 200)
+    await page.goto('/')
+    await page.getByTestId('token-trigger').click()
+    await page.getByTestId('token-input').fill('ghp_remember')
+    await page.getByTestId('token-remember').check()
+    await page.getByTestId('token-save').click()
+    await expect(page.getByTestId('token-trigger')).toHaveAttribute('data-token-state', 'set')
+    expect(await page.evaluate(() => localStorage.getItem('osr.token'))).toBe('ghp_remember')
     await page.reload()
     await expect(page.getByTestId('token-trigger')).toHaveAttribute('data-token-state', 'set')
+  })
+
+  test('the production page ships a Content Security Policy', async ({ page }) => {
+    await page.goto('/')
+    const csp = await page
+      .locator('meta[http-equiv="Content-Security-Policy"]')
+      .getAttribute('content')
+    expect(csp).toContain("script-src 'self' 'sha256-")
+    expect(csp).toContain("connect-src 'self' https://api.github.com")
+    // The hashed inline theme bootstrap still ran under the policy.
+    await expect(page.locator('html')).toHaveAttribute('data-theme', /light|dark/)
+  })
+
+  test('hovering the info icon explains the two quota pools', async ({ page }) => {
+    await page.goto('/')
+    await page.getByTestId('quota-help-trigger').hover()
+    const help = page.getByTestId('tooltip')
+    await expect(help).toBeVisible()
+    await expect(help).toContainText('30')
+    await expect(help).toContainText('5,000')
   })
 
   test('an invalid token is rejected and not stored', async ({ page }) => {

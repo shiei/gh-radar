@@ -27,6 +27,10 @@ export function Header() {
         </a>
         <nav className="flex items-center gap-2" aria-label="Settings">
           <TokenMenu />
+          <span
+            aria-hidden="true"
+            className="border-border-strong mx-1 h-4 border-l border-dashed"
+          />
           <LanguageSwitcher />
           <ThemeToggle />
         </nav>

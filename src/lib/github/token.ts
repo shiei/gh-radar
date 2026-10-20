@@ -2,10 +2,16 @@ import { setRateLimit } from './rateLimit'
 
 export const TOKEN_STORAGE_KEY = 'osr.token'
 
-type Listener = (token: string | null) => void
+export interface TokenState {
+  token: string | null
+  /** True when the token is also written to localStorage ("remember on this device"). */
+  remembered: boolean
+}
+
+type Listener = (state: TokenState) => void
 const listeners = new Set<Listener>()
 
-function read(): string | null {
+function readStored(): string | null {
   try {
     const trimmed = window.localStorage.getItem(TOKEN_STORAGE_KEY)?.trim()
     if (!trimmed) return null
@@ -15,24 +21,40 @@ function read(): string | null {
   }
 }
 
-let current: string | null | undefined
+let current: TokenState | undefined
 
-/** The saved personal token, or null. Read lazily once, then kept in memory. */
-export function getToken(): string | null {
-  if (current === undefined) current = read()
+function state(): TokenState {
+  if (current === undefined) {
+    const stored = readStored()
+    current = { token: stored, remembered: stored !== null }
+  }
   return current
 }
 
-function notify() {
-  for (const listener of listeners) listener(current ?? null)
+/** The active token, or null. Lives in memory; on disk only when the user chose to remember it. */
+export function getToken(): string | null {
+  return state().token
 }
 
-/** Persist a token. Quota state resets to unknown until the next response. */
-export function setToken(token: string): void {
+export function getTokenState(): TokenState {
+  return state()
+}
+
+function notify() {
+  const snapshot = state()
+  for (const listener of listeners) listener(snapshot)
+}
+
+/**
+ * Activate a token. By default it is kept in memory only and gone when the tab closes;
+ * `remember` persists it in this browser's localStorage. Quota resets to unknown.
+ */
+export function setToken(token: string, options: { remember?: boolean } = {}): void {
   const trimmed = token.trim()
-  current = trimmed || null
+  const remember = Boolean(options.remember) && trimmed !== ''
+  current = { token: trimmed || null, remembered: remember }
   try {
-    if (current) window.localStorage.setItem(TOKEN_STORAGE_KEY, current)
+    if (remember) window.localStorage.setItem(TOKEN_STORAGE_KEY, trimmed)
     else window.localStorage.removeItem(TOKEN_STORAGE_KEY)
   } catch {
     // Storage unavailable: the token still works for this session.

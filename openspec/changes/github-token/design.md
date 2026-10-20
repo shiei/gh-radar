@@ -19,7 +19,9 @@
 ## Decisions
 
 ### D1. token 模块
-`src/lib/github/token.ts`：`getToken()` / `setToken()` / `clearToken()` / `subscribeToken()`，存储键 `osr.token`。`buildHeaders()` 在有 token 时加 `Authorization: Bearer`。token 变化时调用 `setRateLimit(null)`，让页头回到未知状态直到下一次响应。
+`src/lib/github/token.ts`：`getTokenState()` 返回 `{ token, remembered }`，`setToken(token, { remember })`、`clearToken()`、`subscribeToken()`。默认只存内存；`remember` 为真才写 localStorage（键 `osr.token`），启动时若 localStorage 有值则视为已记住。`buildHeaders()` 在有 token 时加 `Authorization: Bearer`。token 变化时调用 `setRateLimit(null)`。
+
+威胁模型（2026-10-20 与用户确认）：纯前端无法对页面内 JS 隐藏密钥，能做的是缩小暴露面。采用三项：默认不落盘（挡磁盘与同机他人）、CSP（挡脚本注入）、引导最小权限 token（挡泄露后的损失上限）。口令加密与后端 OAuth 作为后续选项记录在 ROADMAP。
 
 ### D2. 校验
 `validateToken(token, signal)`：直接 fetch `GET /rate_limit`，带候选 token（不是已保存的），200 → 解析 `resources.search` 的 limit / remaining / reset 写入配额状态并返回 ok；401 → `{ kind: 'invalid_token' }`；其余沿用 `request.ts` 的分类。不复用 `request()` 是因为它读的是已保存的 token。
@@ -36,8 +38,11 @@
 ### D6. 测试
 单元：token 模块、headers 带 / 不带 token、parseRateLimit 带 limit、validateToken 三种响应、searchCache 的 TTL 与淘汰、hook 的命中路径。e2e：mock `/rate_limit`，保存有效 token 后断言下一次 search 请求带 Authorization；无效 token 显示错误且不保存；刷新后仍配置；移除后无 Authorization；相同参数第二次检索不发请求。
 
+### D7. CSP
+`vite.config.ts` 内的 `cspPlugin`（仅 build）向 `index.html` 注入 `<meta http-equiv="Content-Security-Policy">`：`script-src 'self'` 加内联主题脚本的 sha256 哈希；`connect-src 'self' https://api.github.com`；`img-src 'self' data: https://avatars.githubusercontent.com`；`style-src 'self' 'unsafe-inline'`（React 与 Base UI 通过 CSSOM 设样式不受影响，保留 unsafe-inline 以防第三方属性写法）；`object-src 'none'`、`base-uri 'self'`、`form-action 'self'`。开发模式不注入，因为 Vite 自身要插入内联脚本。部署时应改为 HTTP 响应头。
+
 ## Risks / Trade-offs
 
-- [token 存在 localStorage，XSS 可窃取] → 本站无第三方脚本，不渲染任何用户生成的 HTML；弹层明确建议只读 fine-grained token，泄露面最小。
+- [token 在使用期间必然以明文存在于内存，XSS 或扩展可读] → 默认不落盘、CSP 拦注入、最小权限 token 限制损失；本站无第三方脚本，不渲染用户生成的 HTML。彻底方案是后端持有密钥（第三阶段）。
 - [`/rate_limit` 的 search 资源与实际 search 响应头可能短暂不一致] → 页头以最近一次响应为准，校验只是初始化。
 - [缓存命中时配额显示不更新] → 可接受，命中本来就不消耗配额。
