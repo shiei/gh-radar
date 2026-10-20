@@ -138,8 +138,6 @@
   },
   "footer": {
     "alternatives": "他のツールをお探しですか？",
-    "project": "GitHub で公開",
-    "tagline": "コード検索エンジンではなく、オープンソースの動向を見るレーダーです。",
     "links": {
       "githubSearch": "公式検索。コード・Issue・ユーザーなど全種類に対応",
       "githubTrending": "公式の日次・週次トレンド",
@@ -147,6 +145,7 @@
       "sourcegraph": "大規模コードベース向けのリポジトリ横断コード検索とナビゲーション",
       "ossInsight": "GH Archive に基づくリポジトリ動向と開発者分析",
       "librariesIo": "パッケージ単位の依存関係と被依存数"
-    }
+    },
+    "about": "OpenSource Radar は個人で作っているオープンソースのツールです。ソースコードは <link>GitHub</link> にあります。"
   }
 }

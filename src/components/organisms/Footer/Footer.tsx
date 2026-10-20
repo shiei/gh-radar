@@ -1,13 +1,35 @@
 import { useTranslation } from 'react-i18next'
 
-import { ExternalLinkIcon, RadarMark, Text } from '../../atoms'
+import { ExternalLinkIcon, Text } from '../../atoms'
 import { ALTERNATIVES, PROJECT_URL } from './alternatives'
+
+/** Renders "... <link>GitHub</link> ..." from the locale file with a real anchor in the middle. */
+function AboutLine({ text }: { text: string }) {
+  const [before = '', rest = ''] = text.split('<link>')
+  const [label = '', after = ''] = rest.split('</link>')
+  return (
+    <>
+      {before}
+      <a
+        href={PROJECT_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-accent inline-flex items-center gap-0.5 hover:underline"
+        data-testid="footer-project"
+      >
+        {label}
+        <ExternalLinkIcon size={10} />
+      </a>
+      {after}
+    </>
+  )
+}
 
 export function Footer() {
   const { t } = useTranslation()
   return (
     <footer className="border-border bg-surface border-t" data-testid="footer">
-      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-[30px] py-10 lg:flex-row lg:justify-between lg:px-4">
+      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-[30px] py-10 lg:px-4">
         <section className="flex flex-col gap-3" aria-labelledby="footer-alternatives">
           <Text
             as="h2"
@@ -34,27 +56,9 @@ export function Footer() {
             ))}
           </ul>
         </section>
-        <section className="flex flex-col gap-2 lg:max-w-xs lg:items-end lg:text-right">
-          <span className="inline-flex items-center gap-2">
-            <RadarMark size={20} />
-            <Text as="span" variant="heading" className="text-sm">
-              {t('app.name')}
-            </Text>
-          </span>
-          <Text variant="muted" className="text-xs">
-            {t('footer.tagline')}
-          </Text>
-          <a
-            href={PROJECT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-accent inline-flex items-center gap-1 text-xs hover:underline"
-            data-testid="footer-project"
-          >
-            {t('footer.project')}
-            <ExternalLinkIcon size={11} />
-          </a>
-        </section>
+        <Text variant="muted" className="text-center text-xs" data-testid="footer-about">
+          <AboutLine text={t('footer.about')} />
+        </Text>
       </div>
     </footer>
   )

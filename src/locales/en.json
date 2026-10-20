@@ -138,8 +138,6 @@
   },
   "footer": {
     "alternatives": "Looking for something else?",
-    "project": "Open source on GitHub",
-    "tagline": "A radar for open-source activity, not a code search engine.",
     "links": {
       "githubSearch": "Official search across code, issues, users and more",
       "githubTrending": "Official daily and weekly trending lists",
@@ -147,6 +145,7 @@
       "sourcegraph": "Cross-repository code search and navigation for large codebases",
       "ossInsight": "Repository trends and developer analytics built on GH Archive",
       "librariesIo": "Package-level dependency graphs and dependents counts"
-    }
+    },
+    "about": "OpenSource Radar is a personal open-source side project. Source code on <link>GitHub</link>."
   }
 }
