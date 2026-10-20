@@ -17,6 +17,8 @@
 - [x] 用户配置个人 token，存 localStorage，`GET /rate_limit` 校验；在 `headers.ts` 加 Authorization，并修改 `github-api-access` spec 的"未认证"要求。（2026-10-20）
 - [x] 会话内结果缓存：按 `query|sort|page` 缓存约 5 分钟，命中不发请求；刷新即失效。（2026-10-20）
 - [x] 显示剩余配额。（2026-10-20）
+- [x] token 安全：默认只存内存、可选记住；生产构建注入 CSP；引导最小权限 token。（2026-10-20）
+- [ ] （可选）口令加密后落盘：WebCrypto PBKDF2 + AES-GCM，解锁后仍在内存明文，只改善静止状态。
 
 ### B. `discovery-home`
 
@@ -46,6 +48,8 @@
 | AI 项目分析                                 | LLM API key 不能暴露在浏览器中，需要服务端代理。                                   |
 | Watchlist 跨设备同步                        | 需要用户身份与服务端存储。仅本机的 localStorage 版本不需要后端。                   |
 | 免 token 使用且不受 60 次/小时限制          | 需要服务端代理共享一个更高配额的 token 并做缓存。                                  |
+
+| OAuth 登录（浏览器不持有长期密钥） | 换取 access token 需要 client secret，必须在服务端完成；是彻底解决 token 暴露面的方案。 |
 
 ## 已关闭
 
