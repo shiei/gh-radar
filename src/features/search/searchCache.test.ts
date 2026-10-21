@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import type { SearchResult } from '../../lib/github'
+import { DEFAULT_FILTERS, type AnySearchResult } from '../../lib/github'
 import {
   CACHE_MAX_ENTRIES,
   CACHE_TTL_MS,
@@ -10,8 +10,19 @@ import {
   setCached,
 } from './searchCache'
 
-const result = (n: number): SearchResult => ({ totalCount: n, incompleteResults: false, items: [] })
-const params = (query: string, page = 1) => ({ query, sort: 'best' as const, page })
+const result = (n: number): AnySearchResult => ({
+  type: 'repositories',
+  totalCount: n,
+  incompleteResults: false,
+  items: [],
+})
+const params = (query: string, page = 1) => ({
+  type: 'repositories' as const,
+  query,
+  sort: 'best' as const,
+  page,
+  filters: DEFAULT_FILTERS,
+})
 
 describe('searchCache', () => {
   beforeEach(() => clearSearchCache())
@@ -22,10 +33,14 @@ describe('searchCache', () => {
     expect(getCached(params('react'), 1000 + CACHE_TTL_MS + 1)).toBeNull()
   })
 
-  it('keys by query, sort and page', () => {
+  it('keys by type, query, sort, filters and page', () => {
     setCached(params('react', 1), result(1))
     expect(getCached(params('react', 2))).toBeNull()
-    expect(getCached({ query: 'react', sort: 'stars', page: 1 })).toBeNull()
+    expect(getCached({ ...params('react'), sort: 'stars' })).toBeNull()
+    expect(getCached({ ...params('react'), type: 'users' })).toBeNull()
+    expect(
+      getCached({ ...params('react'), filters: { ...DEFAULT_FILTERS, minStars: 100 } }),
+    ).toBeNull()
   })
 
   it('evicts the oldest entries beyond the cap', () => {

@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import type { SearchResult } from '../../lib/github'
+import type { AnySearchResult } from '../../lib/github'
 import { initialSearchState, maxPage, searchReducer, type SearchState } from './searchReducer'
 
-const result = (totalCount: number): SearchResult => ({
+const result = (totalCount: number): AnySearchResult => ({
+  type: 'repositories',
   totalCount,
   incompleteResults: false,
   items: [],
@@ -105,5 +106,55 @@ describe('searchReducer', () => {
     const errored = { ...loaded(100, { page: 2, sort: 'stars' }), status: 'error' as const }
     const state = searchReducer(errored, { type: 'retry' })
     expect(state).toMatchObject({ query: 'react', sort: 'stars', page: 2, status: 'loading' })
+  })
+})
+
+describe('search type', () => {
+  it('only remembers the type while there is no query', () => {
+    const next = searchReducer(initialSearchState, { type: 'setType', searchType: 'users' })
+    expect(next.type).toBe('users')
+    expect(next.requestId).toBe(0)
+    expect(next.status).toBe('idle')
+  })
+
+  it('re-searches page 1 when switching type after a search', () => {
+    const state = loaded(100, { page: 3 })
+    const next = searchReducer(state, { type: 'setType', searchType: 'topics' })
+    expect(next).toMatchObject({ type: 'topics', page: 1, status: 'loading', requestId: 2 })
+    expect(searchReducer(state, { type: 'setType', searchType: 'repositories' })).toBe(state)
+  })
+
+  it('submit can switch the type at the same time', () => {
+    const state = loaded(100, { type: 'topics' })
+    const next = searchReducer(state, {
+      type: 'submit',
+      query: 'topic:react',
+      searchType: 'repositories',
+    })
+    expect(next).toMatchObject({ type: 'repositories', query: 'topic:react', page: 1 })
+  })
+})
+
+describe('filters', () => {
+  it('merges partial filters and re-searches page 1 for repositories', () => {
+    const state = loaded(100, { page: 2 })
+    const next = searchReducer(state, { type: 'setFilters', filters: { language: 'Rust' } })
+    expect(next.filters).toEqual({ ...initialSearchState.filters, language: 'Rust' })
+    expect(next).toMatchObject({ page: 1, status: 'loading', requestId: 2 })
+    expect(searchReducer(next, { type: 'setFilters', filters: { language: 'Rust' } })).toBe(next)
+  })
+
+  it('only remembers filters without a query or under another type', () => {
+    const idle = searchReducer(initialSearchState, {
+      type: 'setFilters',
+      filters: { minStars: 100 },
+    })
+    expect(idle.filters.minStars).toBe(100)
+    expect(idle.requestId).toBe(0)
+    const users = loaded(100, { type: 'users' })
+    const next = searchReducer(users, { type: 'setFilters', filters: { excludeForks: true } })
+    expect(next.filters.excludeForks).toBe(true)
+    expect(next.requestId).toBe(users.requestId)
+    expect(next.status).toBe('success')
   })
 })

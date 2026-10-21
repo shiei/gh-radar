@@ -1,0 +1,27 @@
+{
+  "total_count": 56,
+  "incomplete_results": false,
+  "items": [
+    {
+      "name": "react",
+      "display_name": "React",
+      "short_description": "React is an open source JavaScript library used for designing user interfaces.",
+      "featured": true,
+      "curated": true
+    },
+    {
+      "name": "react-native",
+      "display_name": "React Native",
+      "short_description": "React Native is a JavaScript mobile framework developed by Facebook.",
+      "featured": true,
+      "curated": true
+    },
+    {
+      "name": "react-hooks",
+      "display_name": null,
+      "short_description": null,
+      "featured": false,
+      "curated": false
+    }
+  ]
+}

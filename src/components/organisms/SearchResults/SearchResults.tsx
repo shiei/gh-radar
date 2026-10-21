@@ -5,16 +5,25 @@ import { maxPage, type SearchState } from '../../../features/search'
 import { formatNumber } from '../../../lib/format'
 import { MAX_RESULTS } from '../../../lib/github'
 import { InfoIcon, Text } from '../../atoms'
-import { Pagination, RepositoryCard, StatusMessage } from '../../molecules'
+import { Pagination, RepositoryCard, StatusMessage, TopicCard, UserCard } from '../../molecules'
 
 export interface SearchResultsProps {
   state: SearchState
   onPageChange: (page: number) => void
   onRetry: () => void
-  onSearch: (query: string) => void
+  /** A topic was clicked (on a repository card or a topic card). */
+  onTopicClick: (topic: string) => void
+  /** A language was clicked on a repository card. */
+  onLanguageClick: (language: string) => void
 }
 
-export function SearchResults({ state, onPageChange, onRetry, onSearch }: SearchResultsProps) {
+export function SearchResults({
+  state,
+  onPageChange,
+  onRetry,
+  onTopicClick,
+  onLanguageClick,
+}: SearchResultsProps) {
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
   const sectionRef = useRef<HTMLElement>(null)
@@ -38,7 +47,7 @@ export function SearchResults({ state, onPageChange, onRetry, onSearch }: Search
       data-testid="search-results"
     >
       {state.status === 'loading' ? <StatusMessage status="loading" /> : null}
-      {state.status === 'empty' ? <StatusMessage status="empty" /> : null}
+      {state.status === 'empty' ? <StatusMessage status="empty" type={state.type} /> : null}
       {state.status === 'error' && state.error ? (
         <StatusMessage status="error" error={state.error} onRetry={onRetry} />
       ) : null}
@@ -46,7 +55,9 @@ export function SearchResults({ state, onPageChange, onRetry, onSearch }: Search
         <>
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <Text variant="muted" data-testid="result-count">
-              {t('search.count', { total: formatNumber(state.result.totalCount, lang) })}
+              {t(`search.count.${state.result.type}`, {
+                total: formatNumber(state.result.totalCount, lang),
+              })}
             </Text>
             {state.result.totalCount > MAX_RESULTS ? (
               <Text
@@ -61,13 +72,24 @@ export function SearchResults({ state, onPageChange, onRetry, onSearch }: Search
             ) : null}
           </div>
           <ul className="flex flex-col gap-3" data-testid="result-list">
-            {state.result.items.map((repo) => (
-              <RepositoryCard
-                key={repo.id}
-                repo={repo}
-                onTopicClick={(topic) => onSearch(`topic:${topic}`)}
-              />
-            ))}
+            {state.result.type === 'repositories'
+              ? state.result.items.map((repo) => (
+                  <RepositoryCard
+                    key={repo.id}
+                    repo={repo}
+                    onTopicClick={onTopicClick}
+                    onLanguageClick={onLanguageClick}
+                  />
+                ))
+              : null}
+            {state.result.type === 'users'
+              ? state.result.items.map((user) => <UserCard key={user.id} user={user} />)
+              : null}
+            {state.result.type === 'topics'
+              ? state.result.items.map((topic) => (
+                  <TopicCard key={topic.name} topic={topic} onSelect={onTopicClick} />
+                ))
+              : null}
           </ul>
           <Pagination
             page={state.page}

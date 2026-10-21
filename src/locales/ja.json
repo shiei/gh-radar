@@ -22,7 +22,11 @@
     "welcome": "オープンソースのプロジェクト、フレームワーク、新しい技術を探索しましょう。"
   },
   "search": {
-    "placeholder": "リポジトリ、技術、トピックを検索...",
+    "placeholder": {
+      "repositories": "リポジトリ、技術、トピックを検索...",
+      "users": "ユーザー、組織を検索...",
+      "topics": "トピックを検索..."
+    },
     "submit": "検索",
     "sort": {
       "label": "並び替え",
@@ -30,7 +34,11 @@
       "stars": "スター数順",
       "updated": "更新日順"
     },
-    "count": "{{total}} 件のリポジトリが見つかりました",
+    "count": {
+      "repositories": "{{total}} 件のリポジトリが見つかりました",
+      "users": "{{total}} 件のユーザーが見つかりました",
+      "topics": "{{total}} 件のトピックが見つかりました"
+    },
     "countCapped": "閲覧できるのは先頭の 1,000 件までです。",
     "pagination": {
       "previous": "前へ",
@@ -39,7 +47,11 @@
     },
     "state": {
       "loading": "検索中...",
-      "empty": "該当するリポジトリはありません。"
+      "empty": {
+        "repositories": "該当するリポジトリはありません。",
+        "users": "該当するユーザーはいません。",
+        "topics": "該当するトピックはありません。"
+      }
     },
     "error": {
       "rateLimited": "GitHub のリクエスト上限に達しました。",
@@ -78,6 +90,35 @@
     "hints": {
       "label": "お試し（例）：",
       "syntax": "検索構文"
+    },
+    "type": {
+      "label": "検索対象",
+      "repositories": "リポジトリ",
+      "users": "ユーザー",
+      "topics": "トピック"
+    },
+    "filters": {
+      "title": "絞り込み",
+      "language": "言語",
+      "anyLanguage": "すべての言語",
+      "minStars": "スター数の下限",
+      "anyStars": "指定なし",
+      "starsAtLeast": "{{value}} 以上",
+      "excludeForks": "フォークを除外",
+      "excludeArchived": "アーカイブを除外",
+      "clear": "クリア",
+      "toggle": "絞り込み",
+      "activeCount": "{{count}} 件適用中",
+      "byLanguage": "言語 {{language}} で絞り込む",
+      "hint": "GitHub の検索条件（language: / stars: / fork: / archived:）として検索に追加されます。表示後の一覧を絞るものではありません。変更すると 1 ページ目から再検索し、検索ボックスの内容はそのままです。"
+    },
+    "user": {
+      "open": "{{login}} を GitHub で開く"
+    },
+    "topic": {
+      "featured": "注目",
+      "curated": "厳選",
+      "search": "トピック {{topic}} のリポジトリを検索"
     }
   },
   "token": {

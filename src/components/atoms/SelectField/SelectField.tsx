@@ -1,5 +1,6 @@
 import { Select } from '@base-ui-components/react/select'
 
+import { cx } from '../../../lib/cx'
 import { CheckIcon, ChevronDownIcon } from '../icons'
 
 export interface SelectOption<T extends string> {
@@ -14,11 +15,14 @@ export interface SelectFieldProps<T extends string> {
   options: readonly SelectOption<T>[]
   onChange: (value: T) => void
   disabled?: boolean
+  /** `sm` fits inside sidebars and filter rows. */
+  size?: 'md' | 'sm'
+  className?: string
   'data-testid'?: string
 }
 
 const triggerClass =
-  'inline-flex h-11 items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 text-sm whitespace-nowrap text-text transition-colors hover:bg-surface-muted disabled:opacity-50'
+  'inline-flex items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 text-sm whitespace-nowrap text-text transition-colors hover:bg-surface-muted disabled:opacity-50'
 /* Popup is at least as wide as its trigger (--anchor-width comes from Base UI's positioner). */
 const popupClass =
   'w-[var(--anchor-width)] min-w-40 rounded-md border border-border bg-surface-raised p-1 shadow-lg outline-none'
@@ -32,6 +36,8 @@ export function SelectField<T extends string>({
   options,
   onChange,
   disabled,
+  size = 'md',
+  className,
   'data-testid': testId,
 }: SelectFieldProps<T>) {
   const items = Object.fromEntries(options.map((o) => [o.value, o.label])) as Record<T, string>
@@ -44,7 +50,11 @@ export function SelectField<T extends string>({
         if (next !== null && next !== value) onChange(next)
       }}
     >
-      <Select.Trigger className={triggerClass} aria-label={label} data-testid={testId}>
+      <Select.Trigger
+        className={cx(triggerClass, size === 'sm' ? 'h-9 px-2.5' : 'h-11', className)}
+        aria-label={label}
+        data-testid={testId}
+      >
         <Select.Value />
         <Select.Icon>
           <ChevronDownIcon size={14} />

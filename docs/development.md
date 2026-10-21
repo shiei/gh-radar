@@ -74,23 +74,29 @@ openspec/         规划文件（proposal / specs / design / tasks）
 
 左栏六个分类来自 `src/lib/categories.ts`，点击即提交该分类的查询。右栏两个榜单读取 `public/data/`：Most Popular 按快照 star 数排序；Rising Stars 按最近 30 天的 star 增量排序（序列不足 7 天时退化为近 90 天创建的仓库按 star 排序，并标注"数据积累中"）。榜单随选中的分类过滤，不消耗 API 配额；快照缺失或超过 3 天未更新时会提示。
 
+## 检索类型与筛选器
+
+搜索框上方可以切换检索对象：Repositories（默认）、Users、Topics，分别调用 `/search/repositories`、`/search/users`、`/search/topics`，各有自己的结果卡片；排序只对仓库有效。已配置 token 时，每次检索会额外对另外两种类型各发一次 `per_page=1` 的请求取匹配数显示在切换按钮上（`src/features/search/useTypeCounts.ts`）；未配置时不发，按钮只显示类型名。
+
+仓库检索的筛选器（语言、最低 star、排除 fork、排除归档）由 `composeQuery()` 转换成 `language:` / `stars:>=` / `fork:false` / `archived:false` 追加到请求的 q 之后，输入框内容不变；改变任一项都从第 1 页重新检索。宽屏时筛选器在左栏分类下方，窄屏时折叠在搜索框下方。结果卡片上的语言文字和 topic 标签都可点击：前者设置语言筛选，后者以 `topic:<name>` 重新检索仓库。语言列表在 `src/lib/languages.ts`。
+
 ## 每日快照数据集
 
 `scripts/snapshot.ts` 每天通过 GitHub Actions 抓取六个分类的热门与新秀仓库和 `data/watchlist.txt` 中的仓库，写入 `public/data/`（`latest.json`、`daily/` 保留 30 天、`series/` 一年按天之后按周、`meta.json`）。这些 JSON 随站点一起发布，是榜单与趋势的数据来源，不消耗访问者的 API 配额。文件格式、保留策略与本地运行方式见 `scripts/README.md`。
 
 ## GitHub API 与配额
 
-检索直接从浏览器调用 `https://api.github.com/search/repositories`。未认证配额为每分钟 10 次 search 请求、每小时每个出口 IP 60 次请求；配额用尽时界面会显示恢复时刻。
+检索直接从浏览器调用 `https://api.github.com/search/{repositories,users,topics}`。未认证配额为每分钟 10 次 search 请求、每小时每个出口 IP 60 次请求；配额用尽时界面会显示恢复时刻。
 
 页头的 "Connect GitHub" 可以配置个人 token：保存前用 `GET /rate_limit` 校验（不计配额），配置后 search 配额提到每分钟 30 次，页头显示剩余次数。token 只发往 `api.github.com`；默认只保存在内存，关闭标签页即消失，勾选"在此设备记住"才写入 `localStorage['osr.token']`。请创建只读、仅公开仓库、短期过期的 fine-grained token。
 
 生产构建会在 `index.html` 注入 Content Security Policy（脚本仅本站、连接仅 `api.github.com`，由 `vite.config.ts` 的 `cspPlugin` 生成）；部署时建议改为 HTTP 响应头。
 
-相同的查询、排序、页码在会话内缓存 5 分钟，命中不发请求，刷新页面即失效。
+相同的类型、查询（含筛选条件）、排序、页码在会话内缓存 5 分钟，命中不发请求，刷新页面即失效。
 
 ### e2e 的 mock 约定
 
-所有 Playwright 用例都从 `e2e/helpers/test.ts` 导入 `test`。它为每个页面自动挂一条 abort 所有 `api.github.com` 请求的兜底 route，任何用例都不会打到真实 API。需要响应时用 `e2e/helpers/mockGitHub.ts` 的 `mockSearch` / `mockSearchByPage` 返回 `e2e/fixtures/` 里的 JSON；用例自己注册的 route 优先于兜底。
+所有 Playwright 用例都从 `e2e/helpers/test.ts` 导入 `test`。它为每个页面自动挂一条 abort 所有 `api.github.com` 请求的兜底 route，任何用例都不会打到真实 API。需要响应时用 `e2e/helpers/mockGitHub.ts` 的 `mockSearch` / `mockSearchByPage` / `mockSearchTypes` 返回 `e2e/fixtures/` 里的 JSON；用例自己注册的 route 优先于兜底。
 
 `e2e/fixtures/search-react.json` 来自一次真实响应，只保留了界面用到的字段。
 

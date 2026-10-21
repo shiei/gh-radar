@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { initialSearchState, type SearchState } from '../../../features/search'
@@ -39,6 +40,7 @@ function success(totalCount: number, count: number): SearchState {
     status: 'success',
     requestId: 1,
     result: {
+      type: 'repositories',
       totalCount,
       incompleteResults: false,
       items: Array.from({ length: count }, (_, i) => repo(i + 1)),
@@ -53,7 +55,8 @@ describe('SearchResults', () => {
         state={initialSearchState}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
-        onSearch={vi.fn()}
+        onTopicClick={vi.fn()}
+        onLanguageClick={vi.fn()}
       />,
     )
     expect(container).toBeEmptyDOMElement()
@@ -65,7 +68,8 @@ describe('SearchResults', () => {
         state={success(42, 10)}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
-        onSearch={vi.fn()}
+        onTopicClick={vi.fn()}
+        onLanguageClick={vi.fn()}
       />,
     )
     expect(screen.getByTestId('result-count')).toHaveTextContent('42 repositories matched')
@@ -81,7 +85,8 @@ describe('SearchResults', () => {
         state={success(120000, 10)}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
-        onSearch={vi.fn()}
+        onTopicClick={vi.fn()}
+        onLanguageClick={vi.fn()}
       />,
     )
     expect(screen.getByTestId('result-count')).toHaveTextContent('120,000 repositories matched')
@@ -95,7 +100,8 @@ describe('SearchResults', () => {
         state={{ ...initialSearchState, query: 'x', status: 'loading', requestId: 1 }}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
-        onSearch={vi.fn()}
+        onTopicClick={vi.fn()}
+        onLanguageClick={vi.fn()}
       />,
     )
     expect(screen.getByTestId('search-loading')).toBeInTheDocument()
@@ -104,7 +110,8 @@ describe('SearchResults', () => {
         state={{ ...initialSearchState, query: 'x', status: 'empty', requestId: 1 }}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
-        onSearch={vi.fn()}
+        onTopicClick={vi.fn()}
+        onLanguageClick={vi.fn()}
       />,
     )
     expect(screen.getByTestId('search-empty')).toBeInTheDocument()
@@ -119,9 +126,96 @@ describe('SearchResults', () => {
         }}
         onPageChange={vi.fn()}
         onRetry={vi.fn()}
-        onSearch={vi.fn()}
+        onTopicClick={vi.fn()}
+        onLanguageClick={vi.fn()}
       />,
     )
     expect(screen.getByTestId('search-error')).toBeInTheDocument()
+  })
+})
+
+describe('SearchResults by type', () => {
+  it('renders user cards and the users count', () => {
+    render(
+      <SearchResults
+        state={{
+          ...initialSearchState,
+          type: 'users',
+          query: 'x',
+          status: 'success',
+          requestId: 1,
+          result: {
+            type: 'users',
+            totalCount: 2,
+            incompleteResults: false,
+            items: [
+              { id: 1, login: 'a', avatarUrl: null, htmlUrl: 'https://github.com/a', kind: 'User' },
+              {
+                id: 2,
+                login: 'b',
+                avatarUrl: null,
+                htmlUrl: 'https://github.com/b',
+                kind: 'Organization',
+              },
+            ],
+          },
+        }}
+        onPageChange={vi.fn()}
+        onRetry={vi.fn()}
+        onTopicClick={vi.fn()}
+        onLanguageClick={vi.fn()}
+      />,
+    )
+    expect(screen.getByTestId('result-count')).toHaveTextContent('2 users matched')
+    expect(screen.getAllByTestId('user-card')).toHaveLength(2)
+  })
+
+  it('renders topic cards and forwards topic clicks', async () => {
+    const onTopicClick = vi.fn()
+    render(
+      <SearchResults
+        state={{
+          ...initialSearchState,
+          type: 'topics',
+          query: 'x',
+          status: 'success',
+          requestId: 1,
+          result: {
+            type: 'topics',
+            totalCount: 1,
+            incompleteResults: false,
+            items: [
+              {
+                name: 'react',
+                displayName: null,
+                shortDescription: null,
+                featured: false,
+                curated: false,
+              },
+            ],
+          },
+        }}
+        onPageChange={vi.fn()}
+        onRetry={vi.fn()}
+        onTopicClick={onTopicClick}
+        onLanguageClick={vi.fn()}
+      />,
+    )
+    expect(screen.getByTestId('result-count')).toHaveTextContent('1 topics matched')
+    await userEvent.click(screen.getByTestId('topic-name'))
+    expect(onTopicClick).toHaveBeenCalledWith('react')
+  })
+
+  it('uses the type-specific empty message', () => {
+    render(
+      <SearchResults
+        state={{ ...initialSearchState, type: 'users', query: 'x', status: 'empty', requestId: 1 }}
+        onPageChange={vi.fn()}
+        onRetry={vi.fn()}
+        onTopicClick={vi.fn()}
+        onLanguageClick={vi.fn()}
+      />,
+    )
+    expect(screen.getByTestId('search-empty')).toHaveTextContent('No users matched')
   })
 })

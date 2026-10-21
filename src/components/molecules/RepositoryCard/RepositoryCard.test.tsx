@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -116,5 +116,27 @@ describe('RepositoryCard', () => {
     renderCard(full)
     expect(screen.queryByRole('button', { name: /Search topic/ })).toBeNull()
     expect(screen.getAllByTestId('repo-topic')).toHaveLength(2)
+  })
+})
+
+describe('RepositoryCard language', () => {
+  it('is plain text without a handler and a button with one', async () => {
+    render(
+      <ul>
+        <RepositoryCard repo={full} />
+      </ul>,
+    )
+    expect(screen.getByTestId('repo-language').tagName).toBe('SPAN')
+    cleanup()
+    const onLanguageClick = vi.fn()
+    render(
+      <ul>
+        <RepositoryCard repo={full} onLanguageClick={onLanguageClick} />
+      </ul>,
+    )
+    const language = screen.getByTestId('repo-language')
+    expect(language.tagName).toBe('BUTTON')
+    await userEvent.click(language)
+    expect(onLanguageClick).toHaveBeenCalledWith('JavaScript')
   })
 })

@@ -22,7 +22,11 @@
     "welcome": "Explore open-source projects, frameworks and emerging technologies."
   },
   "search": {
-    "placeholder": "Search repositories, technologies, topics...",
+    "placeholder": {
+      "repositories": "Search repositories, technologies, topics...",
+      "users": "Search users and organizations...",
+      "topics": "Search topics..."
+    },
     "submit": "Search",
     "sort": {
       "label": "Sort",
@@ -30,7 +34,11 @@
       "stars": "Most stars",
       "updated": "Recently updated"
     },
-    "count": "{{total}} repositories matched",
+    "count": {
+      "repositories": "{{total}} repositories matched",
+      "users": "{{total}} users matched",
+      "topics": "{{total}} topics matched"
+    },
     "countCapped": "Only the first 1,000 results can be browsed.",
     "pagination": {
       "previous": "Previous",
@@ -39,7 +47,11 @@
     },
     "state": {
       "loading": "Searching...",
-      "empty": "No repositories matched your search."
+      "empty": {
+        "repositories": "No repositories matched your search.",
+        "users": "No users matched your search.",
+        "topics": "No topics matched your search."
+      }
     },
     "error": {
       "rateLimited": "GitHub's request limit has been reached.",
@@ -78,6 +90,35 @@
     "hints": {
       "label": "Try:",
       "syntax": "Search syntax"
+    },
+    "type": {
+      "label": "Search for",
+      "repositories": "Repositories",
+      "users": "Users",
+      "topics": "Topics"
+    },
+    "filters": {
+      "title": "Filters",
+      "language": "Language",
+      "anyLanguage": "Any language",
+      "minStars": "Minimum stars",
+      "anyStars": "Any",
+      "starsAtLeast": "{{value}}+",
+      "excludeForks": "Exclude forks",
+      "excludeArchived": "Exclude archived",
+      "clear": "Clear",
+      "toggle": "Filters",
+      "activeCount": "{{count}} active",
+      "byLanguage": "Filter by language {{language}}",
+      "hint": "Added to the search as GitHub qualifiers (language:, stars:, fork:, archived:), not applied to the list afterwards. Changing one runs the search again from page 1; the search box keeps what you typed."
+    },
+    "user": {
+      "open": "Open {{login}} on GitHub"
+    },
+    "topic": {
+      "featured": "Featured",
+      "curated": "Curated",
+      "search": "Search repositories with topic {{topic}}"
     }
   },
   "token": {

@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { SearchSort } from '../../../lib/github'
+import type { SearchSort, SearchType } from '../../../lib/github'
 import { ArrowRightIcon, Input, RadarSpinner, SearchIcon, SelectField } from '../../atoms'
 
 export interface SearchBarProps {
@@ -11,6 +11,10 @@ export interface SearchBarProps {
   loading: boolean
   onSubmit: (query: string) => void
   onSortChange: (sort: SearchSort) => void
+  /** Sort only applies to repositories; hide it for the other types. */
+  showSort?: boolean
+  /** Picks the placeholder; defaults to repositories. */
+  type?: SearchType
 }
 
 const SORTS: readonly SearchSort[] = ['best', 'stars', 'updated']
@@ -21,7 +25,15 @@ const SORTS: readonly SearchSort[] = ['best', 'stars', 'updated']
  * becomes a spinner, but submitting stays possible so a newer search replaces the
  * one in flight.
  */
-export function SearchBar({ query, sort, loading, onSubmit, onSortChange }: SearchBarProps) {
+export function SearchBar({
+  query,
+  sort,
+  loading,
+  onSubmit,
+  onSortChange,
+  showSort = true,
+  type = 'repositories',
+}: SearchBarProps) {
   const { t } = useTranslation()
   const [value, setValue] = useState(query)
   // When the submitted query changes from outside (e.g. a topic click), mirror it into the
@@ -54,8 +66,8 @@ export function SearchBar({ query, sort, loading, onSubmit, onSortChange }: Sear
           name="q"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={t('search.placeholder')}
-          aria-label={t('search.placeholder')}
+          placeholder={t(`search.placeholder.${type}`)}
+          aria-label={t(`search.placeholder.${type}`)}
           autoComplete="off"
           className="pr-11 pl-10"
           data-testid="search-input"
@@ -74,13 +86,15 @@ export function SearchBar({ query, sort, loading, onSubmit, onSortChange }: Sear
           )}
         </button>
       </div>
-      <SelectField
-        label={t('search.sort.label')}
-        value={sort}
-        options={options}
-        onChange={onSortChange}
-        data-testid="search-sort"
-      />
+      {showSort ? (
+        <SelectField
+          label={t('search.sort.label')}
+          value={sort}
+          options={options}
+          onChange={onSortChange}
+          data-testid="search-sort"
+        />
+      ) : null}
     </form>
   )
 }

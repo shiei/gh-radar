@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { AnySearchResult } from '../../lib/github'
 import { clearSearchCache } from './searchCache'
 import { useRepositorySearch } from './useRepositorySearch'
 
@@ -32,6 +33,17 @@ function payload(name: string, total = 1) {
       },
     ],
   })
+}
+
+function firstName(result: AnySearchResult | null): string | undefined {
+  return result?.type === 'repositories' ? result.items[0]?.name : undefined
+}
+
+/** fetch's first argument as a plain URL string. */
+function urlOf(input: RequestInfo | URL | undefined): string {
+  if (input === undefined) return ''
+  if (typeof input === 'string') return input
+  return input instanceof URL ? input.href : input.url
 }
 
 describe('useRepositorySearch', () => {
@@ -68,7 +80,7 @@ describe('useRepositorySearch', () => {
     await act(async () => {
       await Promise.resolve()
     })
-    expect(result.current.state.result?.items[0]?.name).toBe('vue')
+    expect(firstName(result.current.state.result)).toBe('vue')
     expect(result.current.state.query).toBe('vue')
   })
 
@@ -100,7 +112,7 @@ describe('useRepositorySearch', () => {
     act(() => result.current.goToPage(1))
     await waitFor(() => expect(result.current.state.page).toBe(1))
     expect(result.current.state.status).toBe('success')
-    expect(result.current.state.result?.items[0]?.name).toBe('react')
+    expect(firstName(result.current.state.result)).toBe('react')
     expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 
@@ -111,5 +123,49 @@ describe('useRepositorySearch', () => {
       new Response(JSON.stringify({ total_count: 0, incomplete_results: false, items: [] })),
     )
     await waitFor(() => expect(result.current.state.status).toBe('empty'))
+  })
+})
+
+describe('useRepositorySearch types and filters', () => {
+  const fetchMock = vi.fn<typeof fetch>()
+  beforeEach(() => {
+    clearSearchCache()
+    fetchMock.mockReset()
+    // A Response body can be read once, so build a fresh one per call.
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ total_count: 0, incomplete_results: false, items: [] })),
+      ),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+  })
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('switching type hits that type endpoint with the plain query', async () => {
+    const { result } = renderHook(() => useRepositorySearch())
+    act(() => result.current.setFilters({ language: 'Go' }))
+    act(() => result.current.submit('react'))
+    await waitFor(() => expect(result.current.state.status).toBe('empty'))
+    expect(urlOf(fetchMock.mock.calls[0]?.[0])).toBe(
+      'https://api.github.com/search/repositories?q=react+language%3AGo&per_page=10&page=1',
+    )
+    act(() => result.current.setType('users'))
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2))
+    expect(urlOf(fetchMock.mock.calls[1]?.[0])).toBe(
+      'https://api.github.com/search/users?q=react&per_page=10&page=1',
+    )
+    await waitFor(() => expect(result.current.state.result?.type).toBe('users'))
+  })
+
+  it('submit with a type switches back to repositories', async () => {
+    const { result } = renderHook(() => useRepositorySearch())
+    act(() => result.current.setType('topics'))
+    act(() => result.current.submit('react'))
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
+    expect(urlOf(fetchMock.mock.calls[0]?.[0])).toContain('/search/topics?')
+    act(() => result.current.submit('topic:react', 'repositories'))
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2))
+    expect(urlOf(fetchMock.mock.calls[1]?.[0])).toContain('/search/repositories?q=topic%3Areact')
+    expect(result.current.state.type).toBe('repositories')
   })
 })

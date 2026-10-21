@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
 
 import { formatTime } from '../../../lib/format'
-import type { GitHubError } from '../../../lib/github'
+import type { GitHubError, SearchType } from '../../../lib/github'
 import { Button, RadarSpinner, Text } from '../../atoms'
 
 export type StatusMessageProps =
   | { status: 'loading' }
-  | { status: 'empty' }
+  | { status: 'empty'; type?: SearchType }
   | { status: 'error'; error: GitHubError; onRetry: () => void }
 
 function useErrorCopy(error: GitHubError): string {
@@ -63,7 +63,7 @@ export function StatusMessage(props: StatusMessageProps) {
   }
   return (
     <Text variant="muted" className="py-10 text-center" role="status" data-testid="search-empty">
-      {t('search.state.empty')}
+      {t(`search.state.empty.${props.type ?? 'repositories'}`)}
     </Text>
   )
 }

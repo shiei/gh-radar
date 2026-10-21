@@ -9,6 +9,8 @@ export interface RepositoryCardProps {
   repo: Repository
   /** Called with the topic name; the page turns it into a `topic:<name>` search. */
   onTopicClick?: (topic: string) => void
+  /** Called with the language name; the page turns it into the language filter. */
+  onLanguageClick?: (language: string) => void
 }
 
 const activityDot: Record<Activity, string> = {
@@ -17,7 +19,7 @@ const activityDot: Record<Activity, string> = {
   inactive: 'bg-danger',
 }
 
-export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
+export function RepositoryCard({ repo, onTopicClick, onLanguageClick }: RepositoryCardProps) {
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
   const activity = activityOf(repo.pushedAt)
@@ -119,7 +121,21 @@ export function RepositoryCard({ repo, onTopicClick }: RepositoryCardProps) {
             {t('search.repo.pushed', { time: formatTimestamp(repo.pushedAt, lang) })}
           </span>
         </Tooltip>
-        {repo.language ? <span data-testid="repo-language">{repo.language}</span> : null}
+        {repo.language ? (
+          onLanguageClick ? (
+            <button
+              type="button"
+              onClick={() => onLanguageClick(repo.language ?? '')}
+              aria-label={t('search.filters.byLanguage', { language: repo.language })}
+              className="hover:text-accent cursor-pointer hover:underline"
+              data-testid="repo-language"
+            >
+              {repo.language}
+            </button>
+          ) : (
+            <span data-testid="repo-language">{repo.language}</span>
+          )
+        ) : null}
         {repo.license ? (
           <span data-testid="repo-license">
             {t('search.repo.license')}: {repo.license}

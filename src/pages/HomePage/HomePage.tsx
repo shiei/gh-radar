@@ -2,11 +2,18 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Text } from '../../components/atoms'
-import { CategoryNav, RankingList, SearchBar, SearchHints } from '../../components/molecules'
+import {
+  CategoryNav,
+  RankingList,
+  SearchBar,
+  SearchFilters,
+  SearchHints,
+  SearchTypeTabs,
+} from '../../components/molecules'
 import { SearchResults } from '../../components/organisms'
 import { DiscoveryLayout } from '../../components/templates'
 import { useSnapshot } from '../../features/rankings'
-import { useRepositorySearch } from '../../features/search'
+import { useRepositorySearch, useTypeCounts } from '../../features/search'
 import { CATEGORIES, type CategoryId } from '../../lib/categories'
 import { cx } from '../../lib/cx'
 import { formatNumber } from '../../lib/format'
@@ -104,7 +111,11 @@ function RankingsPanel({ activeCategory }: { activeCategory: CategoryId | null }
 
 export function HomePage() {
   const { t } = useTranslation()
-  const { state, submit, setSort, goToPage, retry } = useRepositorySearch()
+  const { state, submit, setType, setSort, setFilters, goToPage, retry } = useRepositorySearch()
+  const counts = useTypeCounts(state.query, state.type, state.filters)
+  const isRepositories = state.type === 'repositories'
+  // Categories, hints and topic clicks are repository searches whatever type is active.
+  const searchRepositories = (query: string) => submit(query, 'repositories')
   const { theme } = useTheme()
   // Bumps on every theme change so the radar reloads and replays (see radarSrc).
   const [generation, setGeneration] = useState(0)
@@ -113,7 +124,8 @@ export function HomePage() {
     setSeenTheme(theme)
     setGeneration((g) => g + 1)
   }
-  const activeCategory = CATEGORIES.find((c) => c.query === state.query)?.id ?? null
+  const categoryQuery = isRepositories ? state.query : ''
+  const activeCategory = CATEGORIES.find((c) => c.query === categoryQuery)?.id ?? null
 
   const hero = (
     <section className="relative flex min-h-56 flex-col items-center justify-center gap-3 overflow-hidden text-center md:min-h-80">
@@ -139,14 +151,22 @@ export function HomePage() {
 
   const searchBlock = (
     <div className="flex flex-col gap-2">
+      <SearchTypeTabs value={state.type} counts={counts} onChange={setType} />
       <SearchBar
         query={state.query}
         sort={state.sort}
         loading={state.status === 'loading'}
         onSubmit={submit}
         onSortChange={setSort}
+        showSort={isRepositories}
+        type={state.type}
       />
-      <SearchHints onPick={submit} />
+      <SearchHints onPick={searchRepositories} />
+      {isRepositories ? (
+        <div className="lg:hidden">
+          <SearchFilters variant="collapsible" filters={state.filters} onChange={setFilters} />
+        </div>
+      ) : null}
       {/* Below lg the rankings sit under the search block, so the rule is always needed there;
           from lg up the column is empty while idle, so hide it until there are results. */}
       <hr
@@ -163,15 +183,34 @@ export function HomePage() {
     <DiscoveryLayout
       hero={hero}
       sidebar={
-        <CategoryNav variant="list" activeQuery={state.query} onSelect={(c) => submit(c.query)} />
+        <div className="flex flex-col gap-6">
+          <CategoryNav
+            variant="list"
+            activeQuery={categoryQuery}
+            onSelect={(c) => searchRepositories(c.query)}
+          />
+          {isRepositories ? (
+            <SearchFilters variant="panel" filters={state.filters} onChange={setFilters} />
+          ) : null}
+        </div>
       }
       chips={
-        <CategoryNav variant="chips" activeQuery={state.query} onSelect={(c) => submit(c.query)} />
+        <CategoryNav
+          variant="chips"
+          activeQuery={categoryQuery}
+          onSelect={(c) => searchRepositories(c.query)}
+        />
       }
       main={
         <>
           {searchBlock}
-          <SearchResults state={state} onPageChange={goToPage} onRetry={retry} onSearch={submit} />
+          <SearchResults
+            state={state}
+            onPageChange={goToPage}
+            onRetry={retry}
+            onTopicClick={(topic) => searchRepositories(`topic:${topic}`)}
+            onLanguageClick={(language) => setFilters({ language })}
+          />
         </>
       }
       aside={<RankingsPanel activeCategory={activeCategory} />}
