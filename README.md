@@ -4,7 +4,7 @@ A small open-source tool for watching what is moving in open source: search GitH
 
 **Live:** https://shiei.github.io/gh-radar/
 
-![OpenSource Radar home page](docs/images/home.png)
+![OpenSource Radar home page](docs/images/home-v2.png)
 
 ## What it does
 
