@@ -30,8 +30,12 @@ describe('decodeRecord', () => {
       topics: ['a'],
       archived: true,
       sources: ['x'],
+      ownerId: null,
     })
     expect(avatarUrl('vercel')).toBe('https://github.com/vercel.png?size=48')
+    expect(avatarUrl('vercel', 14985020)).toBe(
+      'https://avatars.githubusercontent.com/u/14985020?s=48&v=4',
+    )
   })
 })
 

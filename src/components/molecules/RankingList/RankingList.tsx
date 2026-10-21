@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { formatCompactNumber } from '../../../lib/format'
 import { RANKING_TOP, type RankedRepo } from '../../../lib/rankings'
 import { avatarUrl } from '../../../lib/snapshot'
-import { Button, InfoIcon, StarIcon, Text, Tooltip } from '../../atoms'
+import { Avatar, Button, InfoIcon, StarIcon, Text, Tooltip } from '../../atoms'
 
 export interface RankingListProps {
   id: 'popular' | 'rising'
@@ -57,14 +57,7 @@ export function RankingList({ id, title, hint, items, fallback = false }: Rankin
               <span className="text-text-muted w-5 shrink-0 text-right text-xs tabular-nums">
                 {index + 1}
               </span>
-              <img
-                src={avatarUrl(repo.owner)}
-                alt=""
-                width={20}
-                height={20}
-                loading="lazy"
-                className="bg-surface-muted h-5 w-5 shrink-0 rounded-full"
-              />
+              <Avatar src={avatarUrl(repo.owner, repo.ownerId)} name={repo.owner} size={20} />
               <a
                 href={`https://github.com/${repo.fullName}`}
                 target="_blank"

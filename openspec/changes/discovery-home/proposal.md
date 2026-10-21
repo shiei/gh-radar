@@ -23,6 +23,7 @@
 
 ### Modified Capabilities
 
+- `daily-snapshot`: 记录增加 owner 数字 id，用于直接拼头像 CDN 地址（2026-10-21 追加）。
 - `ui-theme`: 首访默认改为夜间，不再跟随系统偏好（2026-10-21 布局与显示调整阶段追加）。
 
 ## Impact

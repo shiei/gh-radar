@@ -42,6 +42,11 @@ describe('mergeSources + buildLatest', () => {
 })
 
 describe('toRecord', () => {
+  it('keeps the owner id when present', () => {
+    expect(toRecord({ ...raw('a/b'), owner: { id: 42 } }, ['x']).o).toBe(42)
+    expect('o' in toRecord(raw('a/b'), ['x'])).toBe(false)
+  })
+
   it('maps every field and defaults the optional ones', () => {
     const r = toRecord(
       {

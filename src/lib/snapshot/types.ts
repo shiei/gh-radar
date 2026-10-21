@@ -9,6 +9,8 @@ export interface SnapshotRecord {
   t: string[]
   a: boolean
   src: string[]
+  /** Owner's numeric id, for direct avatar URLs. Absent in older snapshots. */
+  o?: number
 }
 
 export interface SnapshotLatest {
@@ -41,4 +43,5 @@ export interface SnapshotRepo {
   topics: string[]
   archived: boolean
   sources: string[]
+  ownerId: number | null
 }

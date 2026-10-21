@@ -20,6 +20,7 @@ const item = (n: number, delta?: number): RankedRepo => ({
     language: null,
     topics: [],
     archived: false,
+    ownerId: null,
     sources: [],
   },
   delta,

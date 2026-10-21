@@ -9,6 +9,7 @@ export interface RawRepo {
   language?: string | null
   topics?: string[]
   archived?: boolean
+  owner?: { id?: number }
 }
 
 /** Compact on-disk record. Short keys keep latest.json small. */
@@ -22,6 +23,8 @@ export interface SnapshotRecord {
   t: string[]
   a: boolean
   src: string[]
+  /** Owner's numeric id, for direct avatar URLs. Absent in older snapshots. */
+  o?: number
 }
 
 export interface Latest {
@@ -81,6 +84,7 @@ export function toRecord(raw: RawRepo, sources: string[]): SnapshotRecord {
     t: raw.topics ?? [],
     a: raw.archived ?? false,
     src: [...sources].sort(),
+    ...(typeof raw.owner?.id === 'number' ? { o: raw.owner.id } : {}),
   }
 }
 
