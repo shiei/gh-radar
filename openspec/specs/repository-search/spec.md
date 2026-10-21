@@ -180,7 +180,7 @@
 - **THEN** 以相同查询、排序和页码再次检索
 
 ### Requirement: Results are cached within the session
-同一组"查询、排序、页码"的检索结果 SHALL 在会话内缓存 5 分钟。缓存命中时 SHALL 直接显示结果而不发起请求；超过 5 分钟或刷新页面后缓存失效。失败的响应 MUST NOT 被缓存。
+同一组"类型、查询、排序、筛选条件、页码"的检索结果 SHALL 在会话内缓存 5 分钟。缓存命中时 SHALL 直接显示结果而不发起请求；超过 5 分钟或刷新页面后缓存失效。失败的响应 MUST NOT 被缓存。
 
 #### Scenario: Cache hit
 - **WHEN** 用户检索 `react` 第 1 页，翻到第 2 页，再回到第 1 页，全程在 5 分钟内
