@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Text } from '../../components/atoms'
@@ -14,13 +14,13 @@ import { rankPopular, rankRising } from '../../lib/rankings'
 import { decodeLatest } from '../../lib/snapshot'
 import { useTheme, type Theme } from '../../lib/theme'
 
-// Browsers reuse a cached <img> SVG together with its finished SMIL timeline, so a plain
-// reload would show the radar already stopped. A per-page-load query makes it a fresh image.
+// Browsers cache an <img> SVG together with its finished SMIL timeline, so reusing a URL shows
+// the radar already stopped. A fresh query string per page load and per theme switch makes it a
+// new image, so the sweep plays on first paint and again whenever the theme changes.
 // One file per theme: an <img> cannot see our data-theme attribute.
-const CACHE_BUST = `?v=${String(Date.now())}`
-const RADAR_SRC: Record<Theme, string> = {
-  dark: `${import.meta.env.BASE_URL}radar-dark.svg${CACHE_BUST}`,
-  light: `${import.meta.env.BASE_URL}radar-light.svg${CACHE_BUST}`,
+const PAGE_LOAD = Date.now()
+function radarSrc(theme: Theme, generation: number): string {
+  return `${import.meta.env.BASE_URL}radar-${theme}.svg?v=${String(PAGE_LOAD)}-${String(generation)}`
 }
 
 function RankingsPanel({ activeCategory }: { activeCategory: CategoryId | null }) {
@@ -106,12 +106,19 @@ export function HomePage() {
   const { t } = useTranslation()
   const { state, submit, setSort, goToPage, retry } = useRepositorySearch()
   const { theme } = useTheme()
+  // Bumps on every theme change so the radar reloads and replays (see radarSrc).
+  const [generation, setGeneration] = useState(0)
+  const [seenTheme, setSeenTheme] = useState(theme)
+  if (theme !== seenTheme) {
+    setSeenTheme(theme)
+    setGeneration((g) => g + 1)
+  }
   const activeCategory = CATEGORIES.find((c) => c.query === state.query)?.id ?? null
 
   const hero = (
     <section className="relative flex min-h-56 flex-col items-center justify-center gap-3 overflow-hidden text-center md:min-h-80">
       <img
-        src={RADAR_SRC[theme]}
+        src={radarSrc(theme, generation)}
         alt=""
         aria-hidden="true"
         width={400}
