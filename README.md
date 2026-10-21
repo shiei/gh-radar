@@ -1,129 +1,45 @@
 # OpenSource Radar
 
-一个帮助开发者发现、评估、比较开源项目的纯前端站点。数据直接来自 GitHub REST API，没有后端。
+A small open-source tool for watching what is moving in open source: search GitHub repositories, browse by category, and see which projects are gaining stars, based on a daily snapshot rather than a single moment in time.
 
-当前状态：工程地基（主题、多语言、测试与代码质量工具）和仓库检索已完成。后续功能按 `openspec/changes/` 中的 change 逐个推进，整体待办见 `ROADMAP.md`。
+**Live:** https://shiei.github.io/gh-radar/
 
-## 相关项目
+![OpenSource Radar home page](docs/images/home.png)
 
-页脚列出了覆盖本站刻意不做的领域的工具：GitHub Search 与 Trending（官方全类型检索与榜单）、grep.app 与 Sourcegraph（代码搜索）、OSS Insight（基于 GH Archive 的趋势分析）、Libraries.io（包级依赖关系）。本站只做开源动态的雷达。
+## What it does
 
-## 技术栈
+- **Search** GitHub repositories with the full GitHub query syntax (`language:rust stars:>500`, `topic:ai`, `org:vercel`), with sort, paging, and result cards that show activity, last push, open issues, size, license and more.
+- **Browse by category**: Frontend, Backend, AI / ML, DevOps, Database, Design. Each is a curated topic query, one click away.
+- **Rankings** from the daily snapshot: _Most Popular_ by stars and _Rising Stars_ by stars gained in the last 30 days. Filtered by the selected category, no API quota spent.
+- **Optional GitHub token** to raise the search limit from 10 to 30 requests a minute. It stays in your browser (memory only unless you choose to remember it) and is sent only to `api.github.com`.
+- English, Japanese and Chinese UI, dark and light themes.
 
-- React 19 + Vite 8 + TypeScript 6
-- Tailwind CSS 4，视觉规范由 `src/styles/tokens.css` 中的 Design Tokens 统一定义
-- Base UI 作为无样式组件基础，按 Atomic Design 分层
-- i18next：英文（默认）、日文、中文
-- Vitest + Testing Library 做单元测试，Playwright 做端到端测试
-- ESLint、Prettier、Stylelint、`tsc` 做静态检查
+## Where the data comes from
 
-## 部署
+Search results come straight from the GitHub REST API in your browser. Rankings come from `public/data/`, which a GitHub Actions job rebuilds every day at 00:00 UTC: the top 300 popular and rising repositories for each of the six categories plus a small watchlist, about 2,000 repositories in total. It is deliberately a sample, not all of GitHub; the ranking tooltips say so. Older snapshots are kept for 30 days, per-repository star series for a year by day and then by week. Details: [scripts/README.md](scripts/README.md).
 
-站点发布在 https://shiei.github.io/gh-radar/ ，推送到 master 与每日快照完成后自动部署。首次设置、日常操作与排错见 `docs/deploy.md`。
-
-## 快速开始
+## Run it locally
 
 ```bash
 npm install
-npx playwright install chromium   # 只在第一次或升级 Playwright 后需要
 npm run dev
 ```
 
-## npm scripts
+Everything else (tests, lint, deployment, how the snapshot works) is in the docs:
 
-| 命令                   | 作用                                                    |
-| ---------------------- | ------------------------------------------------------- |
-| `npm run dev`          | 启动开发服务器                                          |
-| `npm run build`        | 类型检查并构建到 `dist/`                                |
-| `npm run preview`      | 本地预览构建产物                                        |
-| `npm run typecheck`    | `tsc -b --noEmit`                                       |
-| `npm run lint`         | 依次运行 `lint:js`（ESLint）和 `lint:css`（Stylelint）  |
-| `npm run format`       | Prettier 格式化全部文件                                 |
-| `npm run format:check` | 只检查不修改                                            |
-| `npm run test`         | Vitest 单元测试（单次运行）                             |
-| `npm run test:e2e`     | Playwright 端到端测试，会先构建再用 `vite preview` 启动 |
-| `npm run check`        | typecheck + lint + format:check + test，提交前跑这个    |
+- [docs/development.md](docs/development.md): stack, project layout, scripts, conventions
+- [docs/deploy.md](docs/deploy.md): GitHub Pages deployment and the daily workflow
+- [scripts/README.md](scripts/README.md): the snapshot script and data files
+- [ROADMAP.md](ROADMAP.md): what is done and what might come next
 
-`check` 不包含 e2e，e2e 请单独运行。
+This is a personal project. Issues and pull requests are welcome, but there is no release schedule and no guarantee of a quick reply.
 
-## 目录结构
+## License
 
-```
-src/
-  app/            应用入口与 Provider 组合
-  components/
-    atoms/        最小 UI 单元（Button、Text、icons/）
-    molecules/    atoms 组合（ThemeToggle、LanguageSwitcher）
-    organisms/    页面区块（Header）
-    templates/    页面布局骨架（AppShell）
-  pages/          页面（HomePage）
-  features/
-    search/       检索状态机：searchReducer（纯函数）与 useRepositorySearch（hook）
-  lib/
-    categories.ts 六个分类与查询（站点与快照脚本共用）
-    github/       GitHub REST 访问层：请求头、错误分类、配额解析、search 端点（不依赖 React）
-    format/       Intl 封装：紧凑数字、相对时间、时刻
-    theme/        主题解析、持久化、ThemeProvider / useTheme
-    i18n/         i18next 初始化、语言持久化、键类型扩展
-    cx.ts         class 名拼接
-  locales/        en.json / ja.json / zh.json
-  styles/         tokens.css（Design Tokens）、globals.css（Tailwind 映射与基础样式）
-  test/           Vitest setup
-scripts/          每日快照脚本（见 scripts/README.md）
-data/             watchlist.txt 手工关注列表
-public/data/      快照数据集（由 Actions 提交）
-e2e/              Playwright 测试
-  fixtures/       mock 的 GitHub 响应
-  helpers/        共享 test（含 GitHub 请求兜底拦截）与 mock 工具
-openspec/         规划文件（proposal / specs / design / tasks）
-```
+[MIT](LICENSE)
 
-分层约定：`components/` 只放 UI（Atomic Design）；不依赖 React 的代码放 `lib/`；某个功能的 React 状态逻辑放 `features/<name>/`。
+---
 
-## 首页的分类与榜单
+**日本語**: GitHub リポジトリを検索し、カテゴリから探し、日次スナップショットに基づいて「どのプロジェクトが伸びているか」を眺めるための個人製ツールです。ランキングは GitHub 全体ではなく、6 カテゴリ × 上位 300 件ほどのサンプルを対象にしています。
 
-左栏六个分类来自 `src/lib/categories.ts`，点击即提交该分类的查询。右栏两个榜单读取 `public/data/`：Most Popular 按快照 star 数排序；Rising Stars 按最近 30 天的 star 增量排序（序列不足 7 天时退化为近 90 天创建的仓库按 star 排序，并标注"数据积累中"）。榜单随选中的分类过滤，不消耗 API 配额；快照缺失或超过 3 天未更新时会提示。
-
-## 每日快照数据集
-
-`scripts/snapshot.ts` 每天通过 GitHub Actions 抓取六个分类的热门与新秀仓库和 `data/watchlist.txt` 中的仓库，写入 `public/data/`（`latest.json`、`daily/` 保留 30 天、`series/` 一年按天之后按周、`meta.json`）。这些 JSON 随站点一起发布，是榜单与趋势的数据来源，不消耗访问者的 API 配额。文件格式、保留策略与本地运行方式见 `scripts/README.md`。
-
-## GitHub API 与配额
-
-检索直接从浏览器调用 `https://api.github.com/search/repositories`。未认证配额为每分钟 10 次 search 请求、每小时每个出口 IP 60 次请求；配额用尽时界面会显示恢复时刻。
-
-页头的 "Connect GitHub" 可以配置个人 token：保存前用 `GET /rate_limit` 校验（不计配额），配置后 search 配额提到每分钟 30 次，页头显示剩余次数。token 只发往 `api.github.com`；默认只保存在内存，关闭标签页即消失，勾选"在此设备记住"才写入 `localStorage['osr.token']`。请创建只读、仅公开仓库、短期过期的 fine-grained token。
-
-生产构建会在 `index.html` 注入 Content Security Policy（脚本仅本站、连接仅 `api.github.com`，由 `vite.config.ts` 的 `cspPlugin` 生成）；部署时建议改为 HTTP 响应头。
-
-相同的查询、排序、页码在会话内缓存 5 分钟，命中不发请求，刷新页面即失效。
-
-### e2e 的 mock 约定
-
-所有 Playwright 用例都从 `e2e/helpers/test.ts` 导入 `test`。它为每个页面自动挂一条 abort 所有 `api.github.com` 请求的兜底 route，任何用例都不会打到真实 API。需要响应时用 `e2e/helpers/mockGitHub.ts` 的 `mockSearch` / `mockSearchByPage` 返回 `e2e/fixtures/` 里的 JSON；用例自己注册的 route 优先于兜底。
-
-`e2e/fixtures/search-react.json` 来自一次真实响应，只保留了界面用到的字段。
-
-## 约定
-
-### 新增界面文案
-
-1. 在 `src/locales/en.json`、`ja.json`、`zh.json` 三个文件中都加上同一个键。
-2. 组件中用 `useTranslation()` 的 `t('your.key')` 引用。键名由 `en.json` 推导出类型，写错会在 `typecheck` 阶段报错。
-3. `src/locales/locales.test.ts` 会断言三份文件的键集合完全一致，少一份就会失败。
-4. 组件里不允许出现硬编码的用户可见文案。
-
-### 新增 Design Token
-
-1. 在 `src/styles/tokens.css` 的 `:root` 中加日间值，在 `[data-theme='dark']` 中加夜间值。
-2. 在 `src/styles/globals.css` 的 `@theme inline` 中把它映射成 Tailwind 工具类，例如 `--color-foo: var(--foo)` 生成 `bg-foo` / `text-foo`。
-3. 组件只使用语义类（`bg-surface`、`text-text-muted`、`border-border` 等），不写原始颜色。
-
-### 主题与语言的持久化键
-
-| 键                          | 取值               |
-| --------------------------- | ------------------ |
-| `localStorage['osr.theme']` | `light` / `dark`   |
-| `localStorage['osr.lang']`  | `en` / `ja` / `zh` |
-
-主题在 `index.html` 的内联脚本中于首次绘制前应用，修改 `src/lib/theme/constants.ts` 时需同步该脚本。
+**中文**：一个个人维护的开源小工具：检索 GitHub 仓库、按分类浏览，并基于每日快照观察哪些项目在涨。榜单的范围是六个分类各前 300 条左右的样本，不是全 GitHub。
