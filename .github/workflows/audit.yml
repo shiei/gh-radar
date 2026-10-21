@@ -1,0 +1,36 @@
+name: Weekly dependency audit
+
+on:
+  schedule:
+    # Every Monday 00:00 UTC (09:00 JST)
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      # Production dependencies are what ships to the browser: any finding fails the job
+      # (and the failure e-mail is the alert).
+      - name: Audit production dependencies
+        run: |
+          echo '## Production dependencies' >> "$GITHUB_STEP_SUMMARY"
+          npm audit --omit=dev --audit-level=low 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # Dev tooling (lint, test, build) never reaches users: report only, never fail.
+      - name: Audit dev dependencies (informational)
+        if: always()
+        continue-on-error: true
+        run: |
+          echo '## All dependencies including dev' >> "$GITHUB_STEP_SUMMARY"
+          npm audit --audit-level=low 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
