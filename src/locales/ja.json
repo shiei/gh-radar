@@ -120,8 +120,8 @@
     "all": "すべてのカテゴリ"
   },
   "ranking": {
-    "popular": "Most Popular",
-    "rising": "Rising Stars",
+    "popular": "人気リポジトリ",
+    "rising": "急上昇",
     "viewAll": "すべて表示",
     "collapse": "閉じる",
     "dataDate": "スナップショット {{date}}",

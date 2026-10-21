@@ -120,8 +120,8 @@
     "all": "全部分类"
   },
   "ranking": {
-    "popular": "Most Popular",
-    "rising": "Rising Stars",
+    "popular": "最受欢迎",
+    "rising": "上升最快",
     "viewAll": "查看全部",
     "collapse": "收起",
     "dataDate": "快照 {{date}}",
