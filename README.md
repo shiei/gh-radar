@@ -8,7 +8,8 @@ A small open-source tool for watching what is moving in open source: search GitH
 
 ## What it does
 
-- **Search** GitHub repositories with the full GitHub query syntax (`language:rust stars:>500`, `topic:ai`, `org:vercel`), with sort, paging, and result cards that show activity, last push, open issues, size, license and more.
+- **Search** GitHub repositories, users or topics with the full GitHub query syntax (`language:rust stars:>500`, `topic:ai`, `org:vercel`), with sort, paging, and result cards that show activity, last push, open issues, size, license and more.
+- **Filters** for language, minimum stars, forks and archived repositories, turned into query qualifiers for you. Languages and topics on a result card are clickable shortcuts.
 - **Browse by category**: Frontend, Backend, AI / ML, DevOps, Database, Design. Each is a curated topic query, one click away.
 - **Rankings** from the daily snapshot: _Most Popular_ by stars and _Rising Stars_ by stars gained in the last 30 days. Filtered by the selected category, no API quota spent.
 - **Optional GitHub token** to raise the search limit from 10 to 30 requests a minute. It stays in your browser (memory only unless you choose to remember it) and is sent only to `api.github.com`.
@@ -40,6 +41,6 @@ This is a personal project. Issues and pull requests are welcome, but there is n
 
 ---
 
-**日本語**: GitHub リポジトリを検索し、カテゴリから探し、日次スナップショットに基づいて「どのプロジェクトが伸びているか」を眺めるための個人製ツールです。ランキングは GitHub 全体ではなく、6 カテゴリ × 上位 300 件ほどのサンプルを対象にしています。
+**日本語**：GitHub のリポジトリ・ユーザー・トピックを検索し、カテゴリから探し、日次スナップショットに基づいて「どのプロジェクトが伸びているか」を眺めるための個人製ツールです。ランキングは GitHub 全体ではなく、6 カテゴリ × 上位 300 件ほどのサンプルを対象にしています。
 
-**中文**：一个个人维护的开源小工具：检索 GitHub 仓库、按分类浏览，并基于每日快照观察哪些项目在涨。榜单的范围是六个分类各前 300 条左右的样本，不是全 GitHub。
+**中文**：一个个人维护的开源小工具：检索 GitHub 仓库、用户和主题，按分类浏览，并基于每日快照观察哪些项目在涨。榜单的范围是六个分类各前 300 条左右的样本，不是全 GitHub。
