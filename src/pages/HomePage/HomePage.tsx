@@ -8,6 +8,7 @@ import { DiscoveryLayout } from '../../components/templates'
 import { useSnapshot } from '../../features/rankings'
 import { useRepositorySearch } from '../../features/search'
 import { CATEGORIES, type CategoryId } from '../../lib/categories'
+import { formatNumber } from '../../lib/format'
 import { rankPopular, rankRising } from '../../lib/rankings'
 import { decodeLatest } from '../../lib/snapshot'
 import { useTheme, type Theme } from '../../lib/theme'
@@ -22,7 +23,8 @@ const RADAR_SRC: Record<Theme, string> = {
 }
 
 function RankingsPanel({ activeCategory }: { activeCategory: CategoryId | null }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lang = i18n.resolvedLanguage ?? 'en'
   const snapshot = useSnapshot()
   const repos = useMemo(
     () => (snapshot.status === 'ready' ? decodeLatest(snapshot.bundle.latest) : []),
@@ -67,18 +69,27 @@ function RankingsPanel({ activeCategory }: { activeCategory: CategoryId | null }
       </div>
     )
   }
+  // CJK sentences butt together; Latin ones need a space between them.
+  const sentenceGap = lang === 'ja' || lang === 'zh' ? '' : ' '
+  // Denominator first, so "Most Popular" is not mistaken for a GitHub-wide ranking.
+  const scope = [
+    t('ranking.scope', { total: formatNumber(snapshot.bundle.meta.total, lang) }),
+    activeCategory ? t('ranking.scopeCategory', { category: t(`category.${activeCategory}`) }) : '',
+  ]
+    .filter(Boolean)
+    .join(sentenceGap)
   return (
     <div className="flex flex-col gap-6" data-testid="rankings">
       <RankingList
         id="popular"
         title={t('ranking.popular')}
-        hint={t('ranking.popularHint')}
+        hint={`${scope}${sentenceGap}${t('ranking.popularHint')}`}
         items={popular}
       />
       <RankingList
         id="rising"
         title={t('ranking.rising')}
-        hint={t('ranking.risingHint')}
+        hint={`${scope}${sentenceGap}${t('ranking.risingHint')}`}
         items={rising.items}
         fallback={rising.mode === 'fallback'}
       />

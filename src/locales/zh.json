@@ -131,10 +131,12 @@
     "error": "榜单加载失败",
     "retry": "重试",
     "fallback": "数据积累中，暂按近 90 天创建的仓库以 star 排序。",
-    "risingHint": "根据每日快照计算的最近 30 天 star 增量。",
+    "risingHint": "按每日快照算出的最近 30 天 star 增量排序。",
     "delta": "30 天 +{{count}}",
     "empty": "暂无可排序的项目",
-    "popularHint": "快照内仓库按总 star 数排序。"
+    "popularHint": "按总 star 数排序。",
+    "scope": "范围是本站的每日快照（六个分类各取热门与新秀前 300 条，加关注列表，今日共 {{total}} 个仓库），不是全 GitHub 的排名。",
+    "scopeCategory": "当前仅限{{category}}分类。"
   },
   "footer": {
     "alternatives": "想查得更深？",

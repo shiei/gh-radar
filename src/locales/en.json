@@ -131,10 +131,12 @@
     "error": "Could not load rankings",
     "retry": "Retry",
     "fallback": "Collecting history. Showing repositories created in the last 90 days by stars for now.",
-    "risingHint": "Stars gained in the last 30 days, computed from the daily snapshot.",
+    "risingHint": "Ordered by stars gained in the last 30 days, computed from the daily snapshots.",
     "delta": "+{{count}} in 30 days",
     "empty": "Nothing to rank yet",
-    "popularHint": "Repositories in the snapshot ordered by total stars."
+    "popularHint": "Ordered by total stars.",
+    "scope": "Scope: this site's daily snapshot (top 300 popular and rising repositories per category across six categories, plus a watchlist; {{total}} repositories today). Not a GitHub-wide ranking.",
+    "scopeCategory": "Currently limited to the {{category}} category."
   },
   "footer": {
     "alternatives": "Need to dig deeper?",
