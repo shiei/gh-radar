@@ -52,7 +52,7 @@ jobs:
       page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   # Smoke check of what is actually being served: a green deploy does not prove the page works.
   verify:
