@@ -1,24 +1,24 @@
 # Tasks
 
-## 1. 数据定义
+## 1. データ定義
 
-- [x] 1.1 为 `src/lib/categories.ts`（来自 daily-snapshot）补三语 `category.*` 键与图标引用，单元测试验证三语名称齐全
-- [x] 1.2 新增 `src/lib/snapshot/`（`loadSnapshot`、`loadSeries`、`decodeRecord`）与 `src/lib/rankings.ts`（`rankPopular`、`rankRising` 含 30 天增量与不足 7 天退化），单元测试覆盖解码、排序、边界与退化
-- [x] 1.3 新增 `src/features/rankings/useSnapshot.ts`（一次加载、内存缓存、缺失 / 过期判定），单元测试用 stub fetch 覆盖三种状态
-- [x] 1.4 fixture 快照改放在 `e2e/fixtures/snapshot/`（30 个仓库、14 天序列），e2e 用路由拦截 `/data/**` 提供；`public/data/` 已由 daily-snapshot 填入真实数据，不再需要占位
+- [x] 1.1 `src/lib/categories.ts`（daily-snapshot 由来）に 3 言語の `category.*` キーとアイコン参照を補い、単体テストで 3 言語の名称が揃っていることを検証する
+- [x] 1.2 `src/lib/snapshot/`（`loadSnapshot`、`loadSeries`、`decodeRecord`）と `src/lib/rankings.ts`（`rankPopular`、`rankRising`。30 日増分と 7 日未満の退化を含む）を新設し、単体テストでデコード、並び替え、境界、退化をカバーする
+- [x] 1.3 `src/features/rankings/useSnapshot.ts`（1 回ロード、メモリキャッシュ、欠落 / 期限切れ判定）を新設し、stub fetch を使う単体テストで 3 つの状態をカバーする
+- [x] 1.4 fixture スナップショットは `e2e/fixtures/snapshot/`（30 リポジトリ、14 日分の系列）に置くことに変更し、e2e ではルートインターセプトで `/data/**` を提供する。`public/data/` には daily-snapshot により実データが入っているため、プレースホルダーは不要になった
 
-## 2. 组件
+## 2. コンポーネント
 
-- [x] 2.1 抽出 `BrainIcon` atom 并新增 `MonitorIcon`、`ServerIcon`、`CloudIcon`、`DatabaseIcon`、`PaletteIcon`
-- [x] 2.2 实现 `CategoryNav` molecule（list / chips 两种形态、选中态、键盘可达），单元测试覆盖渲染六项、选中态匹配、点击回调
-- [x] 2.3 实现 `RankingList` molecule（名次、头像、名称链接、star、Rising 的 30 天增量、数据日期与过期提示、"查看全部"展开收起、退化模式标注），三语 `ranking.*` 键，单元测试覆盖正常 / 退化 / 缺失 / 过期与展开
+- [x] 2.1 `BrainIcon` atom を抽出し、`MonitorIcon`、`ServerIcon`、`CloudIcon`、`DatabaseIcon`、`PaletteIcon` を新設する
+- [x] 2.2 `CategoryNav` molecule（list / chips の 2 形態、選択状態、キーボード操作可）を実装し、単体テストで 6 項目の描画、選択状態の一致、クリックコールバックをカバーする
+- [x] 2.3 `RankingList` molecule（順位、アバター、名称リンク、star、Rising の 30 日増分、データ日付と期限切れの注意、「すべて表示」の展開・折りたたみ、退化モードの注記）を実装し、3 言語の `ranking.*` キーを追加し、単体テストで正常 / 退化 / 欠落 / 期限切れと展開をカバーする
 
-## 3. 布局与接线
+## 3. レイアウトと配線
 
-- [x] 3.1 实现 `DiscoveryLayout` template（lg 三栏网格、以下单列），`AppShell` 与 `Header` 最大宽改为 `max-w-7xl`
-- [x] 3.2 改造 `HomePage`：分类点击调用 `submit`，`activeQuery` 传给 `CategoryNav`，榜单随选中分类过滤，窄屏仅在 idle 时显示榜单；单元测试验证点击分类后发起对应查询且榜单过滤
-- [x] 3.3 e2e `e2e/discovery.spec.ts`：1280px 三栏、榜单各 5 条且 Rising 带增量；点分类后输入框与请求 q、榜单随分类过滤；"查看全部"展开 30 条；600px 下分类为 chip、检索后榜单隐藏；拦截 `/data/latest.json` 返回 404 时显示"尚无数据"且检索正常
+- [x] 3.1 `DiscoveryLayout` template（lg で 3 カラムグリッド、未満は単一カラム）を実装し、`AppShell` と `Header` の最大幅を `max-w-7xl` に変更する
+- [x] 3.2 `HomePage` を改造する：分類クリックで `submit` を呼び、`activeQuery` を `CategoryNav` に渡し、ランキングは選択中の分類でフィルタし、狭い画面では idle 時のみランキングを表示する。単体テストで分類クリック後に対応するクエリが発行されランキングがフィルタされることを検証する
+- [x] 3.3 e2e `e2e/discovery.spec.ts`：1280px で 3 カラム、ランキングが各 5 件で Rising に増分付き。分類クリック後の入力欄とリクエストの q、ランキングが分類でフィルタされる。「すべて表示」で 30 件に展開。600px で分類が chip になり、検索後にランキングが隠れる。`/data/latest.json` をインターセプトして 404 を返すと「データなし」が表示され、検索は正常に動く
 
-## 4. 收尾
+## 4. 仕上げ
 
-- [x] 4.1 `npm run check` 与 `npm run test:e2e` 通过；README 补充榜单定义（30 天增量、退化规则）；ROADMAP 勾选 B
+- [x] 4.1 `npm run check` と `npm run test:e2e` を通す。README にランキングの定義（30 日増分、退化ルール）を補足する。ROADMAP の B にチェックを入れる

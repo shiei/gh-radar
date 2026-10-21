@@ -2,35 +2,35 @@
 
 ## Why
 
-项目目前只有一份需求备忘和三张布局草图，没有任何代码。后续的检索、分类、排行榜等功能都依赖同一套视觉规范（Design Tokens 驱动的日/夜主题）、同一套多语言机制和同一套测试与代码质量工具。先把这层地基单独落地并验证，后面每个业务 change 才能保持小而可审查。
+プロジェクトには現在、要件メモ 1 件とレイアウト草案 3 枚しかなく、コードは一切ない。今後の検索、分類、ランキングなどの機能はすべて、同一のビジュアル規約（Design Tokens 駆動のライト / ダークテーマ）、同一の多言語機構、同一のテスト・コード品質ツールに依存する。まずこの基盤層を単独で実装し検証しておくことで、以降の各業務 change を小さくレビュー可能な単位に保てる。
 
 ## What Changes
 
-- 新建 React + Vite + TypeScript 单页应用骨架，纯前端，无后端。
-- 引入 Tailwind CSS，以 Design Tokens（CSS 变量）作为唯一的视觉规范来源，供样式和组件消费。
-- 实现日间 / 夜间两套外观，用户可手动切换，选择持久化在浏览器本地。
-- 实现多语言机制，支持英文、日文、中文，默认英文；所有界面文案集中放在语言文件中，用户可随时切换。
-- 引入 Base UI 作为无样式组件库，按 Atomic Design（atoms / molecules / organisms / templates / pages）组织 UI 组件目录。
-- 配置 Vitest 单元测试与 Playwright 端到端测试，并各带一个最小示例用例验证管线可用。
-- 配置 ESLint、Prettier、Stylelint 以及 TypeScript 类型检查，提供统一的 npm scripts。
-- 图标统一使用 SVG 组件。
-- 提供一个仅包含应用外壳（页头、主题切换、语言切换）的首页，不含任何业务功能。
-- 本 change 完成后单独 git commit。
+- React + Vite + TypeScript のシングルページアプリケーション骨格を新規作成する。純粋なフロントエンドで、バックエンドは持たない。
+- Tailwind CSS を導入し、Design Tokens（CSS 変数）をビジュアル規約の唯一のソースとして、スタイルとコンポーネントから利用する。
+- ライト / ダークの 2 種類の外観を実装する。ユーザーが手動で切り替えでき、選択はブラウザのローカルに永続化する。
+- 多言語機構を実装する。英語、日本語、中国語をサポートし、デフォルトは英語とする。すべての UI 文言は言語ファイルに集約し、ユーザーはいつでも切り替えられる。
+- Base UI をスタイルなしコンポーネントライブラリとして導入し、Atomic Design（atoms / molecules / organisms / templates / pages）に沿って UI コンポーネントディレクトリを構成する。
+- Vitest による単体テストと Playwright による E2E テストを設定し、それぞれ最小のサンプルケースを 1 つ添えてパイプラインが動作することを検証する。
+- ESLint、Prettier、Stylelint および TypeScript 型チェックを設定し、統一された npm scripts を提供する。
+- アイコンは SVG コンポーネントに統一する。
+- アプリケーションシェル（ヘッダー、テーマ切替、言語切替）のみを含むホームページを提供する。業務機能は一切含まない。
+- 本 change の完了後に単独で git commit する。
 
 ## Capabilities
 
 ### New Capabilities
 
-- `ui-theme`: 日间 / 夜间外观的定义、切换与持久化。Design Tokens 是其实现基础，但 spec 只描述用户可观察的行为。
-- `localization`: 界面语言的可用集合、默认语言、切换行为与文案来源。
+- `ui-theme`: ライト / ダーク外観の定義、切替、永続化。Design Tokens はその実装基盤であるが、spec はユーザーが観察可能な振る舞いのみを記述する。
+- `localization`: UI 言語の利用可能な集合、デフォルト言語、切替の振る舞い、文言のソース。
 
 ### Modified Capabilities
 
-（无。项目尚无已有 spec。）
+（なし。プロジェクトには既存の spec がない。）
 
 ## Impact
 
-- 新增整个前端工程：`package.json`、Vite 配置、Tailwind 配置、tokens 文件、i18n 语言文件、组件目录、测试目录、lint 与格式化配置。
-- 新增 npm scripts：dev、build、test、test:e2e、lint、format、typecheck。
-- 无外部服务依赖，无 API 调用。
-- 为后续 change 定下约束：所有颜色、间距、字号必须来自 tokens；所有用户可见文案必须来自语言文件；新组件必须落在 Atomic Design 的某一层。
+- フロントエンド工程全体を新規追加する: `package.json`、Vite 設定、Tailwind 設定、tokens ファイル、i18n 言語ファイル、コンポーネントディレクトリ、テストディレクトリ、lint とフォーマット設定。
+- npm scripts を新規追加する: dev、build、test、test:e2e、lint、format、typecheck。
+- 外部サービス依存なし、API 呼び出しなし。
+- 以降の change に対する制約を定める: すべての色、間隔、フォントサイズは tokens から取得しなければならない。すべてのユーザー可視文言は言語ファイルから取得しなければならない。新規コンポーネントは Atomic Design のいずれかの層に配置しなければならない。

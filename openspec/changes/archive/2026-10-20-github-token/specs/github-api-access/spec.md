@@ -3,42 +3,42 @@
 ## ADDED Requirements
 
 ### Requirement: Requests carry the user's token when configured
-当用户已配置 token 时，所有 GitHub API 请求 SHALL 携带 `Authorization: Bearer <token>` 标头；未配置时 MUST NOT 携带任何凭据。token MUST NOT 发往 `api.github.com` 以外的任何地址。
+ユーザーが token を設定済みの場合、すべての GitHub API リクエストは SHALL `Authorization: Bearer <token>` ヘッダーを付ける。未設定の場合は MUST NOT いかなる資格情報も付けてはならない。token は MUST NOT `api.github.com` 以外のいかなるアドレスにも送信してはならない。
 
 #### Scenario: Token configured
-- **WHEN** 用户已保存有效 token 并发起检索
-- **THEN** 请求带 `Authorization: Bearer` 标头，值为该 token
+- **WHEN** ユーザーが有効な token を保存済みで検索を発起する
+- **THEN** リクエストは `Authorization: Bearer` ヘッダーを付け、その値はその token である
 
 #### Scenario: No token
-- **WHEN** 用户未配置 token
-- **THEN** 请求中没有 `Authorization` 标头
+- **WHEN** ユーザーが token を設定していない
+- **THEN** リクエストに `Authorization` ヘッダーがない
 
 ### Requirement: Token can be validated without spending quota
-应用 SHALL 通过 `GET /rate_limit` 校验 token：200 视为有效并同时更新配额状态；401 视为无效。该请求不计入配额。
+アプリケーションは SHALL `GET /rate_limit` で token を検証する: 200 は有効とみなし同時にクォータ状態を更新する。401 は無効とみなす。このリクエストはクォータに計上されない。
 
 #### Scenario: Valid token
-- **WHEN** 用 token 请求 `/rate_limit` 返回 200
-- **THEN** 校验通过，配额状态更新为响应中 search 资源的上限与剩余
+- **WHEN** token を付けた `/rate_limit` へのリクエストが 200 を返す
+- **THEN** 検証に成功し、クォータ状態はレスポンス内の search リソースの上限と残りに更新される
 
 #### Scenario: Invalid token
-- **WHEN** 用 token 请求 `/rate_limit` 返回 401
-- **THEN** 校验失败，报告 token 无效，配额状态不变
+- **WHEN** token を付けた `/rate_limit` へのリクエストが 401 を返す
+- **THEN** 検証に失敗し、token が無効であると報告し、クォータ状態は変わらない
 
 ## MODIFIED Requirements
 
 ### Requirement: Rate limit information is read from every response
-每个响应的 `X-RateLimit-Limit`、`X-RateLimit-Remaining` 与 `X-RateLimit-Reset` 标头 SHALL 被解析并保存为当前配额状态（上限、剩余、恢复时刻），供界面查询。Remaining 或 Reset 缺失时配额状态 SHALL 视为未知；Limit 缺失时上限视为未知但不影响其余字段。
+各レスポンスの `X-RateLimit-Limit`、`X-RateLimit-Remaining`、`X-RateLimit-Reset` ヘッダーは SHALL 解析され、現在のクォータ状態（上限、残り、回復時刻）として保存され、UI から参照できる。Remaining または Reset が欠落している場合、クォータ状態は SHALL 不明とみなす。Limit が欠落している場合は上限を不明とみなすが、その他のフィールドには影響しない。
 
 #### Scenario: Headers present
-- **WHEN** 响应带有 `X-RateLimit-Limit: 30`、`X-RateLimit-Remaining: 7` 与 `X-RateLimit-Reset: 1760000000`
-- **THEN** 配额状态为上限 30、剩余 7、恢复时间为该时间戳对应的时刻
+- **WHEN** レスポンスに `X-RateLimit-Limit: 30`、`X-RateLimit-Remaining: 7`、`X-RateLimit-Reset: 1760000000` が付いている
+- **THEN** クォータ状態は上限 30、残り 7、回復時刻はそのタイムスタンプに対応する時刻である
 
 #### Scenario: Headers absent
-- **WHEN** 响应没有配额标头
-- **THEN** 配额状态为未知，不报错
+- **WHEN** レスポンスにクォータヘッダーがない
+- **THEN** クォータ状態は不明となり、エラーにはならない
 
 ## REMOVED Requirements
 
 ### Requirement: Requests are unauthenticated
-**Reason**: 第二阶段允许用户配置个人 token，未认证不再是唯一状态。
-**Migration**: 由 "Requests carry the user's token when configured" 覆盖：未配置 token 时行为与原要求相同。
+**Reason**: 第 2 フェーズではユーザーが個人 token を設定できるようになり、未認証が唯一の状態ではなくなった。
+**Migration**: "Requests carry the user's token when configured" でカバーする: token 未設定時の振る舞いは元の要件と同じである。

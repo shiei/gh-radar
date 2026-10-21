@@ -2,42 +2,42 @@
 
 ## Purpose
 
-定义首页的分类导航：有哪些分类、每个分类背后是什么查询、如何展示，以及点击后与检索的关系，让不懂检索语法的用户也能探索。
+トップページの分類ナビゲーションを定義する：どの分類があるか、各分類の背後にあるクエリは何か、どう表示するか、クリック後の検索との関係。検索構文を知らないユーザーでも探索できるようにする。
 
 ## ADDED Requirements
 
 ### Requirement: Six fixed categories
-应用 SHALL 提供固定的六个分类：Frontend、Backend、AI / ML、DevOps、Database、Design。每个分类 SHALL 有三种语言的名称、一个图标和一条 GitHub 仓库检索查询。分类与查询的对应 SHALL 集中在一个映射文件中维护。
+アプリケーション SHALL 固定の 6 分類を提供する：Frontend、Backend、AI / ML、DevOps、Database、Design。各分類 SHALL 3 言語の名称、1 つのアイコン、1 本の GitHub リポジトリ検索クエリを持つ。分類とクエリの対応 SHALL 1 つのマッピングファイルに集約して管理する。
 
 #### Scenario: All categories are listed
-- **WHEN** 用户打开首页
-- **THEN** 导航区按固定顺序显示六个分类，各带图标与当前语言的名称
+- **WHEN** ユーザーがトップページを開く
+- **THEN** ナビゲーション領域に 6 つの分類が固定順で表示され、それぞれアイコンと現在の言語の名称を伴う
 
 ### Requirement: Clicking a category runs its query
-点击分类 SHALL 以该分类的查询、当前排序、第 1 页发起检索，输入框 SHALL 显示该查询，结果显示在中栏。
+分類のクリック SHALL その分類のクエリ、現在のソート、1 ページ目で検索を発行し、入力欄 SHALL そのクエリを表示し、結果は中央カラムに表示される。
 
 #### Scenario: Browse a category
-- **WHEN** 用户点击 "AI / ML"
-- **THEN** 发起该分类映射的查询（例如 `topic:machine-learning stars:>100`），输入框显示同一查询，结果区显示结果
+- **WHEN** ユーザーが「AI / ML」をクリックする
+- **THEN** その分類にマッピングされたクエリ（例：`topic:machine-learning stars:>100`）が発行され、入力欄に同じクエリが表示され、結果領域に結果が表示される
 
 #### Scenario: Keyboard
-- **WHEN** 用户用 Tab 聚焦某个分类并按 Enter
-- **THEN** 效果与点击相同
+- **WHEN** ユーザーが Tab である分類にフォーカスして Enter を押す
+- **THEN** クリックと同じ効果になる
 
 ### Requirement: Active category is highlighted
-当前检索的查询与某个分类的查询完全相同时，该分类 SHALL 显示为选中态；否则没有分类被选中。
+現在の検索クエリがある分類のクエリと完全に一致するとき、その分類 SHALL 選択状態で表示する。そうでなければどの分類も選択されない。
 
 #### Scenario: Highlight after click
-- **WHEN** 用户点击 "DevOps"
-- **THEN** "DevOps" 显示为选中态，其余五个不是
+- **WHEN** ユーザーが「DevOps」をクリックする
+- **THEN** 「DevOps」が選択状態で表示され、他の 5 つはそうでない
 
 #### Scenario: Free search clears highlight
-- **WHEN** 用户在 "DevOps" 选中后手动检索 `react`
-- **THEN** 没有分类处于选中态
+- **WHEN** ユーザーが「DevOps」を選択した後に手動で `react` を検索する
+- **THEN** どの分類も選択状態にない
 
 ### Requirement: Categories adapt to narrow screens
-在宽屏上分类 SHALL 作为左栏的纵向列表显示；在窄屏上 SHALL 变为搜索框上方的横向可换行 chip 行，内容与行为不变。
+ワイド画面では分類 SHALL 左カラムの縦リストとして表示する。狭い画面では SHALL 検索ボックス上部の横並びで折り返し可能な chip 行に変わり、内容と挙動は変わらない。
 
 #### Scenario: Narrow screen
-- **WHEN** 窗口宽度小于 1024px
-- **THEN** 六个分类以横向 chip 显示在搜索框上方，点击行为相同
+- **WHEN** ウィンドウ幅が 1024px 未満である
+- **THEN** 6 つの分類が検索ボックスの上に横並びの chip として表示され、クリック時の挙動は同じである

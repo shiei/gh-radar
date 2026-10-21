@@ -2,79 +2,79 @@
 
 ## Purpose
 
-定义用户在本站配置 GitHub 个人 token 的方式：入口、校验、保存、移除、安全约束，以及配额状态如何展示给用户。
+ユーザーが本サイトで GitHub の個人 token を設定する方式を定義する: 入口、検証、保存、削除、セキュリティ制約、およびクォータ状態をユーザーにどのように表示するか。
 
 ## ADDED Requirements
 
 ### Requirement: Token entry lives in the header
-页头 SHALL 有一个始终可见的 token 入口。未配置时它显示"连接 GitHub"类文案；已配置时显示当前 search 配额的"剩余 / 上限"。点击入口 SHALL 打开一个弹层。
+ヘッダーには SHALL 常時表示される token の入口がある。未設定時は「GitHub に接続」のような文言を表示し、設定済みの時は現在の search クォータの「残り / 上限」を表示する。入口のクリックは SHALL ポップオーバーを開く。
 
 #### Scenario: Not configured
-- **WHEN** 用户未配置 token
-- **THEN** 页头入口显示连接提示，不显示配额数字
+- **WHEN** ユーザーが token を設定していない
+- **THEN** ヘッダーの入口は接続の案内を表示し、クォータの数値は表示しない
 
 #### Scenario: Configured
-- **WHEN** 用户已配置 token 且最近一次响应的配额为剩余 27、上限 30
-- **THEN** 页头入口显示 27 / 30
+- **WHEN** ユーザーが token を設定済みで、最新レスポンスのクォータが残り 27、上限 30 である
+- **THEN** ヘッダーの入口は 27 / 30 を表示する
 
 ### Requirement: Token is validated before it is saved
-弹层中 SHALL 有一个密码型输入框和保存操作。保存时 SHALL 先校验 token；校验通过才写入本机存储并关闭弹层，校验失败 SHALL 显示无效提示且不保存。校验进行中 SHALL 显示加载状态。
+ポップオーバー内には SHALL パスワード型の入力ボックスと保存操作がある。保存時は SHALL まず token を検証する。検証に成功した場合のみローカルストレージに書き込みポップオーバーを閉じる。検証に失敗した場合は SHALL 無効の通知を表示し、保存しない。検証中は SHALL 読み込み状態を表示する。
 
 #### Scenario: Save a valid token
-- **WHEN** 用户粘贴有效 token 并保存
-- **THEN** token 被保存，弹层关闭，页头入口变为显示配额
+- **WHEN** ユーザーが有効な token を貼り付けて保存する
+- **THEN** token が保存され、ポップオーバーが閉じ、ヘッダーの入口がクォータ表示に変わる
 
 #### Scenario: Reject an invalid token
-- **WHEN** 用户粘贴无效 token 并保存
-- **THEN** 显示"token 无效"提示，输入框保留内容，存储中没有 token
+- **WHEN** ユーザーが無効な token を貼り付けて保存する
+- **THEN** 「token が無効」の通知を表示し、入力ボックスは内容を保持し、ストレージに token はない
 
 #### Scenario: Blank input
-- **WHEN** 用户未输入任何内容就保存
-- **THEN** 不发起校验，不保存
+- **WHEN** ユーザーが何も入力せずに保存する
+- **THEN** 検証を発起せず、保存しない
 
 ### Requirement: Token lives in memory unless the user opts to remember it
-保存的 token 默认 SHALL 只保存在内存中，关闭标签页即消失，MUST NOT 写入任何持久化存储。弹层 SHALL 提供"在此设备记住"的勾选，默认不勾选；勾选后 token 才写入本浏览器的 localStorage，勾选旁 SHALL 说明页面脚本与浏览器扩展可能读取、共用电脑不要勾选。无论哪种方式，token MUST NOT 发往 `api.github.com` 以外的任何地址。
+保存した token はデフォルトで SHALL メモリにのみ保持し、タブを閉じると消え、MUST NOT いかなる永続ストレージにも書き込んではならない。ポップオーバーは SHALL 「このデバイスで記憶する」のチェックを提供し、デフォルトは未チェックとする。チェックした場合のみ token をこのブラウザの localStorage に書き込む。チェックの横には SHALL ページのスクリプトやブラウザ拡張機能が読み取る可能性があること、共用のコンピューターではチェックしないことを説明する。いずれの方式でも、token は MUST NOT `api.github.com` 以外のいかなるアドレスにも送信してはならない。
 
 #### Scenario: Default is memory only
-- **WHEN** 用户保存 token 且未勾选"在此设备记住"
-- **THEN** 本标签页内的请求携带该 token，localStorage 中没有 token，刷新页面后回到未配置状态
+- **WHEN** ユーザーが token を保存し、「このデバイスで記憶する」をチェックしていない
+- **THEN** このタブ内のリクエストはその token を付け、localStorage に token はなく、ページをリロードすると未設定状態に戻る
 
 #### Scenario: Remember on this device
-- **WHEN** 用户勾选"在此设备记住"后保存
-- **THEN** token 写入 localStorage，刷新页面后仍为已配置状态，弹层显示"已在此设备记住"
+- **WHEN** ユーザーが「このデバイスで記憶する」をチェックして保存する
+- **THEN** token が localStorage に書き込まれ、ページをリロードしても設定済み状態のままで、ポップオーバーは「このデバイスで記憶済み」と表示する
 
 #### Scenario: Risk note is shown
-- **WHEN** 用户打开弹层
-- **THEN** 看到"默认只在内存、只发往 GitHub"的说明，以及勾选项旁关于脚本与扩展可读的提示
+- **WHEN** ユーザーがポップオーバーを開く
+- **THEN** 「デフォルトではメモリのみ、GitHub にのみ送信する」という説明と、チェック項目の横にスクリプトや拡張機能から読み取れることに関する注意書きが見える
 
 ### Requirement: Guidance asks for a least-privilege token
-弹层 SHALL 提供指向 GitHub 新建 fine-grained token 页面的链接，链接文案只说明用途；链接下方 SHALL 另起一条注意说明，解释为降低泄露后的风险推荐：只读、仅公开仓库、短期过期。
+ポップオーバーは SHALL GitHub の fine-grained token 新規作成ページへのリンクを提供し、リンクの文言は用途のみを説明する。リンクの下には SHALL 別途注意書きを置き、漏洩後のリスクを下げるために推奨する点を説明する: 読み取り専用、公開リポジトリのみ、短期の有効期限。
 
 #### Scenario: Link and wording
-- **WHEN** 用户打开弹层
-- **THEN** 看到创建链接，其下方的注意说明包含只读、仅公开仓库、短期过期三点
+- **WHEN** ユーザーがポップオーバーを開く
+- **THEN** 作成リンクが見え、その下の注意書きに読み取り専用、公開リポジトリのみ、短期の有効期限の 3 点が含まれる
 
 ### Requirement: Production page restricts script and connection origins
-生产构建的页面 SHALL 带有 Content Security Policy：脚本只允许本站来源（内联的主题启动脚本以哈希放行），网络连接只允许本站与 `api.github.com`，图片只允许本站与 GitHub 头像域名，禁止 object 与外部 base。开发模式不受此约束。
+本番ビルドのページは SHALL Content Security Policy を持つ: スクリプトは本サイトのオリジンのみ許可する（インラインのテーマ起動スクリプトはハッシュで許可する）。ネットワーク接続は本サイトと `api.github.com` のみ許可する。画像は本サイトと GitHub のアバタードメインのみ許可する。object と外部の base を禁止する。開発モードはこの制約を受けない。
 
 #### Scenario: Policy present in the built page
-- **WHEN** 加载生产构建的首页
-- **THEN** 页面声明了上述策略，主题启动脚本仍正常执行，检索与头像加载不受影响
+- **WHEN** 本番ビルドのホームページを読み込む
+- **THEN** ページは上記のポリシーを宣言しており、テーマ起動スクリプトは引き続き正常に実行され、検索とアバターの読み込みは影響を受けない
 
 #### Scenario: Injected script is blocked
-- **WHEN** 页面中出现来自其他域名的脚本或未放行的内联脚本
-- **THEN** 浏览器拒绝执行
+- **WHEN** ページ内に他のドメインからのスクリプトや許可されていないインラインスクリプトが現れる
+- **THEN** ブラウザは実行を拒否する
 
 ### Requirement: Token can be removed
-已配置时弹层 SHALL 提供移除操作。移除后 SHALL 清除本机存储中的 token，配额状态重置为未知，后续请求不再携带凭据。
+設定済みの時、ポップオーバーは SHALL 削除操作を提供する。削除後は SHALL ローカルストレージ内の token をクリアし、クォータ状態を不明にリセットし、以降のリクエストは資格情報を付けない。
 
 #### Scenario: Remove
-- **WHEN** 用户点击移除
-- **THEN** 页头入口回到未配置状态，下一次检索请求没有 `Authorization` 标头
+- **WHEN** ユーザーが削除をクリックする
+- **THEN** ヘッダーの入口は未設定状態に戻り、次の検索リクエストに `Authorization` ヘッダーがない
 
 ### Requirement: Token input is never echoed
-输入框 SHALL 为密码型，已保存的 token MUST NOT 以明文回显在界面上。
+入力ボックスは SHALL パスワード型であり、保存済みの token は MUST NOT UI 上に平文で表示されてはならない。
 
 #### Scenario: Reopen after saving
-- **WHEN** 用户保存 token 后再次打开弹层
-- **THEN** 输入框为空且为密码型，显示"已配置"状态而不是 token 内容
+- **WHEN** ユーザーが token を保存した後にポップオーバーを再度開く
+- **THEN** 入力ボックスは空でパスワード型であり、token の内容ではなく「設定済み」状態を表示する

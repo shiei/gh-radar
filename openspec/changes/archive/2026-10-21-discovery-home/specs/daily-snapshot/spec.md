@@ -3,8 +3,8 @@
 ## MODIFIED Requirements
 
 ### Requirement: Per-repository fields
-每条记录 SHALL 包含：`owner/name`、star 数、fork 数、未关闭 issue 数、最近推送时间、创建时间、主语言、topics、是否归档、来源列表，以及 owner 的数字 id（用于直接拼出头像地址，省去一次重定向；API 未提供时可缺省）。
+各レコード SHALL 以下を含む：`owner/name`、star 数、fork 数、オープン issue 数、最終 push 日時、作成日時、主言語、topics、アーカイブ済みか否か、ソース一覧、および owner の数値 id（アバターのアドレスを直接組み立ててリダイレクトを 1 回省くために使う。API が提供しない場合は省略してよい）。
 
 #### Scenario: Record shape
-- **WHEN** 读取 `latest.json` 中任一仓库
-- **THEN** 上述字段齐全，缺失的语言或 topics 以 null 或空数组表示，owner id 缺失时该字段不存在
+- **WHEN** `latest.json` の任意のリポジトリを読む
+- **THEN** 上記フィールドがすべて揃っており、欠けている言語や topics は null または空配列で表され、owner id が欠けている場合はそのフィールドが存在しない

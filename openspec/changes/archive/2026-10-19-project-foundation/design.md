@@ -2,136 +2,136 @@
 
 ## Context
 
-绿地项目，实施前目录中只有 OpenSpec 规划文件和需求备忘，没有任何代码。动机见 proposal.md 的 Why。本机工具链：Node 24、npm 11、macOS 12，没有安装 pnpm。
+グリーンフィールドプロジェクトであり、実装前のディレクトリには OpenSpec の計画ファイルと要件メモしかなく、コードは一切ない。動機は proposal.md の Why を参照。ローカルのツールチェーン: Node 24、npm 11、macOS 12。pnpm はインストールされていない。
 
-实施时实际锁定的版本（与规划时的差异已标注）：
+実装時に実際にロックしたバージョン（計画時との差異は注記済み）:
 
-| 依赖 | 版本 | 备注 |
+| 依存 | バージョン | 備考 |
 |------|------|------|
-| vite / @vitejs/plugin-react | 8.3.4 / 6.1.2 | 与规划一致 |
+| vite / @vitejs/plugin-react | 8.3.4 / 6.1.2 | 計画どおり |
 | react / react-dom | 19.3.1 | |
-| typescript | 6.0.3 | create-vite 9.2 模板默认 TS 6 |
+| typescript | 6.0.3 | create-vite 9.2 テンプレートのデフォルトが TS 6 |
 | tailwindcss / @tailwindcss/vite | 4.3.3 | |
-| @base-ui-components/react | 1.0.0-rc.0 | `latest` 标签，精确锁定 |
+| @base-ui-components/react | 1.0.0-rc.0 | `latest` タグ、正確にロック |
 | i18next / react-i18next | 26.5.2 / 17.1.0 | |
 | vitest / jsdom | 5.0.5 / 30.1.3 | |
-| @playwright/test | **1.56.1** | 规划为 1.64，但 1.64 拒绝在 macOS 12 上安装 Chromium；1.56.1 是能在本机安装并运行的最新版本 |
-| eslint / typescript-eslint | 10.13.0 / 8.71.2 | create-vite 9 模板默认 oxlint，已移除并按 D9 改用 ESLint |
+| @playwright/test | **1.56.1** | 計画では 1.64 だったが、1.64 は macOS 12 への Chromium インストールを拒否する。1.56.1 はローカルでインストールと実行が可能な最新バージョン |
+| eslint / typescript-eslint | 10.13.0 / 8.71.2 | create-vite 9 テンプレートのデフォルトは oxlint。削除し、D9 に従って ESLint に変更 |
 | stylelint / stylelint-config-standard | 17.16.0 / 40.0.0 | |
 | prettier / prettier-plugin-tailwindcss | 3.9.10 / 0.8.1 | |
 
-行为契约见 `specs/ui-theme/spec.md` 和 `specs/localization/spec.md`，本文不重复。
+振る舞いの契約は `specs/ui-theme/spec.md` と `specs/localization/spec.md` を参照。本書では繰り返さない。
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- 一处定义视觉规范（tokens），组件只消费语义化的 token，不碰原始颜色值。
-- 主题和语言的"选择、持久化、初始化"逻辑与 UI 组件解耦，后续 change 可以直接复用。
-- 所有质量门禁（typecheck、lint、format、unit、e2e）都能用一条命令跑通，并在脚手架阶段就是绿的。
-- 目录结构在第一天就定下来，后续 change 不需要再搬文件。
+- ビジュアル規約（tokens）を一箇所で定義する。コンポーネントは意味付けされた token のみを利用し、生の色値には触れない。
+- テーマと言語の「選択、永続化、初期化」ロジックを UI コンポーネントから分離し、以降の change でそのまま再利用できるようにする。
+- すべての品質ゲート（typecheck、lint、format、unit、e2e）を 1 つのコマンドで実行でき、スキャフォールド段階ですべてグリーンである。
+- ディレクトリ構成を初日に確定し、以降の change でファイルを移動する必要がないようにする。
 
 **Non-Goals:**
 
-- 不做路由。首页是唯一页面，路由在需要第二个页面的 change 再引入。
-- 不做响应式断点以外的移动端适配细节。
-- 不引入状态管理库。
-- 不配置 CI。本 change 只保证本地命令可用。
+- ルーティングは行わない。ホームページが唯一のページであり、ルーティングは 2 つ目のページが必要になる change で導入する。
+- レスポンシブなブレークポイント以外のモバイル対応の詳細は行わない。
+- 状態管理ライブラリは導入しない。
+- CI は設定しない。本 change はローカルコマンドが動作することのみを保証する。
 
 ## Decisions
 
-### D1. 包管理器用 npm
+### D1. パッケージマネージャーは npm を使う
 
-本机只有 npm。提交 `package-lock.json`。不引入 pnpm 以免多一个环境前提。
+ローカルには npm しかない。`package-lock.json` をコミットする。環境の前提条件を増やさないため pnpm は導入しない。
 
-### D2. 目录结构
+### D2. ディレクトリ構成
 
 ```
 src/
-  app/            应用入口与 Provider 组合 (App.tsx, providers.tsx)
+  app/            アプリのエントリと Provider の組み合わせ (App.tsx, providers.tsx)
   components/
-    atoms/        最小 UI 单元: Button, Icon(SVG), Text ...
-    molecules/    atoms 组合: ThemeToggle, LanguageSwitcher
-    organisms/    页面区块: Header
-    templates/    页面布局骨架: AppShell
+    atoms/        最小の UI 単位: Button, Icon(SVG), Text ...
+    molecules/    atoms の組み合わせ: ThemeToggle, LanguageSwitcher
+    organisms/    ページ区画: Header
+    templates/    ページレイアウトの骨格: AppShell
   pages/          HomePage
   lib/
-    theme/        主题读取/写入/初始化逻辑 + useTheme
-    i18n/         i18next 初始化 + 语言持久化
+    theme/        テーマの読み取り/書き込み/初期化ロジック + useTheme
+    i18n/         i18next の初期化 + 言語の永続化
   locales/        en.json ja.json zh.json
   styles/         tokens.css, globals.css
   test/           Vitest setup
-e2e/              Playwright 测试
+e2e/              Playwright テスト
 ```
 
-Atomic Design 只管 `components/` 和 `pages/`；非 UI 逻辑放 `lib/`，避免把 hook 塞进组件层。备选是 feature-based 目录（`features/theme/` 同时放逻辑和组件），放弃原因是需求明确要求 Atomic Design 分层，两套并存会让人不知道组件该放哪。
+Atomic Design が管理するのは `components/` と `pages/` のみとする。UI 以外のロジックは `lib/` に置き、hook をコンポーネント層に押し込むことを避ける。代替案は feature ベースのディレクトリ（`features/theme/` にロジックとコンポーネントを同居させる）だが、要件が Atomic Design の階層化を明確に求めており、2 方式が併存するとコンポーネントの置き場所が分からなくなるため採用しなかった。
 
-### D3. Tailwind v4 + CSS 变量 tokens，不用 `dark:` 变体
+### D3. Tailwind v4 + CSS 変数 tokens。`dark:` バリアントは使わない
 
-- `src/styles/tokens.css` 用 `:root` 定义日间 token，用 `[data-theme="dark"]` 覆盖夜间 token。token 名是语义化的（`--color-surface`、`--color-text`、`--color-border`、`--color-accent` 等），不是颜色名。
-- 通过 Tailwind v4 的 `@theme inline` 把这些变量映射成工具类（`bg-surface`、`text-text`），组件只用这些语义类。
-- 间距、圆角、字号同样在 `@theme` 中声明为 token。
-- 集成方式用官方 `@tailwindcss/vite` 插件，不走 PostCSS。
+- `src/styles/tokens.css` では `:root` でライトの token を定義し、`[data-theme="dark"]` でダークの token を上書きする。token 名は意味ベース（`--color-surface`、`--color-text`、`--color-border`、`--color-accent` など）であり、色名ではない。
+- Tailwind v4 の `@theme inline` でこれらの変数をユーティリティクラス（`bg-surface`、`text-text`）にマッピングし、コンポーネントはこれらの意味クラスのみを使う。
+- 間隔、角丸、フォントサイズも同様に `@theme` 内で token として宣言する。
+- 統合方式は公式の `@tailwindcss/vite` プラグインを使い、PostCSS は経由しない。
 
-备选是 Tailwind 的 `dark:` class 变体，每个组件写两遍颜色。放弃原因：颜色散落在组件里，和"tokens 是唯一视觉规范来源"冲突，也无法支持未来第三套主题。
+代替案は Tailwind の `dark:` クラスバリアントで、各コンポーネントで色を 2 回書く方式である。採用しなかった理由: 色がコンポーネント内に散在し、「tokens がビジュアル規約の唯一のソースである」ことと矛盾する上、将来の 3 つ目のテーマにも対応できない。
 
-### D4. 主题状态：`<html data-theme>` + localStorage + 首屏内联脚本
+### D4. テーマ状態: `<html data-theme>` + localStorage + 初回描画前のインラインスクリプト
 
-- 激活主题由 `<html>` 的 `data-theme` 属性表示，值为 `light` 或 `dark`。CSS 只依赖这个属性。
-- 持久化键 `osr.theme`，值同上。未保存时按 `prefers-color-scheme` 决定，无法判断时 `light`。
-- `index.html` 的 `<head>` 中放一段不依赖任何模块的内联脚本，在首次绘制前完成上述解析并设置属性，满足"不闪烁"要求。
-- React 侧 `lib/theme` 提供 `ThemeProvider` 和 `useTheme()`，切换时同时更新属性和 localStorage。内联脚本和 React 侧共用同一套解析规则，规则抽成纯函数并有单元测试；内联脚本因为不能 import，保持极短并由 e2e 覆盖。
+- アクティブなテーマは `<html>` の `data-theme` 属性で表し、値は `light` または `dark` とする。CSS はこの属性のみに依存する。
+- 永続化キーは `osr.theme`、値は上記と同じ。未保存の場合は `prefers-color-scheme` で決定し、判定できない場合は `light` とする。
+- `index.html` の `<head>` に、いかなるモジュールにも依存しないインラインスクリプトを置き、初回描画前に上記の解決を完了して属性を設定することで、「フラッシュしない」要件を満たす。
+- React 側では `lib/theme` が `ThemeProvider` と `useTheme()` を提供し、切替時に属性と localStorage を同時に更新する。インラインスクリプトと React 側は同一の解決規則を共有し、規則は純関数として抽出し単体テストを持つ。インラインスクリプトは import できないため極めて短く保ち、e2e でカバーする。
 
-备选是只在 React 挂载后设置主题，放弃原因是刷新时必然有一帧错误主题。
+代替案は React のマウント後にのみテーマを設定する方式だが、リロード時に必ず 1 フレーム誤ったテーマが表示されるため採用しなかった。
 
-### D5. i18n 用 i18next + react-i18next，资源静态打包
+### D5. i18n は i18next + react-i18next を使い、リソースは静的にバンドルする
 
-- 三份 JSON 在 `src/locales/`，构建时静态 import，不用 http backend。
-- 不装语言检测插件。初始语言：localStorage 键 `osr.lang` 有值则用，否则 `en`。这是需求明确要求的"默认英文"，不是遗漏。
-- 切换语言时同步 `document.documentElement.lang`。
-- 用 i18next 的 TypeScript 模块扩展，以 `en.json` 作为键的类型来源，组件里写错键名在 typecheck 阶段报错。
-- 键集合一致性由一个 Vitest 用例保证：读入三份 JSON，断言扁平化后的键集合完全相等。这就是 spec 里"缺失翻译可被自动检测"的实现。
+- 3 つの JSON を `src/locales/` に置き、ビルド時に静的 import する。http backend は使わない。
+- 言語検出プラグインは入れない。初期言語: localStorage キー `osr.lang` に値があればそれを使い、なければ `en`。これは要件が明確に求める「デフォルト英語」であり、見落としではない。
+- 言語切替時に `document.documentElement.lang` を同期する。
+- i18next の TypeScript モジュール拡張を使い、`en.json` をキーの型ソースとする。コンポーネント内でキー名を誤ると typecheck 段階でエラーになる。
+- キー集合の一貫性は 1 つの Vitest ケースで保証する: 3 つの JSON を読み込み、フラット化後のキー集合が完全に一致することをアサートする。これが spec にある「翻訳の欠落を自動検出できる」の実装である。
 
-备选是手写一个 Context + 对象查表。放弃原因：后续检索结果页会需要插值和复数，到时再迁移成本更高。
+代替案は Context + オブジェクト参照の手書き実装である。採用しなかった理由: 今後の検索結果ページでは補間と複数形が必要になり、その時点で移行するとコストがより高くなる。
 
-### D6. Base UI 作为无样式组件基础
+### D6. Base UI をスタイルなしコンポーネントの基盤とする
 
-- 包名 `@base-ui-components/react`，锁定实施当天 `latest` 解析到的精确版本。
-- ThemeToggle 基于 Base UI 的 Switch 或 Toggle；LanguageSwitcher 基于 Base UI 的 Select。
-- 所有 Base UI 组件都包在我们自己的 atom 或 molecule 里，页面和 organism 不直接 import Base UI。这样 rc 版本的 API 变化只影响几个文件。
+- パッケージ名は `@base-ui-components/react`。実装当日に `latest` が解決される正確なバージョンにロックする。
+- ThemeToggle は Base UI の Switch または Toggle をベースにし、LanguageSwitcher は Base UI の Select をベースにする。
+- すべての Base UI コンポーネントは自前の atom または molecule でラップし、ページと organism は Base UI を直接 import しない。これにより rc バージョンの API 変更の影響が数ファイルに限定される。
 
-### D7. 图标：手写 SVG React 组件
+### D7. アイコン: 手書きの SVG React コンポーネント
 
-`components/atoms/icons/` 下每个图标一个组件，使用 `currentColor`，默认 `aria-hidden="true"`，可通过 props 指定尺寸和可访问标签。不引入图标库，需求明确说先用 SVG。
+`components/atoms/icons/` 配下にアイコンごとに 1 コンポーネントを置き、`currentColor` を使用し、デフォルトで `aria-hidden="true"` とする。props でサイズとアクセシブルなラベルを指定できる。アイコンライブラリは導入しない。要件が明確にまず SVG を使うとしている。
 
-### D8. 测试
+### D8. テスト
 
-- 单元：Vitest + jsdom + Testing Library（react、jest-dom、user-event）。`src/test/setup.ts` 注册 jest-dom 匹配器。
-- 端到端：Playwright，只安装 Chromium。版本锁定 1.56.1（见 Context 表格，macOS 12 限制）；升级机器系统后可以跟进最新版。`playwright.config.ts` 的 `webServer` 先 `vite build` 再 `vite preview`，测试打的是生产构建，更接近真实行为。
-- 两种测试各带至少一个真实用例（主题持久化、语言切换），不是空壳。
+- 単体: Vitest + jsdom + Testing Library（react、jest-dom、user-event）。`src/test/setup.ts` で jest-dom のマッチャーを登録する。
+- E2E: Playwright。Chromium のみインストールする。バージョンは 1.56.1 にロックする（Context の表を参照、macOS 12 の制約）。マシンの OS をアップグレードした後は最新版に追従できる。`playwright.config.ts` の `webServer` はまず `vite build` し、その後 `vite preview` する。テストは本番ビルドに対して行い、実際の振る舞いに近づける。
+- 2 種類のテストはそれぞれ少なくとも 1 つの実際のケース（テーマの永続化、言語切替）を持ち、空の殻ではない。
 
-### D9. 代码质量工具
+### D9. コード品質ツール
 
-- ESLint 10 flat config：`@eslint/js`、`typescript-eslint`（type-checked 规则集）、`eslint-plugin-react-hooks`、`eslint-plugin-react-refresh`、`eslint-config-prettier` 关掉格式类规则。
-- Prettier + `prettier-plugin-tailwindcss` 排序 class。
-- Stylelint 17 + `stylelint-config-standard`，`at-rule-no-unknown` 忽略 Tailwind v4 的 `@theme`、`@utility`、`@variant`、`@custom-variant`、`@apply`、`@source`、`@plugin`。
-- Typecheck 用 `tsc -b --noEmit`，TS 开 `strict` 和 `noUncheckedIndexedAccess`。
-- npm scripts：`dev`、`build`、`preview`、`typecheck`、`lint`（eslint + stylelint）、`format`、`format:check`、`test`、`test:e2e`、`check`（typecheck + lint + format:check + test）。
+- ESLint 10 flat config: `@eslint/js`、`typescript-eslint`（type-checked ルールセット）、`eslint-plugin-react-hooks`、`eslint-plugin-react-refresh`、`eslint-config-prettier` でフォーマット系ルールを無効化する。
+- Prettier + `prettier-plugin-tailwindcss` で class をソートする。
+- Stylelint 17 + `stylelint-config-standard`。`at-rule-no-unknown` では Tailwind v4 の `@theme`、`@utility`、`@variant`、`@custom-variant`、`@apply`、`@source`、`@plugin` を無視する。
+- Typecheck は `tsc -b --noEmit` を使い、TS は `strict` と `noUncheckedIndexedAccess` を有効にする。
+- npm scripts: `dev`、`build`、`preview`、`typecheck`、`lint`（eslint + stylelint）、`format`、`format:check`、`test`、`test:e2e`、`check`（typecheck + lint + format:check + test）。
 
-### D10. 应用外壳
+### D10. アプリケーションシェル
 
-`AppShell` 模板 = `Header` organism + 内容区。`Header` 含品牌名（来自语言文件的 `app.name` 键）、`ThemeToggle`、`LanguageSwitcher`。`HomePage` 只放一段来自语言文件的欢迎文案。
+`AppShell` テンプレート = `Header` organism + コンテンツ領域。`Header` にはブランド名（言語ファイルの `app.name` キーから取得）、`ThemeToggle`、`LanguageSwitcher` を含む。`HomePage` には言語ファイルから取得したウェルカム文言を 1 段落置くだけとする。
 
 ## Risks / Trade-offs
 
-- [Base UI 仍是 rc，API 可能变] → 锁定精确版本；所有用法集中在 atom/molecule 层；升级时只改那几个文件。
-- [Vite 8 刚发布，个别插件可能不兼容] → 实施验证：`@vitejs/plugin-react` 6.1 与 `@tailwindcss/vite` 4.3 在 Vite 8.3 下构建、测试均正常，未退回 Vite 7。
-- [npm audit 报告 7 个 high] → 全部来自 Stylelint 依赖链中的 `braces` / `micromatch` 正则栈耗尽问题，仅影响本地开发工具，没有不降级 Stylelint 的修复方案，暂不处理。
-- [Stylelint 不认识 Tailwind v4 at-rules] → D9 的 ignoreAtRules 列表；如仍报错优先调整配置而不是关规则。
-- [内联主题脚本不走模块系统，容易和 React 侧逻辑漂移] → 解析规则极简（三行判断），两边共用的键名和取值写在一个常量文件里，e2e 覆盖"刷新无闪烁"。
-- [Playwright 首次安装下载浏览器较慢] → 只装 Chromium；`test:e2e` 不进 `check` 脚本，单独运行。
-- [i18next 类型扩展在键很多时会拖慢 tsc] → 当前键很少，暂不处理；若将来变慢改成按命名空间拆分。
+- [Base UI はまだ rc であり、API が変わる可能性がある] → 正確なバージョンにロックする。すべての利用箇所を atom/molecule 層に集約し、アップグレード時はそれら数ファイルのみを変更する。
+- [Vite 8 はリリース直後であり、一部プラグインが非互換の可能性がある] → 実装で検証済み: `@vitejs/plugin-react` 6.1 と `@tailwindcss/vite` 4.3 は Vite 8.3 下でビルド、テストともに正常であり、Vite 7 には戻していない。
+- [npm audit が 7 件の high を報告する] → すべて Stylelint の依存チェーン内の `braces` / `micromatch` の正規表現スタック枯渇問題に由来し、ローカルの開発ツールにのみ影響する。Stylelint をダウングレードせずに修正する手段がないため、当面は対処しない。
+- [Stylelint が Tailwind v4 の at-rules を認識しない] → D9 の ignoreAtRules リストで対応する。それでもエラーが出る場合はルールを無効化するのではなく設定の調整を優先する。
+- [インラインのテーマスクリプトはモジュールシステムを経由しないため、React 側のロジックと乖離しやすい] → 解決規則を極めてシンプル（3 行の判定）にし、両者で共有するキー名と値を 1 つの定数ファイルに書く。e2e で「リロード時にフラッシュしない」をカバーする。
+- [Playwright の初回インストールではブラウザのダウンロードが遅い] → Chromium のみインストールする。`test:e2e` は `check` スクリプトに含めず、単独で実行する。
+- [i18next の型拡張はキーが多くなると tsc を遅くする] → 現在はキーが少ないため当面は対処しない。将来遅くなった場合は名前空間ごとに分割する。
 
 ## Open Questions
 
-- 产品名尚未在 "GitHub Discovery" 与 "OpenSource Radar" 之间定下。本 change 用 "OpenSource Radar" 作为 `app.name` 的占位值，改名只需改三份语言文件各一行，不影响任何 spec 或任务。
+- 製品名は "GitHub Discovery" と "OpenSource Radar" の間でまだ決まっていない。本 change では "OpenSource Radar" を `app.name` のプレースホルダー値として使う。改名は 3 つの言語ファイルの各 1 行を変更するだけで済み、いかなる spec やタスクにも影響しない。

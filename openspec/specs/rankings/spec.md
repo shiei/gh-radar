@@ -2,42 +2,42 @@
 
 ## Purpose
 
-定义首页的两个榜单 Most Popular 与 Rising Stars：数据来自每日快照，Rising Stars 用真实的 30 天 star 增量，不消耗 API 配额。
+トップページの 2 つのランキング Most Popular と Rising Stars を定義する：データは日次スナップショットに由来し、Rising Stars は実際の 30 日間の star 増分を使い、API クォータを消費しない。
 
 ## Requirements
 
 ### Requirement: Rankings are computed from the snapshot
-榜单 SHALL 从 `public/data/latest.json` 与对应分类的 `series/<分类>.json` 计算，MUST NOT 调用 GitHub API。Most Popular：按当天 star 数降序。Rising Stars：按最近 30 天的 star 增量（当天 star 减去 30 天前最近一个点的 star）降序；当序列不足 7 天时 SHALL 退化为"近 90 天创建的仓库按 star 降序"并在标题旁标注为近似。
+ランキング SHALL `public/data/latest.json` と対応カテゴリの `series/<カテゴリ>.json` から計算し、MUST NOT GitHub API を呼び出さない。Most Popular：当日の star 数の降順。Rising Stars：直近 30 日間の star 増分（当日の star から 30 日前に最も近い点の star を引いた値）の降順。系列が 7 日に満たないとき SHALL 「直近 90 日以内に作成されたリポジトリを star 降順」にフォールバックし、見出しの横に近似である旨を表示する。
 
 #### Scenario: Rising by delta
-- **WHEN** 序列覆盖超过 7 天，仓库 A 30 天内涨 1200 star，仓库 B 涨 800
-- **THEN** Rising Stars 中 A 排在 B 前，每条显示 +1.2K 的增量
+- **WHEN** 系列が 7 日を超えてカバーし、リポジトリ A が 30 日間で 1200 star、リポジトリ B が 800 star 増えた
+- **THEN** Rising Stars で A が B より前に並び、各行に +1.2K の増分が表示される
 
 #### Scenario: Fallback when history is short
-- **WHEN** 序列只覆盖 3 天
-- **THEN** Rising Stars 显示近 90 天创建的仓库按 star 排序，标题旁标注"数据积累中，暂按创建时间近似"
+- **WHEN** 系列が 3 日分しかカバーしていない
+- **THEN** Rising Stars は直近 90 日以内に作成されたリポジトリを star 順に表示し、見出しの横に「データ蓄積中、暫定的に作成日時で近似」と表示する
 
 ### Requirement: Rankings follow the active category
-榜单 SHALL 随当前选中的分类过滤；没有选中分类时 SHALL 跨全部分类计算。
+ランキング SHALL 現在選択中のカテゴリで絞り込む。カテゴリが選択されていないとき SHALL 全カテゴリ横断で計算する。
 
 #### Scenario: Category selected
-- **WHEN** 用户选中 "DevOps"
-- **THEN** 两个榜单只包含来源含 `devops:*` 的仓库
+- **WHEN** ユーザーが「DevOps」を選択する
+- **THEN** 2 つのランキングはソースに `devops:*` を含むリポジトリのみを含む
 
 ### Requirement: Rankings show the top five with view all
-每个榜单 SHALL 显示前 5 条，每条含名次、owner 头像、`owner/name`、star 数，Rising Stars 另显示 30 天增量；点击名称 SHALL 在新标签页打开 GitHub。"查看全部" SHALL 在原位展开为前 30 条并可收起。
+各ランキング SHALL 上位 5 件を表示し、各行に順位、owner のアバター、`owner/name`、star 数を含め、Rising Stars はさらに 30 日間の増分を表示する。名称のクリック SHALL 新しいタブで GitHub を開く。「すべて表示」 SHALL その場で上位 30 件に展開し、折りたたみもできる。
 
 #### Scenario: Rendered list
-- **WHEN** Most Popular 计算完成
-- **THEN** 显示 5 条，名次 1 到 5，点击"查看全部"后显示 30 条
+- **WHEN** Most Popular の計算が完了する
+- **THEN** 5 件が順位 1 から 5 で表示され、「すべて表示」をクリックすると 30 件が表示される
 
 ### Requirement: Data freshness is visible
-榜单区 SHALL 显示快照日期。快照文件缺失、无法解析、或日期距今超过 3 天时 SHALL 显示对应提示（尚无数据 / 数据过期），主检索不受影响。
+ランキング領域 SHALL スナップショットの日付を表示する。スナップショットファイルが欠けている、解析できない、または日付が今日から 3 日より離れているとき SHALL 対応する案内（データなし / データが古い）を表示し、メイン検索は影響を受けない。
 
 #### Scenario: Stale data
-- **WHEN** `meta.json` 的日期距今 5 天
-- **THEN** 榜单仍显示，旁边提示数据已有 5 天未更新
+- **WHEN** `meta.json` の日付が今日から 5 日離れている
+- **THEN** ランキングは引き続き表示され、横にデータが 5 日間更新されていない旨の案内が出る
 
 #### Scenario: Missing data
-- **WHEN** `latest.json` 不存在
-- **THEN** 榜单区显示"尚无快照数据"，搜索框与检索正常
+- **WHEN** `latest.json` が存在しない
+- **THEN** ランキング領域に「スナップショットデータなし」と表示され、検索ボックスと検索は正常に動作する

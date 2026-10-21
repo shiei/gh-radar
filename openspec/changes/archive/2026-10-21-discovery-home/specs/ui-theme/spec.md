@@ -3,16 +3,16 @@
 ## MODIFIED Requirements
 
 ### Requirement: Initial appearance follows system preference
-当浏览器本地没有保存过外观选择时，应用 SHALL 以夜间作为初始外观，不参考操作系统的配色偏好。这是 2026-10-21 的决定：站点以夜间为品牌默认，系统偏好不再作为依据。
+ブラウザのローカルに外観の選択が保存されていないとき、アプリケーション SHALL ダークを初期外観とし、OS の配色設定は参照しない。これは 2026-10-21 の決定である：サイトはダークをブランドのデフォルトとし、システム設定はもはや根拠としない。
 
 #### Scenario: First visit on a dark-preferring system
-- **WHEN** 用户首次访问且操作系统偏好为深色
-- **THEN** 页面以夜间外观加载
+- **WHEN** ユーザーが初回訪問し、OS の設定がダークである
+- **THEN** ページはダーク外観でロードされる
 
 #### Scenario: First visit on a light-preferring system
-- **WHEN** 用户首次访问且操作系统偏好为浅色或未知
-- **THEN** 页面仍以夜间外观加载
+- **WHEN** ユーザーが初回訪問し、OS の設定がライトまたは不明である
+- **THEN** ページはそれでもダーク外観でロードされる
 
 #### Scenario: Stored choice overrides system preference
-- **WHEN** 浏览器本地已保存"日间"
-- **THEN** 页面以日间外观加载
+- **WHEN** ブラウザのローカルに「ライト」が保存されている
+- **THEN** ページはライト外観でロードされる

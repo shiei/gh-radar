@@ -2,85 +2,85 @@
 
 ## Context
 
-站点是纯静态的 Vite 构建，`public/` 下的文件原样进入产物，所以 `public/data/` 既能在 `npm run dev` 下读到，也会随 GitHub Pages 发布。`src/lib/github/` 已有 `request()`、配额解析和 `searchRepositories()`，但它们面向浏览器（`fetch` 全局、localStorage token）；脚本在 Node 24 下运行，`fetch` 可用。行为契约见 `specs/daily-snapshot/spec.md`。
+サイトは純粋な静的 Vite ビルドであり、`public/` 配下のファイルはそのまま成果物に入るため、`public/data/` は `npm run dev` でも読め、GitHub Pages でも一緒に公開される。`src/lib/github/` には既に `request()`、クォータ解析、`searchRepositories()` があるが、これらはブラウザ向け（グローバル `fetch`、localStorage のトークン）である。スクリプトは Node 24 で動作し、`fetch` が利用できる。振る舞いの契約は `specs/daily-snapshot/spec.md` を参照。
 
 ## Goals / Non-Goals
 
 **Goals:**
-- 零服务器、零数据库：数据就是仓库里的 JSON。
-- 脚本与站点共用分类映射，避免两处定义漂移。
-- 所有数据变换是纯函数，可以在 jsdom 之外用 Vitest 测。
+- サーバーゼロ、データベースゼロ：データはリポジトリ内の JSON そのものである。
+- スクリプトとサイトで分類マッピングを共有し、2 か所の定義がずれるのを防ぐ。
+- すべてのデータ変換は純関数であり、jsdom の外で Vitest によりテストできる。
 
 **Non-Goals:**
-- 不抓 GH Archive 事件流，不做贡献者统计。
-- 不在本 change 里改前端展示（由 `discovery-home` 消费数据）。
-- 不处理仓库改名或删除的历史合并；改名后视为新仓库。
+- GH Archive のイベントストリームは取得しない。コントリビューター統計も行わない。
+- 本 change ではフロントエンドの表示を変更しない（データは `discovery-home` が消費する）。
+- リポジトリのリネームや削除の履歴統合は扱わない。リネーム後は新しいリポジトリとみなす。
 
 ## Decisions
 
-### D1. 目录与依赖
+### D1. ディレクトリと依存
 ```
-scripts/snapshot.ts          入口：解析参数、调度、写文件
-scripts/lib/fetchRepos.ts    带配额等待与重试的 search 分页抓取（Node fetch）
-scripts/lib/transform.ts     merge / toRecord / appendSeries / prune / downsample（纯函数）
-scripts/lib/io.ts            读写 public/data
-src/lib/categories.ts        分类映射（站点与脚本共用，不依赖 React）
-public/data/                 输出
-data/watchlist.txt           手工关注列表，每行 owner/name，# 注释
+scripts/snapshot.ts          エントリ：引数解析、スケジューリング、ファイル書き込み
+scripts/lib/fetchRepos.ts    クォータ待機とリトライ付きの search ページング取得（Node fetch）
+scripts/lib/transform.ts     merge / toRecord / appendSeries / prune / downsample（純関数）
+scripts/lib/io.ts            public/data の読み書き
+src/lib/categories.ts        分類マッピング（サイトとスクリプトで共用、React に依存しない）
+public/data/                 出力
+data/watchlist.txt           手動のウォッチリスト。1 行に owner/name、# はコメント
 .github/workflows/snapshot.yml
 ```
-用 `tsx` 运行脚本，不单独编译。脚本自己实现一个最小的 search 客户端，不复用 `src/lib/github/request.ts`，因为后者绑定浏览器 token 存储；两者共享的只有常量（API 版本标头）。
+`tsx` でスクリプトを実行し、別途コンパイルはしない。スクリプトは最小の search クライアントを自前で実装し、`src/lib/github/request.ts` は再利用しない。後者はブラウザのトークン保存に結び付いているためである。両者が共有するのは定数（API バージョンヘッダー）のみ。
 
-### D1b. 脚本流程
+### D1b. スクリプトの流れ
 
-脚本是 TypeScript，用 `tsx` 在 Node 24 下直接运行。整体分三段：抓取（唯一有副作用的网络段）、变换（纯函数）、写入（只在非 dry-run 且全部成功时发生）。
+スクリプトは TypeScript で、`tsx` により Node 24 上で直接実行する。全体は 3 段階に分かれる：取得（唯一副作用を持つネットワーク段階）、変換（純関数）、書き込み（dry-run でなく、かつすべて成功した場合のみ行う）。
 
 ```mermaid
 flowchart TD
-  A([npm run snapshot]) --> B[解析参数<br/>--dry-run / 日期]
-  B --> C[读取 src/lib/categories.ts<br/>与 data/watchlist.txt]
-  C --> D[读取现有 public/data<br/>latest / series / meta]
-  D --> E{还有未抓取的来源?}
-  E -- 是 --> F[构造查询<br/>分类 × 热门/新秀 或 watchlist]
-  F --> G[请求一页<br/>per_page=100]
-  G --> H{响应}
-  H -- 2xx --> I[读取 X-RateLimit-*<br/>累加结果]
-  I --> J{剩余配额 = 0?}
-  J -- 是 --> K[sleep 到 Reset 时刻] --> L
-  J -- 否 --> L{已满 3 页<br/>或本页不足 100?}
-  L -- 否 --> G
-  L -- 是 --> E
+  A([npm run snapshot]) --> B[引数を解析<br/>--dry-run / 日付]
+  B --> C[src/lib/categories.ts と<br/>data/watchlist.txt を読む]
+  C --> D[既存の public/data を読む<br/>latest / series / meta]
+  D --> E{未取得のソースが残っている?}
+  E -- はい --> F[クエリを組み立て<br/>カテゴリ × 人気/新星 または watchlist]
+  F --> G[1 ページ取得<br/>per_page=100]
+  G --> H{レスポンス}
+  H -- 2xx --> I[X-RateLimit-* を読む<br/>結果を蓄積]
+  I --> J{残りクォータ = 0?}
+  J -- はい --> K[Reset 時刻まで sleep] --> L
+  J -- いいえ --> L{3 ページに達した<br/>またはこのページが 100 件未満?}
+  L -- いいえ --> G
+  L -- はい --> E
   H -- 422 --> E
-  H -- 5xx / 网络错误 --> M{重试 < 3?}
-  M -- 是 --> N[指数退避] --> G
-  M -- 否 --> X([退出码 1<br/>不写任何文件])
-  H -- 403/429 配额 --> K
-  E -- 否 --> O[mergeSources<br/>按 owner/name 去重并标注来源]
-  O --> P[toRecord<br/>裁剪为单字母键的记录]
-  P --> Q[appendSeries<br/>同日期幂等追加]
-  Q --> R[pruneDaily 30 天<br/>downsampleSeries 365 天后按周]
+  H -- 5xx / ネットワークエラー --> M{リトライ < 3?}
+  M -- はい --> N[指数バックオフ] --> G
+  M -- いいえ --> X([終了コード 1<br/>ファイルは何も書かない])
+  H -- 403/429 クォータ --> K
+  E -- いいえ --> O[mergeSources<br/>owner/name で重複排除しソースを付与]
+  O --> P[toRecord<br/>1 文字キーのレコードに切り出す]
+  P --> Q[appendSeries<br/>同一日付は冪等に追加]
+  Q --> R[pruneDaily 30 日<br/>downsampleSeries 365 日以降は週次]
   R --> S{dry-run?}
-  S -- 是 --> T[打印各来源数量与总数] --> Y([退出码 0])
-  S -- 否 --> U[写 latest.json / daily/日期.json<br/>series/分类.json / meta.json]
+  S -- はい --> T[ソース別件数と合計を出力] --> Y([終了コード 0])
+  S -- いいえ --> U[latest.json / daily/日付.json<br/>series/カテゴリ.json / meta.json を書く]
   U --> Y
 ```
 
-Actions 工作流在脚本之外再包一层：
+Actions ワークフローはスクリプトの外側をさらに一層包む：
 
 ```mermaid
 flowchart LR
-  S([cron 00:00 UTC<br/>或手动触发]) --> C[checkout + setup-node + npm ci]
+  S([cron 00:00 UTC<br/>または手動実行]) --> C[checkout + setup-node + npm ci]
   C --> R[npm run snapshot]
-  R -- 非零退出 --> F([工作流失败<br/>数据文件保持上次状态])
-  R -- 成功 --> G{git status 有变化?}
-  G -- 否 --> N([结束，无 commit])
-  G -- 是 --> P[commit 'data: snapshot 日期 (N repos)'<br/>push 到 master]
+  R -- 非ゼロ終了 --> F([ワークフロー失敗<br/>データファイルは前回のまま])
+  R -- 成功 --> G{git status に変更がある?}
+  G -- いいえ --> N([終了、commit なし])
+  G -- はい --> P[commit 'data: snapshot 日付 (N repos)'<br/>master へ push]
 ```
 
-### D2. 抓取策略
-每个来源 `per_page=100` 取 3 页（新秀查询的 star 门槛降为 20，否则三个月内的新项目几乎没有能过分类门槛的）；每次响应后读 `X-RateLimit-Remaining`，为 0 时 sleep 到 `X-RateLimit-Reset`；请求串行；5xx 与网络错误指数退避重试 3 次；422（超出 1000 条）视为该来源到头。watchlist 用 `GET /repos/{owner}/{repo}` 逐个取，走核心池。整次运行约 40 次 search 加 watchlist 数量次核心请求。
+### D2. 取得戦略
+各ソースは `per_page=100` で 3 ページ取得する（新星クエリの star 下限は 20 に下げる。そうしないと 3 か月以内の新規プロジェクトで分類の下限を越えられるものがほとんどない）。レスポンスごとに `X-RateLimit-Remaining` を読み、0 なら `X-RateLimit-Reset` まで sleep する。リクエストは直列に行う。5xx とネットワークエラーは指数バックオフで 3 回リトライする。422（1000 件超過）はそのソースの終端とみなす。watchlist は `GET /repos/{owner}/{repo}` で 1 件ずつ取得し、コアプールを使う。1 回の実行で約 40 回の search と watchlist 件数分のコアリクエストになる。
 
-### D3. 文件格式
+### D3. ファイル形式
 ```jsonc
 // latest.json
 { "date": "2026-10-21", "repos": { "vercel/next.js": { "s": 130000, "f": 28000, "i": 3100, "p": "2026-10-20T22:11:00Z", "c": "2016-10-05T...", "l": "JavaScript", "t": ["react","nextjs"], "a": false, "src": ["frontend:popular","watchlist"] } } }
@@ -89,20 +89,20 @@ flowchart LR
 // meta.json
 { "lastRun": "2026-10-21T00:04:12Z", "date": "2026-10-21", "total": 2140, "sources": { "frontend:popular": 300, ... } }
 ```
-键名用单字母是为了压缩体积；首次实测（2026-10-20，2079 个仓库）`latest.json` 为 635 KB，大头是 topics 数组，gzip 后约 100 KB，由 Pages 压缩传输。若将来超过 1 MB 再考虑把 topics 截断到前 10 个；前端有一个解码函数把它展开成有名字的类型。序列只存 star，是因为它是唯一需要画曲线的量；其余字段看 `latest.json` 即可。
+キー名を 1 文字にしているのはサイズ圧縮のためである。初回の実測（2026-10-20、2079 リポジトリ）では `latest.json` は 635 KB で、大半は topics 配列が占め、gzip 後は約 100 KB になり、Pages が圧縮して転送する。将来 1 MB を超えたら topics を先頭 10 件に切り詰めることを検討する。フロントエンドには 1 文字キーを名前付きの型に展開するデコード関数がある。系列に star だけを保存するのは、それが曲線を描く必要のある唯一の量だからである。他のフィールドは `latest.json` を見ればよい。
 
-### D4. 保留与降采样
-`prune(dailyDir, today, 30)` 删除超过 30 天的日文件。`downsample(series, today)`：365 天以内逐日保留；更早的按 ISO 周分组，每组保留最后一个点。序列追加前先删除同日期的点，保证幂等。
+### D4. 保持とダウンサンプリング
+`prune(dailyDir, today, 30)` は 30 日を超えた日次ファイルを削除する。`downsample(series, today)`：365 日以内は日次で保持し、それより古いものは ISO 週でグループ化して各グループの最後の点だけを残す。系列に追加する前に同じ日付の点を削除し、冪等性を保証する。
 
-### D5. Actions 工作流
-`schedule: '0 0 * * *'` 加 `workflow_dispatch`。步骤：checkout、setup-node 24、`npm ci`、`npm run snapshot`、若 `git status` 有变化则以 `github-actions[bot]` 提交并推送，信息 `data: snapshot 2026-10-21 (2140 repos)`。使用 `secrets.GITHUB_TOKEN`，需要 `permissions: contents: write`。脚本任何失败都让 step 非零退出，不走到提交步骤。
+### D5. Actions ワークフロー
+`schedule: '0 0 * * *'` と `workflow_dispatch`。ステップ：checkout、setup-node 24、`npm ci`、`npm run snapshot`、`git status` に変化があれば `github-actions[bot]` としてコミットして push する。メッセージは `data: snapshot 2026-10-21 (2140 repos)`。`secrets.GITHUB_TOKEN` を使用し、`permissions: contents: write` が必要である。スクリプトのいかなる失敗も step を非ゼロで終了させ、コミットステップには進まない。
 
-### D6. 测试
-`scripts/lib/transform.test.ts` 覆盖合并去重与来源标注、记录形状、序列追加幂等、30 天清理、365 天降采样边界。`fetchRepos` 用注入的 `fetch` 测配额等待（假时钟）与 422 终止。脚本入口不测，靠 `--dry-run` 手动验证一次。
+### D6. テスト
+`scripts/lib/transform.test.ts` でマージの重複排除とソース付与、レコードの形、系列追加の冪等性、30 日クリーンアップ、365 日ダウンサンプリングの境界をカバーする。`fetchRepos` は注入した `fetch` でクォータ待機（擬似時計）と 422 による終了をテストする。スクリプトのエントリはテストせず、`--dry-run` で 1 回手動検証する。
 
 ## Risks / Trade-offs
 
-- [GitHub 对 Actions 定时任务可能延迟几十分钟甚至跳过] → 序列按日期去重，晚到不影响；若某天漏跑，曲线上缺一个点，前端按实际日期画。
-- [每天一个 commit 让主分支历史变杂] → 先接受；嫌杂时把数据挪到 `data` 分支，前端读的 URL 不变。
-- [分类查询改动会让序列断层] → 映射文件改动时在 `meta.json` 记录版本号，前端对版本不一致的序列标注。
-- [Actions 的 GITHUB_TOKEN 不能触发其他工作流] → 正好避免数据 commit 触发部署循环；部署工作流需单独设置为允许 `paths: public/data/**` 触发。
+- [GitHub は Actions の定期タスクを数十分遅延させたりスキップしたりすることがある] → 系列は日付で重複排除するため、遅れて到着しても影響しない。ある日が抜けた場合は曲線上の点が 1 つ欠けるだけで、フロントエンドは実際の日付で描画する。
+- [毎日 1 つの commit が主ブランチの履歴を雑然とさせる] → まずは受け入れる。煩わしくなったらデータを `data` ブランチに移す。フロントエンドが読む URL は変わらない。
+- [分類クエリの変更が系列の断絶を招く] → マッピングファイルの変更時に `meta.json` へバージョン番号を記録し、フロントエンドはバージョンが一致しない系列に注記を付ける。
+- [Actions の GITHUB_TOKEN は他のワークフローをトリガーできない] → データ commit がデプロイのループを引き起こさないのでちょうどよい。デプロイワークフロー側は `paths: public/data/**` によるトリガーを別途許可する必要がある。

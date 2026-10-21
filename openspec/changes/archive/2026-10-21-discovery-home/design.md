@@ -2,27 +2,27 @@
 
 ## Context
 
-现状：`HomePage` 纵向堆叠标语、搜索框、示例、结果；`AppShell` 的内容区最大宽 `max-w-5xl`（1024px）；搜索提交统一走 `useRepositorySearch().submit`，topic 标签和示例 chip 都复用它；`searchCache` 按 `query|sort|page` 缓存 5 分钟。行为契约见本 change 的三份 delta spec。
+現状：`HomePage` はキャッチコピー、検索ボックス、サンプル、結果を縦に積んでいる。`AppShell` のコンテンツ領域の最大幅は `max-w-5xl`（1024px）。検索の送信は一律に `useRepositorySearch().submit` を通り、topic タグとサンプル chip もこれを再利用している。`searchCache` は `query|sort|page` ごとに 5 分キャッシュする。振る舞いの契約は本 change の 3 つの delta spec を参照。
 
 ## Goals / Non-Goals
 
 **Goals:**
-- 分类与榜单都只是"预设查询 + 调 submit"，不引入第二套检索状态。
-- 榜单只读静态快照，不消耗配额，也不依赖主检索的状态。
-- 布局用 CSS Grid 一处定义断点，组件不感知布局。
+- 分類とランキングはどちらも「プリセットクエリ + submit 呼び出し」に留め、第 2 の検索状態を導入しない。
+- ランキングは静的スナップショットのみを読み、クォータを消費せず、メイン検索の状態にも依存しない。
+- レイアウトは CSS Grid で 1 か所にブレークポイントを定義し、コンポーネントはレイアウトを意識しない。
 
 **Non-Goals:**
-- 不做类型切换、筛选器（change C）。
-- 不做分类的二级结构。
-- 不做榜单的时间范围切换。
+- 種別切替、フィルタは行わない（change C）。
+- 分類の 2 階層構造は行わない。
+- ランキングの期間切替は行わない。
 
 ## Decisions
 
-### D1. 分类映射 `src/lib/categories.ts`
+### D1. 分類マッピング `src/lib/categories.ts`
 ```ts
 interface Category { id: 'frontend'|'backend'|'ai-ml'|'devops'|'database'|'design'; query: string; icon: IconComponent }
 ```
-名称在语言文件 `category.<id>`。查询用单个伞形 topic 加 star 下限，避免多 topic 的 AND 语义把结果收得太窄：
+名称は言語ファイルの `category.<id>` にある。クエリは単一のアンブレラ topic に star 下限を加えたものとし、複数 topic の AND 意味論で結果が狭まりすぎるのを避ける：
 | id | query |
 |----|-------|
 | frontend | `topic:frontend stars:>200` |
@@ -31,31 +31,31 @@ interface Category { id: 'frontend'|'backend'|'ai-ml'|'devops'|'database'|'desig
 | devops | `topic:devops stars:>200` |
 | database | `topic:database stars:>200` |
 | design | `topic:design-system stars:>100` |
-备选是每个分类列多个 topic；GitHub 仓库检索里多个 `topic:` 是 AND，没有 OR，所以放弃。伞形 topic 在 GitHub 上都是热门标签，结果量足够。
+代替案は分類ごとに複数の topic を列挙することだったが、GitHub のリポジトリ検索では複数の `topic:` は AND であり OR がないため、採用しなかった。アンブレラ topic はいずれも GitHub 上で人気のタグであり、結果の量は十分である。
 
-### D2. 选中态
-`CategoryNav` 接收 `activeQuery`（来自 `state.query`），与各分类 `query` 严格相等即选中。不做模糊匹配。
+### D2. 選択状態
+`CategoryNav` は `activeQuery`（`state.query` 由来）を受け取り、各分類の `query` と厳密に等しいときに選択状態とする。あいまい一致は行わない。
 
-### D3. 快照读取与榜单 `src/lib/snapshot/` 与 `src/lib/rankings.ts`
-`loadSnapshot()` 取 `/data/meta.json` 与 `/data/latest.json`，`loadSeries(category)` 按需取 `/data/series/<id>.json`，全部内存缓存一次。`decodeRecord` 把单字母键展开。`rankPopular(repos, category?)` 与 `rankRising(repos, series, today, category?)` 是纯函数：rising 的增量 = 今日 star 减去 `today-30d` 之前最近一个点的 star；序列跨度不足 7 天时返回 `{ mode: 'fallback' }` 并按创建日期近似。`useSnapshot()` hook 暴露 status / meta / repos / series 与 `stale`（超过 3 天）。榜单不发任何 GitHub 请求。
+### D3. スナップショットの読み込みとランキング `src/lib/snapshot/` と `src/lib/rankings.ts`
+`loadSnapshot()` は `/data/meta.json` と `/data/latest.json` を取得し、`loadSeries(category)` は必要に応じて `/data/series/<id>.json` を取得する。いずれもメモリに 1 回だけキャッシュする。`decodeRecord` は 1 文字キーを展開する。`rankPopular(repos, category?)` と `rankRising(repos, series, today, category?)` は純関数である：rising の増分 = 当日の star から `today-30d` 以前の最も近い点の star を引いたもの。系列の期間が 7 日に満たない場合は `{ mode: 'fallback' }` を返し、作成日で近似する。`useSnapshot()` hook は status / meta / repos / series と `stale`（3 日超）を公開する。ランキングは GitHub リクエストを一切発行しない。
 
-### D4. 布局 `DiscoveryLayout` template
+### D4. レイアウト `DiscoveryLayout` template
 ```
-lg 及以上:  grid-cols-[14rem_minmax(0,1fr)_18rem] gap-8   max-w-7xl
-lg 以下:    单列 flex-col
+lg 以上:  grid-cols-[14rem_minmax(0,1fr)_18rem] gap-8   max-w-7xl
+lg 未満:  単一カラム flex-col
 ```
-`HomePage` 把 hero、`CategoryNav`、搜索区、`SearchResults`、两个 `RankingList` 作为 slot 传给模板；模板决定在哪个断点把 `CategoryNav` 渲染成纵向列表还是 chip 行（通过 `variant` prop），把榜单放右栏还是放结果下方（窄屏且 `state.status === 'idle'` 才显示）。`AppShell` 的 `max-w-5xl` 改为 `max-w-7xl`，页头同步。
+`HomePage` は hero、`CategoryNav`、検索領域、`SearchResults`、2 つの `RankingList` を slot としてテンプレートに渡す。テンプレートは、どのブレークポイントで `CategoryNav` を縦のリストとして描画するか chip 行として描画するか（`variant` prop による）、ランキングを右カラムに置くか結果の下に置くか（狭い画面では `state.status === 'idle'` のときだけ表示）を決める。`AppShell` の `max-w-5xl` を `max-w-7xl` に変更し、ページヘッダーも同期させる。
 
-### D5. 组件
-- atoms/icons：`MonitorIcon`、`ServerIcon`、`CloudIcon`、`DatabaseIcon`、`PaletteIcon`（AI / ML 复用现有 `BrainIcon`，需要先把雷达 SVG 里的脑子路径抽成 atom）。
+### D5. コンポーネント
+- atoms/icons：`MonitorIcon`、`ServerIcon`、`CloudIcon`、`DatabaseIcon`、`PaletteIcon`（AI / ML は既存の `BrainIcon` を再利用する。先にレーダー SVG 内の脳のパスを atom として抽出する必要がある）。
 - molecules：`CategoryNav`（props: `variant: 'list' | 'chips'`, `activeQuery`, `onSelect`）、`RankingList`（props: `title`, `hint?`, `items`, `status`, `error`, `onRetry`, `onViewAll`）。
-- organisms：无新增；`SearchResults` 不变。
+- organisms：新設なし。`SearchResults` は変更しない。
 
-### D6. 测试
-单元：`decodeRecord`、`rankPopular`、`rankRising`（含 30 天边界与不足 7 天的退化）、`useSnapshot` 的缺失与过期判定、`CategoryNav` 的选中态与点击回调、`RankingList` 三态与展开收起。e2e：`public/data/` 放一份小型 fixture 快照（随仓库提交，作为无真实数据时的占位）；宽屏三栏可见、榜单各 5 条且 Rising 显示增量、点分类后输入框与请求参数、榜单随分类过滤、"查看全部"展开 30 条、窄屏下分类为 chip 且检索后榜单隐藏、删掉 fixture 时显示"尚无数据"。
+### D6. テスト
+単体：`decodeRecord`、`rankPopular`、`rankRising`（30 日境界と 7 日未満の退化を含む）、`useSnapshot` の欠落と期限切れの判定、`CategoryNav` の選択状態とクリックコールバック、`RankingList` の 3 状態と展開・折りたたみ。e2e：`public/data/` に小さな fixture スナップショットを置く（リポジトリと一緒にコミットし、実データがないときのプレースホルダーとする）。ワイド画面で 3 カラムが見える、ランキングが各 5 件で Rising に増分が表示される、分類クリック後の入力欄とリクエストパラメータ、ランキングが分類でフィルタされる、「すべて表示」で 30 件に展開される、狭い画面で分類が chip になり検索後にランキングが隠れる、fixture を削除すると「データなし」が表示される。
 
 ## Risks / Trade-offs
 
-- [快照刚上线时序列很短，Rising Stars 没有意义] → 不足 7 天自动退化为创建日期近似并标注；满 7 天后自动切换。
-- [伞形 topic 的覆盖有偏差，例如很多前端库不打 `frontend` 标签] → 映射文件集中维护，调整只改一行；后续 change C 的筛选器可以补充。
-- [数据 commit 与站点部署的时序] → 榜单显示数据日期，过期超过 3 天提示；部署工作流允许数据变更触发。
+- [スナップショット稼働直後は系列が非常に短く、Rising Stars に意味がない] → 7 日未満では自動的に作成日近似に退化して注記を付け、7 日を満たしたら自動で切り替わる。
+- [アンブレラ topic のカバー範囲には偏りがある。たとえば多くのフロントエンドライブラリは `frontend` タグを付けていない] → マッピングファイルで集中管理し、調整は 1 行の変更で済む。後続の change C のフィルタで補える。
+- [データ commit とサイトデプロイの順序] → ランキングにデータ日付を表示し、3 日を超えて古ければ注意を出す。デプロイワークフローはデータ変更によるトリガーを許可する。

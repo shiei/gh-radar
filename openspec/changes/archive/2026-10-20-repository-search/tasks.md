@@ -1,54 +1,54 @@
 # Tasks
 
-## 1. GitHub API 访问层（对应 specs/github-api-access）
+## 1. GitHub API アクセス層（specs/github-api-access に対応）
 
-- [x] 1.1 创建 `src/lib/github/types.ts`（`Repository`、`SearchResult`、`SearchSort`）、`errors.ts`（`GitHubError` 判别联合与类型守卫）、`headers.ts`（`buildHeaders()` 返回 Accept 与 X-GitHub-Api-Version，不含 Authorization），并用单元测试验证 `buildHeaders()` 的键集合恰为这两项
-- [x] 1.2 实现 `rateLimit.ts`：`parseRateLimit(headers)` 解析 Remaining / Reset，`getRateLimit()` / `setRateLimit()` / `subscribe()`，并用单元测试覆盖标头齐全、缺失、非数字三种情况
-- [x] 1.3 实现 `request.ts`：发 fetch、每次响应后更新配额、按 design D3 把 403 / 429 / 422 / 其他非 2xx / fetch 异常 / AbortError 归类，并用 stub fetch 的单元测试覆盖每一种分支（含 403 + Retry-After、403 + Remaining 0、403 其他、429 无标头、取消时不更新配额）
-- [x] 1.4 实现 `search.ts`：`searchRepositories({ query, sort, page }, signal)` 构造 URL（q 编码、per_page=10、sort 映射见 D6）、把响应裁剪成 `SearchResult`，并用单元测试验证三种排序的 URL、`incomplete_results` 透传、缺失字段（description / license / topics）映射为 null 或空数组
+- [x] 1.1 `src/lib/github/types.ts`（`Repository`、`SearchResult`、`SearchSort`）、`errors.ts`（`GitHubError` 判別共用体と型ガード）、`headers.ts`（`buildHeaders()` が Accept と X-GitHub-Api-Version を返し、Authorization は含まない）を作成し、単体テストで `buildHeaders()` のキー集合がちょうどこの 2 項目であることを検証する
+- [x] 1.2 `rateLimit.ts` を実装する: `parseRateLimit(headers)` で Remaining / Reset を解析、`getRateLimit()` / `setRateLimit()` / `subscribe()`。単体テストでヘッダーが揃っている、欠落している、数値でないの 3 ケースをカバーする
+- [x] 1.3 `request.ts` を実装する: fetch を送信し、毎回のレスポンス後にクォータを更新し、design D3 に従って 403 / 429 / 422 / その他の非 2xx / fetch 例外 / AbortError を分類する。stub fetch の単体テストで各分岐をカバーする（403 + Retry-After、403 + Remaining 0、403 その他、429 ヘッダーなし、キャンセル時はクォータを更新しない、を含む）
+- [x] 1.4 `search.ts` を実装する: `searchRepositories({ query, sort, page }, signal)` で URL を構築し（q のエンコード、per_page=10、sort のマッピングは D6 を参照）、レスポンスを `SearchResult` に切り出す。単体テストで 3 種類のソートの URL、`incomplete_results` のパススルー、欠落フィールド（description / license / topics）が null または空配列にマッピングされることを検証する
 
-## 2. 格式化工具
+## 2. フォーマットユーティリティ
 
-- [x] 2.1 实现 `src/lib/format/compactNumber.ts`、`relativeTime.ts`、`dateTime.ts`，均接受语言参数，并用固定系统时间的单元测试验证 en / ja / zh 三种语言下 12800 → 紧凑格式、3 天前 → 相对时间、时间戳 → 时:分 的输出非空且含预期数字
+- [x] 2.1 `src/lib/format/compactNumber.ts`、`relativeTime.ts`、`dateTime.ts` を実装する。いずれも言語パラメータを受け取り、システム時刻を固定した単体テストで en / ja / zh の 3 言語において 12800 → コンパクト形式、3 日前 → 相対時間、タイムスタンプ → 時:分 の出力が空でなく、期待する数字を含むことを検証する
 
-## 3. 检索状态机（对应 specs/repository-search 的排序、分页、加载、取消）
+## 3. 検索ステートマシン（specs/repository-search のソート、ページネーション、読み込み、キャンセルに対応）
 
-- [x] 3.1 实现 `src/features/search/searchReducer.ts`（state 与 actions 见 D5，含 `maxPage` 推导），并用单元测试覆盖：submit 重置页码、无 query 时 setSort 不改 status、有 query 时 setSort 重置 page=1、goToPage 越界被夹紧、成功总数 0 → empty、错误 → error、aborted 不改变 state
-- [x] 3.2 实现 `useRepositorySearch()`：封装 reducer，为每次请求创建 AbortController 并取消上一个，响应到达时核对 controller 是否仍是当前，并用 `renderHook` + stub fetch 验证"先 react 后 vue，react 后到被丢弃"以及 retry 使用相同参数
+- [x] 3.1 `src/features/search/searchReducer.ts`（state と actions は D5 を参照、`maxPage` の導出を含む）を実装し、単体テストで次をカバーする: submit でページ番号をリセット、query がないとき setSort は status を変えない、query があるとき setSort は page=1 にリセット、goToPage の範囲外はクランプされる、成功で総数 0 → empty、エラー → error、aborted は state を変えない
+- [x] 3.2 `useRepositorySearch()` を実装する: reducer をラップし、毎回のリクエストに AbortController を作成して前のものをキャンセルし、レスポンス到達時に controller がまだ現在のものか照合する。`renderHook` + stub fetch で「先に react、後に vue、react が後着したら破棄される」および retry が同じパラメータを使うことを検証する
 
-## 4. UI 原子与分子（对应 specs/repository-search 的展示要求）
+## 4. UI の atoms と molecules（specs/repository-search の表示要件に対応）
 
-- [x] 4.1 在三份语言文件中加入 design D8 列出的全部 `search.*` 键，并验证 `locales.test.ts` 通过
-- [x] 4.2 创建 atoms：`Input`、`Tag`、`SelectField`（Base UI Select 封装，props: label / value / options / onChange，带可访问名称）和 icons `SearchIcon`、`StarIcon`、`ChevronLeftIcon`、`ChevronRightIcon`、`SpinnerIcon`，并用单元测试验证 Input 转发 value/onChange、SelectField 可用键盘选择并回调
-- [x] 4.3 实现 `SearchBar` molecule（输入框本地 state、回车或按钮提交、空白输入不提交、loading 时按钮禁用、排序选择），并用单元测试覆盖四条 Submit 场景与 loading 禁用
-- [x] 4.4 实现 `RepositoryCard` molecule（owner/name 链接 target=_blank rel=noopener、描述、stars 紧凑格式、语言、相对更新时间、topics Tag、license；缺失字段不渲染），并用单元测试覆盖完整项与缺失项两种情况
-- [x] 4.5 实现 `Pagination` molecule（上一页 / 下一页 / 当前页与总页数，边界禁用）与 `StatusMessage` molecule（loading / empty / error 三态，error 按 kind 选择文案，rate_limited 带 resetAt 时显示时刻，带重试按钮），并用单元测试覆盖第 1 页、最后一页、单页三种禁用状态以及四种 error kind 的文案
+- [x] 4.1 3 つの言語ファイルに design D8 に列挙したすべての `search.*` キーを追加し、`locales.test.ts` が通ることを検証する
+- [x] 4.2 atoms を作成する: `Input`、`Tag`、`SelectField`（Base UI Select のラッパー、props: label / value / options / onChange、アクセシブルな名前付き）と icons `SearchIcon`、`StarIcon`、`ChevronLeftIcon`、`ChevronRightIcon`、`SpinnerIcon`。単体テストで Input が value/onChange を転送すること、SelectField がキーボードで選択できコールバックすることを検証する
+- [x] 4.3 `SearchBar` molecule（入力ボックスのローカル state、Enter またはボタンで送信、空白入力は送信しない、loading 時はボタンを無効化、ソート選択）を実装し、単体テストで 4 つの Submit シナリオと loading の無効化をカバーする
+- [x] 4.4 `RepositoryCard` molecule（owner/name リンク target=_blank rel=noopener、説明、stars のコンパクト形式、言語、相対更新時刻、topics Tag、license。欠落フィールドは描画しない）を実装し、単体テストで完全な項目と欠落のある項目の 2 ケースをカバーする
+- [x] 4.5 `Pagination` molecule（前のページ / 次のページ / 現在ページと総ページ数、境界では無効化）と `StatusMessage` molecule（loading / empty / error の 3 状態。error は kind によって文言を選び、rate_limited で resetAt があれば時刻を表示し、再試行ボタンを付ける）を実装し、単体テストで 1 ページ目、最終ページ、単一ページの 3 種類の無効化状態と 4 種類の error kind の文言をカバーする
 
-## 5. 结果区域与首页接线
+## 5. 結果領域とホームページの接続
 
-- [x] 5.1 实现 `SearchResults` organism（计数文案含 1000 上限说明、`RepositoryCard` 列表、`Pagination`、翻页后滚动到区域顶部），并用单元测试验证总数 42 与 120000 两种计数文案、以及列表渲染条数
-- [x] 5.2 改造 `HomePage`：保留标语，加入 `SearchBar` 与 `SearchResults`，用 `useRepositorySearch()` 连接，并用单元测试（stub fetch）验证提交后出现结果卡片
-- [x] 5.3 用 `npm run dev` 手动走通一次真实检索（仅一次，确认真实响应形状与 fixture 一致），把该响应脱敏后保存为 `e2e/fixtures/search-react.json`，并记录第 34 页的真实行为到 design.md 的 D5
+- [x] 5.1 `SearchResults` organism（1000 件上限の説明を含む件数文言、`RepositoryCard` リスト、`Pagination`、ページ送り後に領域の先頭へスクロール）を実装し、単体テストで総数 42 と 120000 の 2 種類の件数文言、およびリストの描画件数を検証する
+- [x] 5.2 `HomePage` を改修する: タグラインを残し、`SearchBar` と `SearchResults` を追加し、`useRepositorySearch()` で接続する。単体テスト（stub fetch）で送信後に結果カードが表示されることを検証する
+- [x] 5.3 `npm run dev` で実際の検索を手動で 1 回通す（1 回のみ。実際のレスポンス形状が fixture と一致することを確認する）。そのレスポンスを匿名化して `e2e/fixtures/search-react.json` として保存し、34 ページ目の実際の振る舞いを design.md の D5 に記録する
 
-## 6. 端到端测试（mock API）
+## 6. E2E テスト（mock API）
 
-- [x] 6.1 创建 `e2e/fixtures/`（成功 10 条、成功 7 条、空结果、total 5000 的第 100 页）与 `e2e/helpers/mockGitHub.ts`（`page.route` 返回 fixture，并对未匹配的 api.github.com 请求一律 abort），在 Playwright 配置中确保每个用例都加载该兜底拦截，并验证一个故意不 mock 的请求会被 abort
-- [x] 6.2 编写 `e2e/search.spec.ts`：输入 + 回车出结果并显示全部字段、输入 + 按钮出结果、qualifier 原样进入请求 URL、更改排序后请求 URL 带 sort=stars 且 page=1、翻页到第 2 页、7 条结果时分页禁用、第 100 页下一页禁用，并验证通过
-- [x] 6.3 编写 `e2e/search-errors.spec.ts`：空结果提示且输入框保留查询、403 + Remaining 0 显示恢复时刻、422 显示查询无效、`route.abort()` 显示网络失败并可重试、未认证请求不含 Authorization 标头，并验证通过
+- [x] 6.1 `e2e/fixtures/`（成功 10 件、成功 7 件、空の結果、total 5000 の 100 ページ目）と `e2e/helpers/mockGitHub.ts`（`page.route` で fixture を返し、マッチしない api.github.com リクエストはすべて abort する）を作成し、Playwright 設定で各ケースがこのフォールバックのインターセプトを読み込むことを保証し、意図的に mock しないリクエストが abort されることを検証する
+- [x] 6.2 `e2e/search.spec.ts` を書く: 入力 + Enter で結果が出てすべてのフィールドが表示される、入力 + ボタンで結果が出る、qualifier がそのままリクエスト URL に入る、ソート変更後のリクエスト URL に sort=stars と page=1 が付く、2 ページ目へのページ送り、7 件の結果でページネーションが無効化される、100 ページ目で次のページが無効化される、を確認して通ることを検証する
+- [x] 6.3 `e2e/search-errors.spec.ts` を書く: 空の結果で通知が出て入力ボックスにクエリが残る、403 + Remaining 0 で回復時刻を表示、422 でクエリ無効を表示、`route.abort()` でネットワーク失敗を表示し再試行できる、未認証リクエストに Authorization ヘッダーが含まれない、を確認して通ることを検証する
 
-## 7. 集成验证与文档
+## 7. 統合検証とドキュメント
 
-- [x] 7.1 运行 `npm run check` 与 `npm run test:e2e`，确认全部通过；如实施中决定与 design.md 不符（如第 34 页行为、目录名），更新 design.md
-- [x] 7.2 更新 `README.md`：新增 `src/features/`、`src/lib/github/`、`src/lib/format/` 的目录说明，说明未认证配额限制与 e2e 的 mock 约定，并验证 README 中列出的命令仍能按原样运行
+- [x] 7.1 `npm run check` と `npm run test:e2e` を実行し、すべて通ることを確認する。実装中に design.md と異なる決定をした場合（34 ページ目の振る舞い、ディレクトリ名など）は design.md を更新する
+- [x] 7.2 `README.md` を更新する: `src/features/`、`src/lib/github/`、`src/lib/format/` のディレクトリ説明を追加し、未認証のクォータ制限と e2e の mock 規約を説明し、README に列挙したコマンドが引き続きそのまま実行できることを検証する
 
 ## Workflow follow-up
 
-- 跨 change 的待办已合并到仓库根目录的 `ROADMAP.md`，以后以它为准；下面的条目保留作为本 change 的记录。
-- 全部任务完成后执行一次 git commit（每个 change 单独提交）。
-- 归档本 change 并同步两份主 spec。
-- 下一个 change 候选：`github-token`（在 `headers.ts` 加 Authorization，并修改 `github-api-access` spec 的"未认证"要求）。
-- 已关闭：加载中的提交行为。去掉独立检索按钮后，加载中不再禁用任何控件，回车和输入框内图标都直接发起新检索并取消旧请求，spec 的 Loading state 需求已改写，见 design.md D7。
-- 待办：会话内结果缓存。现状不缓存，翻页回退或重复提交同样参数都会再请求一次，在未认证 60 次/小时的配额下浪费明显。建议作为 `github-token` change 的一部分实现：在 `useRepositorySearch` 内按 `query|sort|page` 建 Map，带时间戳，新鲜期约 5 分钟，命中直接 `succeeded` 不发请求；刷新即失效，不持久化。等出现多端点并发（详情页、比较页）再评估换 TanStack Query。
-- 待办：给仓库加星。属于写操作，需要用户带 `repo` 权限的 token 调 `PUT /user/starred/{owner}/{repo}`，未认证阶段不可能；`github-token` 做完后技术上可行，但用用户 token 做修改和只读访问是两个级别，建议单独评估后再做。
-- 待办（可发现性）：qualifier 语法对普通用户不可见。短期已用示例 chip 缓解（见 spec 的 Example queries）；中期靠 `category-browse`（六大分类 = 预设 topic 查询）和结构化筛选器（语言、最低 star、排除 fork 等，由程序拼 qualifier）彻底解决，两者作为独立 change 排期。
-- 已定（2026-10-20）：结果项附加信号全部保留（活跃度与最近推送、元数据更新、Archived / Fork / Template、fork 数、未关闭 issue 数、体积、组织或个人、官网），star 增速移除。spec 的 Result items 需求与 design D7 已更新。
+- change をまたぐ TODO はリポジトリルートの `ROADMAP.md` に統合済みであり、以後はそれを正とする。以下の項目は本 change の記録として残す。
+- すべてのタスク完了後に git commit を 1 回実行する（change ごとに単独でコミット）。
+- 本 change をアーカイブし、2 つのメイン spec を同期する。
+- 次の change 候補: `github-token`（`headers.ts` に Authorization を追加し、`github-api-access` spec の「未認証」要件を変更する）。
+- クローズ済み: 読み込み中の送信の振る舞い。独立した検索ボタンを削除した後は、読み込み中にいかなるコントロールも無効化せず、Enter と入力ボックス内のアイコンのどちらも直接新しい検索を発起して古いリクエストをキャンセルする。spec の Loading state 要件は書き換え済み。design.md D7 を参照。
+- TODO: セッション内の結果キャッシュ。現状はキャッシュしておらず、ページを戻る場合や同じパラメータを再送信する場合も再度リクエストするため、未認証の 60 回/時のクォータでは無駄が目立つ。`github-token` change の一部として実装することを推奨する: `useRepositorySearch` 内で `query|sort|page` をキーに Map を作り、タイムスタンプを付け、鮮度期間は約 5 分とし、ヒットすればリクエストを発行せず直接 `succeeded` にする。リロードで失効し、永続化しない。複数エンドポイントの並行処理（詳細ページ、比較ページ）が出てきた時点で TanStack Query への置き換えを評価する。
+- TODO: リポジトリへの star 付与。書き込み操作であり、ユーザーの `repo` 権限付き token で `PUT /user/starred/{owner}/{repo}` を呼ぶ必要があるため、未認証フェーズでは不可能である。`github-token` 完了後は技術的に可能だが、ユーザー token による変更と読み取り専用アクセスは別のレベルであるため、単独で評価してから行うことを推奨する。
+- TODO（発見可能性）: qualifier 構文は一般ユーザーには見えない。短期的にはサンプル chip で緩和済み（spec の Example queries を参照）。中期的には `category-browse`（6 大カテゴリ = プリセットの topic クエリ）と構造化フィルター（言語、最低 star 数、fork 除外など。プログラムが qualifier を組み立てる）で根本的に解決する。両者は独立した change としてスケジュールする。
+- 確定（2026-10-20）: 結果項目の追加シグナルはすべて保持する（活動度と最終プッシュ、メタデータ更新、Archived / Fork / Template、fork 数、未クローズ issue 数、サイズ、組織か個人か、公式サイト）。star 増加速度は削除する。spec の Result items 要件と design D7 は更新済み。

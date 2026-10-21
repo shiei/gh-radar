@@ -8,6 +8,11 @@ schema: spec-driven
 #   context: |
 #     Designs and tasks must cover Windows, macOS, and Linux
 #     Write all artifacts in Spanish
+context: |
+  すべての OpenSpec 成果物（proposal / design / tasks / spec）は日本語で書く。
+  見出し、`### Requirement:` と `#### Scenario:` の名前、SHALL / MUST などのキーワード、
+  WHEN / THEN、コード、ファイルパス、英語の技術用語はそのまま英語で残す。
+  会話が中国語でも成果物は日本語で書き、コミットメッセージは日本語または英語にする。
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.

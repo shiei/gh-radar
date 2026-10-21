@@ -2,30 +2,30 @@
 
 ## Why
 
-项目的定位调整为"开源的技术雷达：观察技术市场与行业动态、辅助选型"。GitHub 自己的检索只给当下的快照，没有历史，所以"谁在涨、涨多快"这个最有价值的问题它回答不了。用 GitHub Actions 每天抓一次固定范围的仓库数据、以 JSON 提交回仓库并随站点一起发布，就能在没有服务器、没有数据库的前提下积累出真实的增长序列。数据越早开始攒越有价值，所以它排在其他第二阶段功能之前。
+プロジェクトの位置づけを「オープンソースの技術レーダー：技術市場と業界動向を観察し、技術選定を支援する」に調整した。GitHub 自身の検索は現時点のスナップショットしか返さず履歴を持たないため、「誰が伸びているか、どれほど速く伸びているか」という最も価値のある問いに答えられない。GitHub Actions で毎日 1 回、固定範囲のリポジトリデータを取得し、JSON としてリポジトリにコミットしてサイトと一緒に公開すれば、サーバーもデータベースもない前提で実際の成長系列を蓄積できる。データは早く蓄積を始めるほど価値が高いので、他の第 2 フェーズ機能より先に置く。
 
 ## What Changes
 
-- 新增分类映射 `src/lib/categories.ts`（六个分类及其查询），同时被站点和快照脚本使用。
-- 新增 `scripts/snapshot.ts`：对每个分类的"热门"与"新秀"两条查询各取前 300 条，加上 `data/watchlist.txt` 里手工维护的仓库，抓取 star、fork、未关闭 issue、最近推送、创建时间、语言、topics、归档标记。
-- 数据写入 `public/data/`：`latest.json`（当天完整快照）、`daily/<日期>.json`（原始快照，保留 30 天）、`series/<分类>.json`（每仓库的 `[日期, star]` 序列，一年按天，之后按周降采样）、`meta.json`（最近一次成功时间、仓库数、覆盖范围）。
-- 新增 `.github/workflows/snapshot.yml`：每天 UTC 00:00 运行脚本并提交结果；任何请求失败即整体失败、不提交半份数据。
-- 脚本可本地运行（`npm run snapshot`，需要 `GITHUB_TOKEN` 环境变量），带 `--dry-run`。
-- 合并、增量计算、保留期清理、降采样都是纯函数并有单元测试。
-- 本 change 完成后单独 git commit。
+- 分類マッピング `src/lib/categories.ts`（6 つの分類とそのクエリ）を新設し、サイトとスナップショットスクリプトの両方で使用する。
+- `scripts/snapshot.ts` を新設する：各分類の「人気」と「新星」の 2 本のクエリでそれぞれ上位 300 件を取得し、`data/watchlist.txt` で手動管理するリポジトリを加えて、star、fork、オープン issue、最終 push、作成日時、言語、topics、アーカイブフラグを取得する。
+- データは `public/data/` に書き込む：`latest.json`（当日の完全なスナップショット）、`daily/<日付>.json`（生のスナップショット、30 日保持）、`series/<分類>.json`（リポジトリごとの `[日付, star]` 系列。1 年間は日次、それ以前は週次にダウンサンプリング）、`meta.json`（最後に成功した時刻、リポジトリ数、カバー範囲）。
+- `.github/workflows/snapshot.yml` を新設する：毎日 UTC 00:00 にスクリプトを実行して結果をコミットする。いずれかのリクエストが失敗すれば全体を失敗とし、部分的なデータはコミットしない。
+- スクリプトはローカルでも実行できる（`npm run snapshot`、環境変数 `GITHUB_TOKEN` が必要）。`--dry-run` を備える。
+- マージ、増分計算、保持期間のクリーンアップ、ダウンサンプリングはすべて純関数であり、単体テストを持つ。
+- 本 change 完了後に単独で git commit する。
 
 ## Capabilities
 
 ### New Capabilities
 
-- `daily-snapshot`: 快照的范围、数据文件的结构与保留策略、定时任务的运行规则与失败行为。
+- `daily-snapshot`: スナップショットの範囲、データファイルの構造と保持ポリシー、定期タスクの実行ルールと失敗時の挙動。
 
 ### Modified Capabilities
 
-（无。）
+（なし。）
 
 ## Impact
 
-- 新增 `scripts/`、`.github/workflows/`、`public/data/` 目录；新增 dev 依赖 `tsx` 以直接运行 TypeScript 脚本。
-- 快照脚本使用 Actions 自带的 `GITHUB_TOKEN`（核心池每小时 1000 次、search 每分钟 30 次），每天约 40 次 search 请求加若干分页，远低于上限。
-- 仓库每天多一个由 Actions 产生的 commit，只改动 `public/data/` 下的文件。
+- `scripts/`、`.github/workflows/`、`public/data/` ディレクトリを新設する。TypeScript スクリプトを直接実行するため dev 依存に `tsx` を追加する。
+- スナップショットスクリプトは Actions 付属の `GITHUB_TOKEN`（コアプールは毎時 1000 回、search は毎分 30 回）を使用する。1 日あたり約 40 回の search リクエストと若干のページングで、上限を大きく下回る。
+- リポジトリには毎日 Actions による commit が 1 つ増えるが、変更は `public/data/` 配下のファイルのみである。

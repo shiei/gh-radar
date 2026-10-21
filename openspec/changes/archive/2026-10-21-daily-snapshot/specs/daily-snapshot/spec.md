@@ -2,60 +2,60 @@
 
 ## Purpose
 
-定义每日快照数据集：覆盖哪些仓库、每个仓库记录什么、数据文件如何组织与保留，以及抓取任务何时运行、失败时如何表现。它是趋势、榜单和对比功能的数据来源。
+毎日のスナップショットデータセットを定義する：どのリポジトリをカバーするか、各リポジトリについて何を記録するか、データファイルをどう構成・保持するか、取得タスクをいつ実行し失敗時にどう振る舞うか。これはトレンド、ランキング、比較機能のデータソースである。
 
 ## ADDED Requirements
 
 ### Requirement: Snapshot scope follows the category map
-快照 SHALL 覆盖：六个分类各自的"热门"查询（分类查询按 star 降序）与"新秀"查询（分类的 topic 加近 90 天创建、star 不低于 20，按 star 降序）各前 300 条，以及 `data/watchlist.txt` 中手工列出的仓库。分类及其查询 SHALL 与站点共用同一个映射文件。同一仓库出现在多个来源时 SHALL 只记录一次并标注全部来源。
+スナップショット SHALL 以下をカバーする：6 つの分類それぞれの「人気」クエリ（分類クエリを star 降順）と「新星」クエリ（分類の topic に直近 90 日以内の作成、star 20 以上を加え、star 降順）の各上位 300 件、および `data/watchlist.txt` に手動で列挙したリポジトリ。分類とそのクエリ SHALL サイトと同一のマッピングファイルを共用する。同じリポジトリが複数のソースに現れた場合 SHALL 1 回だけ記録し、すべてのソースを付与する。
 
 #### Scenario: Sources are tagged
-- **WHEN** 仓库 `vercel/next.js` 同时出现在 Frontend 热门与 watchlist
-- **THEN** `latest.json` 中它只有一条记录，来源包含 `frontend:popular` 与 `watchlist`
+- **WHEN** リポジトリ `vercel/next.js` が Frontend 人気と watchlist の両方に現れる
+- **THEN** `latest.json` にはそのレコードが 1 件だけあり、ソースに `frontend:popular` と `watchlist` が含まれる
 
 ### Requirement: Per-repository fields
-每条记录 SHALL 包含：`owner/name`、star 数、fork 数、未关闭 issue 数、最近推送时间、创建时间、主语言、topics、是否归档、来源列表。
+各レコード SHALL 以下を含む：`owner/name`、star 数、fork 数、オープン issue 数、最終 push 日時、作成日時、主言語、topics、アーカイブ済みか否か、ソース一覧。
 
 #### Scenario: Record shape
-- **WHEN** 读取 `latest.json` 中任一仓库
-- **THEN** 上述字段齐全，缺失的语言或 topics 以 null 或空数组表示
+- **WHEN** `latest.json` の任意のリポジトリを読む
+- **THEN** 上記フィールドがすべて揃っており、欠けている言語や topics は null または空配列で表される
 
 ### Requirement: Data files and retention
-数据 SHALL 写入 `public/data/`：`latest.json` 只保留最新一份；`daily/<YYYY-MM-DD>.json` 保留最近 30 天，更早的 SHALL 被删除；`series/<分类>.json` 为每个仓库保存 `[日期, star]` 序列，最近 365 天按天保留，更早的 SHALL 降采样为每周一个点；`meta.json` 记录最近一次成功运行的时间、仓库总数与各来源数量。
+データ SHALL `public/data/` に書き込む：`latest.json` は最新の 1 つだけを保持する。`daily/<YYYY-MM-DD>.json` は直近 30 日を保持し、それより古いもの SHALL 削除する。`series/<分類>.json` はリポジトリごとに `[日付, star]` 系列を保存し、直近 365 日は日次で保持し、それより古いもの SHALL 週 1 点にダウンサンプリングする。`meta.json` は最後に成功した実行の時刻、リポジトリ総数、各ソースの件数を記録する。
 
 #### Scenario: Daily pruning
-- **WHEN** 2026-11-25 运行成功
-- **THEN** `daily/` 中不存在 2026-10-25 及更早的文件
+- **WHEN** 2026-11-25 の実行が成功する
+- **THEN** `daily/` に 2026-10-25 以前のファイルが存在しない
 
 #### Scenario: Series downsampling
-- **WHEN** 某仓库的序列中存在 400 天前的按天数据点
-- **THEN** 365 天以前的部分只保留每周一个点，365 天以内逐日保留
+- **WHEN** あるリポジトリの系列に 400 日前の日次データ点が存在する
+- **THEN** 365 日より前の部分は週 1 点のみを保持し、365 日以内は日次で保持する
 
 #### Scenario: Series append is idempotent
-- **WHEN** 同一天运行两次
-- **THEN** 序列中该日期只有一个点，取后一次的值
+- **WHEN** 同じ日に 2 回実行する
+- **THEN** 系列にはその日付の点が 1 つだけあり、後の実行の値を取る
 
 ### Requirement: Scheduled run with all-or-nothing commit
-抓取任务 SHALL 每天 UTC 00:00 自动运行一次，也可手动触发。任一请求最终失败时任务 SHALL 整体失败，MUST NOT 提交部分数据；成功时 SHALL 以一次 commit 提交全部变更，commit 信息包含日期与仓库数。
+取得タスク SHALL 毎日 UTC 00:00 に自動で 1 回実行し、手動でもトリガーできる。いずれかのリクエストが最終的に失敗した場合、タスク SHALL 全体を失敗とし、部分的なデータのコミットを MUST NOT 行う。成功時 SHALL すべての変更を 1 回の commit で提出し、commit メッセージに日付とリポジトリ数を含める。
 
 #### Scenario: Partial failure
-- **WHEN** 某条分类查询在重试后仍返回 5xx
-- **THEN** 任务标记失败，仓库中的数据文件保持上一次成功的状态
+- **WHEN** ある分類クエリがリトライ後も 5xx を返す
+- **THEN** タスクは失敗としてマークされ、リポジトリ内のデータファイルは前回成功時の状態を保つ
 
 #### Scenario: Successful run
-- **WHEN** 全部查询成功
-- **THEN** 产生一个 commit，只改动 `public/data/` 下的文件
+- **WHEN** すべてのクエリが成功する
+- **THEN** commit が 1 つ生成され、`public/data/` 配下のファイルのみが変更される
 
 ### Requirement: Rate limit aware fetching
-脚本 SHALL 读取每次响应的配额标头，在剩余额度不足时等待到恢复时刻再继续，并对 5xx 与网络错误做有限次重试；MUST NOT 并发发起 search 请求。
+スクリプト SHALL 各レスポンスのクォータヘッダーを読み、残りが不足している場合は回復時刻まで待ってから続行し、5xx とネットワークエラーに対して有限回のリトライを行う。search リクエストの並行発行を MUST NOT 行う。
 
 #### Scenario: Quota exhausted mid-run
-- **WHEN** search 配额在第 20 次请求后用尽
-- **THEN** 脚本等待到 `X-RateLimit-Reset` 对应时刻后继续，最终仍成功
+- **WHEN** search クォータが 20 回目のリクエスト後に尽きる
+- **THEN** スクリプトは `X-RateLimit-Reset` に対応する時刻まで待ってから続行し、最終的に成功する
 
 ### Requirement: Local run and dry run
-脚本 SHALL 能在本地以 `GITHUB_TOKEN` 环境变量运行；`--dry-run` SHALL 只抓取并打印统计，不写任何文件。
+スクリプト SHALL 環境変数 `GITHUB_TOKEN` によりローカルで実行できる。`--dry-run` SHALL 取得と統計の表示のみを行い、ファイルは一切書き込まない。
 
 #### Scenario: Dry run
-- **WHEN** 本地执行 `npm run snapshot -- --dry-run`
-- **THEN** 输出各来源的仓库数与总数，`public/data/` 无变化
+- **WHEN** ローカルで `npm run snapshot -- --dry-run` を実行する
+- **THEN** 各ソースのリポジトリ数と総数を出力し、`public/data/` に変化はない

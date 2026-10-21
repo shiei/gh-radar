@@ -2,58 +2,58 @@
 
 ## Why
 
-检索是这个产品的核心入口，优先级最高。在 `project-foundation` 提供的骨架之上，用 GitHub REST Search API 直接从浏览器发起检索，就能在没有后端的情况下交付一个可用的最小产品。本阶段刻意不做 token 配置，以最小的面积验证检索流程、结果展示和配额受限时的体验。
+検索はこの製品の中核となる入口であり、優先度が最も高い。`project-foundation` が提供する骨格の上で、GitHub REST Search API をブラウザから直接呼び出して検索すれば、バックエンドなしで使える最小の製品を提供できる。本フェーズでは意図的に token 設定を行わず、最小の範囲で検索フロー、結果表示、クォータ制限時の体験を検証する。
 
 ## What Changes
 
-- 首页加入搜索框，不设独立检索按钮。用户输入关键字并显式提交（回车或点击输入框内的提交图标）后，调用 `GET https://api.github.com/search/repositories` 获取结果。
-- 搜索框内容原样作为 `q` 参数透传，因此用户可以直接使用 GitHub 的 qualifier 语法（例如 `language:rust cli`）。
-- 提供排序选择：best match（默认）、stars、recently updated，对应 API 原生的 sort 参数。
-- 结果以列表展示，每项包含：owner / name、描述、stars、主语言、最近更新时间、topics、license。点击跳转到 GitHub 仓库页面。
-- 支持分页，遵守 Search API 的上限：每页最多 100 条，最多访问前 1000 条结果。
-- 所有请求均为未认证调用。当收到 403 / 429（配额用尽）时，显示友好提示，并根据响应头 `X-RateLimit-Reset` 告知用户何时可以重试。
-- 展示加载中、无结果、请求失败三种状态。
-- 所有新增文案进入三种语言的语言文件；所有样式使用 tokens。
-- 单元测试覆盖查询参数构造与响应解析；端到端测试使用 mock 的 API 响应，不真实请求 GitHub。
-- 本 change 完成后单独 git commit。
+- ホームページに検索ボックスを追加する。独立した検索ボタンは設けない。ユーザーがキーワードを入力して明示的に送信（Enter、または入力ボックス内の送信アイコンをクリック）した後、`GET https://api.github.com/search/repositories` を呼び出して結果を取得する。
+- 検索ボックスの内容はそのまま `q` パラメータとして渡すため、ユーザーは GitHub の qualifier 構文（例: `language:rust cli`）を直接使える。
+- ソート選択を提供する: best match（デフォルト）、stars、recently updated。API ネイティブの sort パラメータに対応する。
+- 結果はリストで表示し、各項目には owner / name、説明、stars、主要言語、最終更新時刻、topics、license を含める。クリックで GitHub のリポジトリページに遷移する。
+- ページネーションをサポートし、Search API の上限に従う: 1 ページ最大 100 件、先頭 1000 件まで到達可能。
+- すべてのリクエストは未認証呼び出しである。403 / 429（クォータ枯渇）を受信した場合は分かりやすいメッセージを表示し、レスポンスヘッダー `X-RateLimit-Reset` に基づいていつ再試行できるかをユーザーに伝える。
+- 読み込み中、結果なし、リクエスト失敗の 3 種類の状態を表示する。
+- 新規文言はすべて 3 言語の言語ファイルに入れる。すべてのスタイルは tokens を使う。
+- 単体テストはクエリパラメータの構築とレスポンスの解析をカバーする。E2E テストは mock の API レスポンスを使い、GitHub に実際にリクエストしない。
+- 本 change の完了後に単独で git commit する。
 
 ## Capabilities
 
 ### New Capabilities
 
-- `repository-search`: 用户提交检索、选择排序、浏览分页结果的行为，以及结果项展示的字段。
-- `github-api-access`: 浏览器直接访问 GitHub REST API 的方式、认证状态（本阶段为未认证）以及配额受限时的用户可见行为。后续 token 配置的 change 将修改此 capability。
+- `repository-search`: ユーザーが検索を送信し、ソートを選択し、ページ分割された結果を閲覧する振る舞い、および結果項目に表示するフィールド。
+- `github-api-access`: ブラウザから GitHub REST API に直接アクセスする方式、認証状態（本フェーズでは未認証）、およびクォータ制限時のユーザー可視の振る舞い。後続の token 設定 change がこの capability を変更する。
 
 ### Modified Capabilities
 
-（无。）
+（なし。）
 
 ## Impact
 
-- 新增 GitHub API 客户端模块、检索页面及其组件（按 Atomic Design 分层）、三种语言的新增文案。
-- 外部依赖：GitHub REST API 的 `search/repositories` 端点。未认证配额为每分钟 10 次 search 请求、每小时每 IP 60 次总请求。
-- 无后端，无持久化。
+- GitHub API クライアントモジュール、検索ページとそのコンポーネント（Atomic Design に沿って階層化）、3 言語の新規文言を追加する。
+- 外部依存: GitHub REST API の `search/repositories` エンドポイント。未認証のクォータは search リクエストが毎分 10 回、総リクエストが IP ごとに毎時 60 回。
+- バックエンドなし、永続化なし。
 
 ## Deferred: requires backend
 
-以下需求在纯前端架构下无法实现或体验极差，明确推迟。清单已合并到仓库根目录的 `ROADMAP.md`，后续以它为准。
+以下の要件は純粋なフロントエンドアーキテクチャでは実現できないか体験が極めて悪いため、明確に先送りする。一覧はリポジトリルートの `ROADMAP.md` に統合済みであり、以後はそれを正とする。
 
-| 需求                                        | 为什么前端做不了                                                                   |
+| 要件                                        | フロントエンドで実現できない理由                                                   |
 | ------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Trending 排行榜（最近 7 / 30 天新增 Stars） | GitHub 没有 trending API，也没有 star 增量字段。需要服务端定时快照 star 数并做差。 |
-| 项目比较页的增长趋势曲线                    | 同上，需要历史数据。                                                               |
-| Rising Stars 的精确增长率                   | 同上。纯前端只能用 `created:>日期` 做近似。                                        |
-| AI 项目分析                                 | LLM API key 不能暴露在浏览器中，需要服务端代理。                                   |
-| Watchlist 跨设备同步                        | 需要用户身份与服务端存储。仅本机的 localStorage 版本不需要后端。                   |
-| 免 token 使用且不受 60 次/小时限制          | 需要服务端代理共享一个更高配额的 token 并做缓存。                                  |
+| Trending ランキング（直近 7 / 30 日の新規 Stars） | GitHub には trending API がなく、star 増分フィールドもない。サーバー側で定期的に star 数をスナップショットして差分を取る必要がある。 |
+| プロジェクト比較ページの成長トレンド曲線                    | 同上。履歴データが必要。                                                               |
+| Rising Stars の正確な成長率                   | 同上。純粋なフロントエンドでは `created:>日付` による近似しかできない。                                        |
+| AI によるプロジェクト分析                                 | LLM API key をブラウザに露出できないため、サーバー側プロキシが必要。                                   |
+| Watchlist のデバイス間同期                        | ユーザー ID とサーバー側ストレージが必要。ローカルのみの localStorage 版にはバックエンドは不要。                   |
+| token なしで利用でき、かつ 60 回/時の制限を受けない          | サーバー側プロキシでより高いクォータの token を共有し、キャッシュする必要がある。                                  |
 
 ## Not in this change (planned as later frontend-only changes)
 
-- `github-token`：用户配置个人 token，存于 localStorage，用 `GET /rate_limit` 校验，将 search 配额提升到每分钟 30 次。
-- `category-browse`：六个分类（Frontend、Backend、AI/ML、DevOps、Database、Design）到 topic 查询的映射文件与分类导航页。也是让不懂 qualifier 语法的用户能探索的主要入口。
-- `repository-detail`：项目详情页。
-- Most Popular 与 Rising Stars（近似版）排行榜。
-- 结构化的技术栈筛选器（语言、最低 star、排除 fork 等），由程序拼出 qualifier，让手写语法退化为高级功能。
-- 项目比较（静态维度）。
-- 给仓库加星待定：需要用户 token 的写操作，`github-token` 之后单独评估（详见 tasks.md 的 Workflow follow-up）。
-- 会话内结果缓存待做：当前不缓存，重复参数会重新请求。建议并入 `github-token` change（详见 tasks.md 的 Workflow follow-up）。
+- `github-token`: ユーザーが個人 token を設定し、localStorage に保存し、`GET /rate_limit` で検証し、search クォータを毎分 30 回に引き上げる。
+- `category-browse`: 6 つのカテゴリ（Frontend、Backend、AI/ML、DevOps、Database、Design）から topic クエリへのマッピングファイルとカテゴリナビゲーションページ。qualifier 構文を知らないユーザーが探索できる主要な入口でもある。
+- `repository-detail`: プロジェクト詳細ページ。
+- Most Popular と Rising Stars（近似版）ランキング。
+- 構造化された技術スタックフィルター（言語、最低 star 数、fork 除外など）。プログラムが qualifier を組み立て、手書き構文を上級機能に後退させる。
+- プロジェクト比較（静的な次元）。
+- リポジトリへの star 付与は未定: ユーザー token による書き込み操作が必要で、`github-token` の後に単独で評価する（詳細は tasks.md の Workflow follow-up を参照）。
+- セッション内の結果キャッシュは未実施: 現状はキャッシュせず、同じパラメータでも再リクエストする。`github-token` change に含めることを推奨する（詳細は tasks.md の Workflow follow-up を参照）。

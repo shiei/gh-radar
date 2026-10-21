@@ -2,82 +2,82 @@
 
 ## Purpose
 
-定义应用从浏览器直接访问 GitHub REST API 的方式：请求的形态、认证状态、配额信息的解析，以及各类失败如何被归类并向界面报告。本阶段所有访问均为未认证。
+アプリケーションがブラウザから直接 GitHub REST API にアクセスする方式を定義する：リクエストの形、認証状態、クォータ情報の解析、および各種の失敗をどう分類して UI に報告するか。本フェーズではすべてのアクセスは未認証である。
 
 ## Requirements
 
 ### Requirement: Requests target the GitHub REST API directly
-所有数据请求 SHALL 直接从浏览器发往 `https://api.github.com`，不经过任何中间服务。每个请求 SHALL 携带 GitHub 推荐的 JSON 媒体类型和 API 版本标头。
+すべてのデータリクエスト SHALL ブラウザから直接 `https://api.github.com` に送り、いかなる中間サービスも経由しない。各リクエスト SHALL GitHub が推奨する JSON メディアタイプと API バージョンのヘッダーを付ける。
 
 #### Scenario: Search request shape
-- **WHEN** 应用检索仓库
-- **THEN** 请求为 `GET https://api.github.com/search/repositories`，带 `Accept: application/vnd.github+json` 与 `X-GitHub-Api-Version` 标头
+- **WHEN** アプリケーションがリポジトリを検索する
+- **THEN** リクエストは `GET https://api.github.com/search/repositories` で、`Accept: application/vnd.github+json` と `X-GitHub-Api-Version` ヘッダーを伴う
 
 ### Requirement: Rate limit information is read from every response
-每个响应的 `X-RateLimit-Limit`、`X-RateLimit-Remaining` 与 `X-RateLimit-Reset` 标头 SHALL 被解析并保存为当前配额状态（上限、剩余、恢复时刻），供界面查询。Remaining 或 Reset 缺失时配额状态 SHALL 视为未知；Limit 缺失时上限视为未知但不影响其余字段。
+各レスポンスの `X-RateLimit-Limit`、`X-RateLimit-Remaining`、`X-RateLimit-Reset` ヘッダー SHALL 解析して現在のクォータ状態（上限、残量、回復時刻）として保存し、UI から参照できるようにする。Remaining または Reset が欠けている場合、クォータ状態 SHALL 不明とみなす。Limit が欠けている場合は上限を不明とみなすが、他のフィールドには影響しない。
 
 #### Scenario: Headers present
-- **WHEN** 响应带有 `X-RateLimit-Limit: 30`、`X-RateLimit-Remaining: 7` 与 `X-RateLimit-Reset: 1760000000`
-- **THEN** 配额状态为上限 30、剩余 7、恢复时间为该时间戳对应的时刻
+- **WHEN** レスポンスに `X-RateLimit-Limit: 30`、`X-RateLimit-Remaining: 7`、`X-RateLimit-Reset: 1760000000` が付いている
+- **THEN** クォータ状態は上限 30、残量 7、回復時刻はそのタイムスタンプに対応する時刻になる
 
 #### Scenario: Headers absent
-- **WHEN** 响应没有配额标头
-- **THEN** 配额状态为未知，不报错
+- **WHEN** レスポンスにクォータヘッダーがない
+- **THEN** クォータ状態は不明となり、エラーにはならない
 ### Requirement: Rate limit exhaustion is reported with a reset time
-当响应状态为 403 且剩余配额为 0，或状态为 429 时，请求 SHALL 以"配额用尽"失败，并附带可重试的时刻。该时刻 SHALL 优先取自 `Retry-After` 标头（秒），否则取自 `X-RateLimit-Reset`。两者都缺失时 SHALL 仍报告配额用尽但不附带时刻。
+レスポンスのステータスが 403 かつ残量クォータが 0、またはステータスが 429 のとき、リクエスト SHALL 「クォータ枯渇」として失敗し、リトライ可能な時刻を添える。その時刻 SHALL `Retry-After` ヘッダー（秒）を優先し、なければ `X-RateLimit-Reset` から取る。両方が欠けている場合 SHALL クォータ枯渇は報告するが時刻は添えない。
 
 #### Scenario: Primary rate limit
-- **WHEN** 响应为 403 且 `X-RateLimit-Remaining: 0`、`X-RateLimit-Reset: 1760000000`
-- **THEN** 失败类型为配额用尽，重试时刻为 1760000000 对应的时间
+- **WHEN** レスポンスが 403 で `X-RateLimit-Remaining: 0`、`X-RateLimit-Reset: 1760000000` を伴う
+- **THEN** 失敗種別はクォータ枯渇で、リトライ時刻は 1760000000 に対応する時刻になる
 
 #### Scenario: Secondary rate limit
-- **WHEN** 响应为 403 且带 `Retry-After: 60`
-- **THEN** 失败类型为配额用尽，重试时刻为当前时间加 60 秒
+- **WHEN** レスポンスが 403 で `Retry-After: 60` を伴う
+- **THEN** 失敗種別はクォータ枯渇で、リトライ時刻は現在時刻に 60 秒を加えた時刻になる
 
 #### Scenario: 429 without headers
-- **WHEN** 响应为 429 且没有配额标头
-- **THEN** 失败类型为配额用尽，重试时刻未知
+- **WHEN** レスポンスが 429 でクォータヘッダーがない
+- **THEN** 失敗種別はクォータ枯渇で、リトライ時刻は不明になる
 
 ### Requirement: Failures are classified
-除配额用尽外，请求失败 SHALL 被归为以下类型之一：查询无效（422）、网络不可达（fetch 抛出异常）、其他 API 错误（任何其他非 2xx 状态，附带状态码）。界面依据类型而不是原始状态码决定提示。
+クォータ枯渇以外のリクエスト失敗 SHALL 次のいずれかの種別に分類する：無効なクエリ（422）、ネットワーク到達不能（fetch が例外を投げる）、その他の API エラー（それ以外の非 2xx ステータス、ステータスコードを添える）。UI は生のステータスコードではなく種別に基づいて表示を決める。
 
 #### Scenario: Invalid query
-- **WHEN** 响应为 422
-- **THEN** 失败类型为查询无效
+- **WHEN** レスポンスが 422 である
+- **THEN** 失敗種別は無効なクエリになる
 
 #### Scenario: Network unreachable
-- **WHEN** 请求因断网抛出异常
-- **THEN** 失败类型为网络不可达
+- **WHEN** リクエストがオフラインのため例外を投げる
+- **THEN** 失敗種別はネットワーク到達不能になる
 
 #### Scenario: Server error
-- **WHEN** 响应为 503
-- **THEN** 失败类型为其他 API 错误，附带状态码 503
+- **WHEN** レスポンスが 503 である
+- **THEN** 失敗種別はその他の API エラーで、ステータスコード 503 を添える
 
 ### Requirement: In-flight requests can be cancelled
-每个请求 SHALL 可以被调用方取消。被取消的请求 MUST NOT 产生成功结果，也 MUST NOT 被归为上述任一失败类型，而是以"已取消"结束。
+各リクエスト SHALL 呼び出し側からキャンセルできる。キャンセルされたリクエストは MUST NOT 成功結果を生成せず、MUST NOT 上記のいずれの失敗種別にも分類されず、「キャンセル済み」として終了する。
 
 #### Scenario: Cancelled before response
-- **WHEN** 调用方在响应到达前取消请求
-- **THEN** 请求以已取消结束，不更新配额状态，不报告错误
+- **WHEN** 呼び出し側がレスポンス到着前にリクエストをキャンセルする
+- **THEN** リクエストはキャンセル済みとして終了し、クォータ状態を更新せず、エラーも報告しない
 
 ### Requirement: Requests carry the user's token when configured
-当用户已配置 token 时，所有 GitHub API 请求 SHALL 携带 `Authorization: Bearer <token>` 标头；未配置时 MUST NOT 携带任何凭据。token MUST NOT 发往 `api.github.com` 以外的任何地址。
+ユーザーが token を設定済みのとき、すべての GitHub API リクエスト SHALL `Authorization: Bearer <token>` ヘッダーを付ける。未設定のときは MUST NOT いかなる資格情報も付けない。token は MUST NOT `api.github.com` 以外のいかなるアドレスにも送らない。
 
 #### Scenario: Token configured
-- **WHEN** 用户已保存有效 token 并发起检索
-- **THEN** 请求带 `Authorization: Bearer` 标头，值为该 token
+- **WHEN** ユーザーが有効な token を保存済みで検索を開始する
+- **THEN** リクエストに `Authorization: Bearer` ヘッダーが付き、その値は当該 token である
 
 #### Scenario: No token
-- **WHEN** 用户未配置 token
-- **THEN** 请求中没有 `Authorization` 标头
+- **WHEN** ユーザーが token を設定していない
+- **THEN** リクエストに `Authorization` ヘッダーがない
 
 ### Requirement: Token can be validated without spending quota
-应用 SHALL 通过 `GET /rate_limit` 校验 token：200 视为有效并同时更新配额状态；401 视为无效。该请求不计入配额。
+アプリケーション SHALL `GET /rate_limit` で token を検証する：200 は有効とみなし同時にクォータ状態を更新する。401 は無効とみなす。このリクエストはクォータに計上されない。
 
 #### Scenario: Valid token
-- **WHEN** 用 token 请求 `/rate_limit` 返回 200
-- **THEN** 校验通过，配额状态更新为响应中 search 资源的上限与剩余
+- **WHEN** token を付けて `/rate_limit` をリクエストし 200 が返る
+- **THEN** 検証に成功し、クォータ状態がレスポンス中の search リソースの上限と残量に更新される
 
 #### Scenario: Invalid token
-- **WHEN** 用 token 请求 `/rate_limit` 返回 401
-- **THEN** 校验失败，报告 token 无效，配额状态不变
+- **WHEN** token を付けて `/rate_limit` をリクエストし 401 が返る
+- **THEN** 検証に失敗し、token が無効であると報告し、クォータ状態は変わらない

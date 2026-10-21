@@ -1,24 +1,24 @@
 # Tasks
 
-## 1. 数据与状态
+## 1. データと状態
 
-- [x] 1.1 `src/lib/github/`：新增 `types.ts` 的 `SearchType`、`SearchFilters`、`UserResult`、`TopicResult`；`composeQuery()`；`searchUsers()`、`searchTopics()`；`buildSearchPath` 接受类型与筛选；单元测试覆盖合成（含引号）、三种 URL、两种裁剪
-- [x] 1.2 `searchReducer`：state 加 `type` 与 `filters`，action 加 `setType` / `setFilters`，`result` 改为按类型判别；单元测试覆盖两种 action 的"无 query 只记、有 query 重查第 1 页"
-- [x] 1.3 `useRepositorySearch`：按类型调用，缓存键含类型与合成查询，暴露 `setType` / `setFilters`；`searchCache` 的 `cacheKey` 扩展；单元测试验证切换类型发对应端点
-- [x] 1.4 `src/features/search/useTypeCounts.ts`：有 token 且有 query 时取另外两类的 `total_count`；单元测试覆盖有 / 无 token 与失败静默
+- [x] 1.1 `src/lib/github/`：`types.ts` に `SearchType`、`SearchFilters`、`UserResult`、`TopicResult` を新設する。`composeQuery()`、`searchUsers()`、`searchTopics()`。`buildSearchPath` がタイプとフィルターを受け取る。単体テストで合成（引用符を含む）、3 種類の URL、2 種類の切り出しをカバーする
+- [x] 1.2 `searchReducer`：state に `type` と `filters` を追加し、action に `setType` / `setFilters` を追加し、`result` をタイプごとの判別に変更する。単体テストで 2 つの action の「query がなければ記録のみ、query があれば第 1 ページを再検索」をカバーする
+- [x] 1.3 `useRepositorySearch`：タイプごとに呼び出し、キャッシュキーにタイプと合成クエリを含め、`setType` / `setFilters` を公開する。`searchCache` の `cacheKey` を拡張する。単体テストでタイプ切替時に対応するエンドポイントへ発行することを検証する
+- [x] 1.4 `src/features/search/useTypeCounts.ts`：token と query がある場合に他の 2 種類の `total_count` を取得する。単体テストで token あり / なしと失敗時の静かな無視をカバーする
 
-## 2. 组件
+## 2. コンポーネント
 
-- [x] 2.1 三份语言文件新增 `search.type.*`、`search.filters.*`、`search.user.*`、`search.topic.*` 键，语言列表常量 `src/lib/languages.ts`
-- [x] 2.2 `SearchTypeTabs` molecule（三段、可选计数、aria-pressed），单元测试
-- [x] 2.3 `SearchFilters` molecule（panel / collapsible 两种形态、生效条件数、清除），单元测试覆盖每个控件的回调与折叠计数
-- [x] 2.4 `UserCard` 与 `TopicCard` molecule，`RepositoryCard` 语言可点击，`SearchResults` 按类型渲染并透传回调；单元测试
+- [x] 2.1 3 つの言語ファイルに `search.type.*`、`search.filters.*`、`search.user.*`、`search.topic.*` キーを新設し、言語リスト定数 `src/lib/languages.ts` を追加する
+- [x] 2.2 `SearchTypeTabs` molecule（3 セグメント、任意の件数、aria-pressed）、単体テスト
+- [x] 2.3 `SearchFilters` molecule（panel / collapsible の 2 形態、有効条件数、クリア）、単体テストで各コントロールのコールバックと折りたたみ時の件数をカバーする
+- [x] 2.4 `UserCard` と `TopicCard` molecule、`RepositoryCard` の言語をクリック可能にし、`SearchResults` をタイプごとにレンダリングしてコールバックを透過させる。単体テスト
 
-## 3. 接线与 e2e
+## 3. 配線と e2e
 
-- [x] 3.1 `HomePage`：类型切换放在搜索框上方，筛选器进左栏（panel）与窄屏折叠区（collapsible），语言点击与 topic 点击接到 hook；分类点击时类型切回 repositories
-- [x] 3.2 e2e `e2e/facets.spec.ts`：Users / Topics 切换与卡片、Topic 点击回到仓库、筛选 qualifier 与输入框不变、语言点击、有 / 无 token 的计数、600px 折叠；fixture 增加 users 与 topics 响应
+- [x] 3.1 `HomePage`：タイプ切替を検索ボックスの上に置き、フィルターを左カラム（panel）とナロー画面の折りたたみ領域（collapsible）に入れ、言語クリックと topic クリックを hook につなぐ。カテゴリクリック時はタイプを repositories に戻す
+- [x] 3.2 e2e `e2e/facets.spec.ts`：Users / Topics の切替とカード、Topic クリックでリポジトリに戻ること、フィルター qualifier と入力ボックスが変わらないこと、言語クリック、token あり / なしの件数、600px での折りたたみ。fixture に users と topics のレスポンスを追加する
 
-## 4. 收尾
+## 4. 仕上げ
 
-- [x] 4.1 `npm run check` 与 `npm run test:e2e` 通过；`docs/development.md` 补充类型与筛选的说明；ROADMAP 勾选 C
+- [x] 4.1 `npm run check` と `npm run test:e2e` が通る。`docs/development.md` にタイプとフィルターの説明を補足する。ROADMAP の C にチェックを入れる
