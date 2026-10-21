@@ -33,12 +33,14 @@ export function RepositoryCard({ repo, onTopicClick, onLanguageClick }: Reposito
       data-testid="repo-card"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          {/* Inline (not flex) so a very long owner or repo name can wrap instead of overflowing
+              the card on narrow screens; the avatar sits inline before the text. */}
           <a
             href={repo.htmlUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent inline-flex items-center gap-2 text-lg font-semibold hover:underline"
+            className="text-accent min-w-0 text-lg font-semibold [overflow-wrap:anywhere] break-words hover:underline"
             data-testid="repo-link"
           >
             {repo.avatarUrl ? (
@@ -48,7 +50,7 @@ export function RepositoryCard({ repo, onTopicClick, onLanguageClick }: Reposito
                 width={24}
                 height={24}
                 loading="lazy"
-                className="bg-surface-muted h-6 w-6 shrink-0 rounded-full"
+                className="bg-surface-muted mr-2 inline-block h-6 w-6 rounded-full align-text-bottom"
                 data-testid="repo-avatar"
               />
             ) : null}

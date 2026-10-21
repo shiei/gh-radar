@@ -21,7 +21,7 @@ export function TopicCard({ topic, onSelect }: TopicCardProps) {
           type="button"
           onClick={() => onSelect(topic.name)}
           aria-label={t('search.topic.search', { topic: topic.name })}
-          className="text-accent cursor-pointer font-mono text-base font-semibold hover:underline"
+          className="text-accent min-w-0 cursor-pointer font-mono text-base font-semibold [overflow-wrap:anywhere] break-words hover:underline"
           data-testid="topic-name"
         >
           {topic.name}
