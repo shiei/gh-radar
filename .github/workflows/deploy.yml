@@ -48,6 +48,36 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Smoke check of what is actually being served: a green deploy does not prove the page works.
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the live site
+        env:
+          SITE: ${{ needs.deploy.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          bust="?v=${GITHUB_RUN_ID}"
+          # The CDN can lag a little behind the deployment; retry before failing.
+          for attempt in 1 2 3 4 5 6; do
+            html=$(curl -fsSL "${SITE}${bust}") && break
+            echo "attempt ${attempt}: site not reachable yet"; sleep 15
+          done
+          echo "$html" | grep -q '<title>OpenSource Radar</title>' || { echo 'title missing'; exit 1; }
+          script=$(echo "$html" | grep -o '<script[^>]*src="[^"]*"' | head -1 | sed 's/.*src="\([^"]*\)"/\1/')
+          [ -n "$script" ] || { echo 'no script tag found'; exit 1; }
+          curl -fsSL -o /dev/null "https://$(echo "$SITE" | cut -d/ -f3)${script}${bust}" || { echo "script ${script} not served"; exit 1; }
+          meta=$(curl -fsSL "${SITE}data/meta.json${bust}")
+          snapshot=$(echo "$meta" | sed -n 's/.*"date": *"\([0-9-]*\)".*/\1/p')
+          [ -n "$snapshot" ] || { echo 'meta.json has no date'; exit 1; }
+          age=$(( ( $(date -u +%s) - $(date -u -d "$snapshot" +%s) ) / 86400 ))
+          echo "snapshot date ${snapshot} (${age} days old)"
+          [ "$age" -le 3 ] || { echo 'snapshot is older than 3 days'; exit 1; }
+          echo 'live site OK'
