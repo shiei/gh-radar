@@ -14,12 +14,11 @@
 - **THEN** `latest.json` 中它只有一条记录，来源包含 `frontend:popular` 与 `watchlist`
 
 ### Requirement: Per-repository fields
-每条记录 SHALL 包含：`owner/name`、star 数、fork 数、未关闭 issue 数、最近推送时间、创建时间、主语言、topics、是否归档、来源列表。
+每条记录 SHALL 包含：`owner/name`、star 数、fork 数、未关闭 issue 数、最近推送时间、创建时间、主语言、topics、是否归档、来源列表，以及 owner 的数字 id（用于直接拼出头像地址，省去一次重定向；API 未提供时可缺省）。
 
 #### Scenario: Record shape
 - **WHEN** 读取 `latest.json` 中任一仓库
-- **THEN** 上述字段齐全，缺失的语言或 topics 以 null 或空数组表示
-
+- **THEN** 上述字段齐全，缺失的语言或 topics 以 null 或空数组表示，owner id 缺失时该字段不存在
 ### Requirement: Data files and retention
 数据 SHALL 写入 `public/data/`：`latest.json` 只保留最新一份；`daily/<YYYY-MM-DD>.json` 保留最近 30 天，更早的 SHALL 被删除；`series/<分类>.json` 为每个仓库保存 `[日期, star]` 序列，最近 365 天按天保留，更早的 SHALL 降采样为每周一个点；`meta.json` 记录最近一次成功运行的时间、仓库总数与各来源数量。
 
