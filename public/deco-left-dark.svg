@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 220" width="240" height="220">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#47bfff"/><stop offset="1" stop-color="#7e14ff"/></linearGradient>
+    <radialGradient id="blip" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#47bfff" stop-opacity="0.95"/><stop offset="0.45" stop-color="#7e14ff" stop-opacity="0.45"/><stop offset="1" stop-color="#7e14ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="dot" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffffff"/><stop offset="0.4" stop-color="#ffffff" stop-opacity="0.9"/><stop offset="1" stop-color="#7e14ff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <g transform="translate(22 24) scale(1.1)"><rect width="26" height="26" rx="6" fill="#0d1117" stroke="url(#g)" stroke-width="2"/><text x="13" y="18" text-anchor="middle" fill="url(#g)" style="font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace">AI</text></g>
+  <g transform="translate(150 40)"><circle r="11.7" fill="url(#blip)"/><circle r="3.9" fill="url(#dot)"/><path d="M-9.1 -5.2v-3.9h3.9M5.2 -9.1h3.9v3.9M9.1 5.2v3.9h-3.9M-5.2 9.1h-3.9v-3.9" fill="none" stroke="#47bfff" stroke-width="1.8" stroke-linecap="round"/></g>
+  <circle cx="96" cy="62" r="3.2" fill="url(#g)"/>
+  <g transform="translate(100 94) scale(1.0)"><rect width="26" height="26" rx="5" fill="#3178c6"/><text x="13" y="18" text-anchor="middle" fill="#fff" style="font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace">TS</text></g>
+  <g transform="translate(44 150)"><circle r="17.1" fill="url(#blip)"/><circle r="5.7" fill="url(#dot)"/><path d="M-13.3 -7.6v-5.7h5.7M7.6 -13.3h5.7v5.7M13.3 7.6v5.7h-5.7M-7.6 13.3h-5.7v-5.7" fill="none" stroke="#47bfff" stroke-width="2.1" stroke-linecap="round"/></g>
+  <circle cx="190" cy="128" r="2.2" fill="url(#g)"/>
+  <g transform="translate(16 198) scale(1.2)"><rect x="-2" y="-16" width="40" height="23" rx="6" fill="#0d1117"/><text x="1" y="1" fill="#00add8" style="font:900 17px ui-rounded,'SF Pro Rounded','Arial Rounded MT Bold','Varela Round',sans-serif;letter-spacing:0.5px">GO</text></g>
+</svg>

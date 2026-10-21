@@ -1,3 +1,4 @@
+export { CornerDecor } from './CornerDecor/CornerDecor'
 export { Footer } from './Footer/Footer'
 export { Header } from './Header/Header'
 export { SettingsDrawer } from './SettingsDrawer/SettingsDrawer'

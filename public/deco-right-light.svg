@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 220" width="240" height="220">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1366ff"/><stop offset="1" stop-color="#6b0cf5"/></linearGradient>
+    <radialGradient id="blip" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#1366ff" stop-opacity="0.95"/><stop offset="0.45" stop-color="#6b0cf5" stop-opacity="0.45"/><stop offset="1" stop-color="#6b0cf5" stop-opacity="0"/></radialGradient>
+    <radialGradient id="dot" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#5a08d9"/><stop offset="0.4" stop-color="#5a08d9" stop-opacity="0.9"/><stop offset="1" stop-color="#7210ff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <g transform="translate(190 20) scale(1.25)"><rect width="24" height="24" rx="5" fill="#ffffff" stroke="#6d12e0" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="#6d12e0" style="font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace">Fn</text></g>
+  <g transform="translate(84 44)"><circle r="8.4" fill="url(#blip)"/><circle r="4.2" fill="url(#dot)"/><path d="M-9.8 -5.6v-4.2h4.2M5.6 -9.8h4.2v4.2M9.8 5.6v4.2h-4.2M-5.6 9.8h-4.2v-4.2" fill="none" stroke="#1366ff" stroke-width="1.8" stroke-linecap="round"/></g>
+  <circle cx="132" cy="90" r="2.4" fill="url(#g)"/>
+  <g transform="translate(166 106) scale(1.1)" fill="none" stroke="#7e22ce" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24" height="23" rx="6" fill="#ffffff" stroke="none"/><path d="M12 4a3 3 0 0 0-3-2 3 3 0 0 0-3 3 3 3 0 0 0-2.5 4A3 3 0 0 0 4 13a3 3 0 0 0 1.5 4A3 3 0 0 0 9 20a3 3 0 0 0 3-2z"/><path d="M12 4a3 3 0 0 1 3-2 3 3 0 0 1 3 3 3 3 0 0 1 2.5 4A3 3 0 0 1 20 13a3 3 0 0 1-1.5 4A3 3 0 0 1 15 20a3 3 0 0 1-3-2z"/><path d="M12 4v14M6 9h2.5M15.5 9H18M7 14h2M15 14h2"/></g>
+  <g transform="translate(60 140)"><circle r="10.8" fill="url(#blip)"/><circle r="5.4" fill="url(#dot)"/><path d="M-12.6 -7.2v-5.4h5.4M7.2 -12.6h5.4v5.4M12.6 7.2v5.4h-5.4M-7.2 12.6h-5.4v-5.4" fill="none" stroke="#1366ff" stroke-width="2.0" stroke-linecap="round"/></g>
+  <circle cx="36" cy="88" r="3.4" fill="url(#g)"/>
+  <g transform="translate(198 184) scale(1.0)" fill="none" stroke="#1366ff" stroke-width="2.3" stroke-linecap="round"><rect x="-1" y="-2" width="24" height="28" rx="6" fill="#ffffff" stroke="none"/><circle cx="5" cy="4" r="2.5"/><circle cx="5" cy="20" r="2.5"/><circle cx="17" cy="8" r="2.5"/><path d="M5 6.5v11M17 10.5c0 5-12 3-12 7"/></g>
+</svg>
