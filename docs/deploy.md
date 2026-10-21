@@ -1,69 +1,70 @@
-# 部署手顺
+# デプロイ手順
 
-站点以静态文件形式发布到 GitHub Pages，地址 https://shiei.github.io/gh-radar/ 。两个工作流配合：`deploy.yml` 构建并发布，`snapshot.yml` 每天抓数据并提交。本文记录从零开始的步骤、日常运行方式和排错。
+サイトは静的ファイルとして GitHub Pages に公開しており、URL は https://shiei.github.io/gh-radar/ である。2 つのワークフローが連携する。`deploy.yml` がビルドと公開を行い、`snapshot.yml` が毎日データを取得してコミットする。本文はゼロからの手順、日常の運用方法、トラブルシューティングを記録する。
 
-## 整体链路
+## 全体の流れ
 
 ```
-  push 到 master ──────────────┐
-  每天 UTC 00:00 ─> Daily snapshot ─> bot 提交 public/data ─┼─> Deploy to GitHub Pages ─> 站点更新
-  手动 Run workflow ───────────┘
+  master へ push ──────────────┐
+  毎日 UTC 00:00 ─> Daily snapshot ─> bot が public/data をコミット ─┼─> Deploy to GitHub Pages ─> サイト更新
+  手動 Run workflow ───────────┘
 ```
 
-- `Deploy to GitHub Pages`（`.github/workflows/deploy.yml`）：`npm ci` → `npm run check` → `npm run build`（`VITE_BASE=/gh-radar/`）→ 上传 `dist/` → 发布。触发条件：推送到 master（忽略 `openspec/`、`memo/`、`*.md`）、`Daily snapshot` 成功完成、手动。
-- `Daily snapshot`（`.github/workflows/snapshot.yml`）：`npm run snapshot` → 有变化则以 `github-actions[bot]` 提交 `public/data/` 并推送。触发条件：每天 UTC 00:00、手动。使用 Actions 自带的 `GITHUB_TOKEN`，不需要配置任何 secret。
+- `Deploy to GitHub Pages`（`.github/workflows/deploy.yml`）：`npm ci` → `npm run check` → `npm run build`（`VITE_BASE=/gh-radar/`）→ `dist/` をアップロード → 公開 → 公開サイトのスモークチェック（タイトル、JS バンドル、`data/meta.json` の日付が 3 日以内）。チェックに失敗するとワークフローが失敗し、GitHub から通知メールが届く。トリガー条件：master への push（`openspec/`、`memo/`、`*.md` は無視）、`Daily snapshot` の成功完了、手動実行。
+- `Daily snapshot`（`.github/workflows/snapshot.yml`）：`npm run snapshot` → 変化があれば `github-actions[bot]` として `public/data/` をコミットして push する。トリガー条件：毎日 UTC 00:00、手動実行。Actions 標準の `GITHUB_TOKEN` を使うため、secret の設定は一切不要である。
 
-bot 用 `GITHUB_TOKEN` 做的提交**不会**触发 `push` 事件，所以 `deploy.yml` 额外监听 `workflow_run`，在快照成功后接着部署。
+bot が `GITHUB_TOKEN` で行ったコミットは `push` イベントを**発火しない**ため、`deploy.yml` は追加で `workflow_run` も監視し、スナップショット成功後に続けてデプロイする。
 
-## 首次部署（已完成，记录供复现）
+## 初回デプロイ（完了済み、再現用の記録）
 
-前提：本机装有 `gh` 并已登录（`gh auth status`）。
+前提：ローカルに `gh` がインストールされ、ログイン済みであること（`gh auth status`）。
 
-1. 在 GitHub 新建空仓库，本地加远端并推送：
+1. GitHub で空リポジトリを新規作成し、ローカルにリモートを追加して push する：
    ```bash
    git remote add origin https://github.com/shiei/gh-radar.git
    git push -u origin master
    ```
-2. 确认默认分支是 `master`（定时任务与 `workflow_dispatch` 只认默认分支）：
+2. デフォルトブランチが `master` であることを確認する（スケジュール実行と `workflow_dispatch` はデフォルトブランチのみ対象）：
    ```bash
    gh repo view --json defaultBranchRef --jq .defaultBranchRef.name
-   # 不是的话：
+   # 違う場合：
    gh api -X PATCH repos/shiei/gh-radar -f default_branch=master
    ```
-3. 开启 Pages，来源选 GitHub Actions（等价于仓库 Settings → Pages → Source: GitHub Actions）：
+3. Pages を有効化し、ソースに GitHub Actions を選ぶ（リポジトリの Settings → Pages → Source: GitHub Actions と同等）：
    ```bash
    gh api -X POST repos/shiei/gh-radar/pages -f build_type=workflow
    ```
-4. 推送会自动触发 `Deploy to GitHub Pages`。等它完成后验证：
+4. push すると `Deploy to GitHub Pages` が自動で起動する。完了を待ってから検証する：
    ```bash
    gh run list --limit 3
    curl -s -o /dev/null -w "%{http_code}\n" https://shiei.github.io/gh-radar/
    curl -s https://shiei.github.io/gh-radar/data/meta.json | head
    ```
-5. 手动跑一次快照并确认它提交了数据、联动了部署：
+5. スナップショットを手動で 1 回実行し、データをコミットしてデプロイが連動したことを確認する：
    ```bash
    gh workflow run snapshot.yml
    gh run watch --exit-status
-   git pull --rebase origin master   # 把 bot 的 data: 提交拉回本地
+   git pull --rebase origin master   # bot の data: コミットをローカルに取り込む
    ```
 
-## 日常操作
+## 日常の操作
 
-| 想做的事           | 做法                                                                                                |
-| ------------------ | --------------------------------------------------------------------------------------------------- |
-| 发布代码改动       | 推送到 master 即可，约 1.5 分钟上线                                                                 |
-| 立刻刷一次数据     | `gh workflow run snapshot.yml`，完成后自动部署                                                      |
-| 手动重新部署       | `gh workflow run deploy.yml`                                                                        |
-| 看运行状态         | `gh run list --limit 5`，`gh run watch <id>`                                                        |
-| 本地预览子路径构建 | `VITE_BASE=/gh-radar/ npm run build && npm run preview`，然后访问 `http://localhost:4173/gh-radar/` |
-| 换仓库名或用户名   | `deploy.yml` 会自动用仓库名作 `VITE_BASE`；本文和 README 里的地址要手改                             |
+| やりたいこと                             | 方法                                                                                                               |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| コード変更を公開する                     | master へ push するだけでよく、約 1.5 分で公開される                                                               |
+| 今すぐデータを更新する                   | `gh workflow run snapshot.yml`。完了後に自動でデプロイされる                                                       |
+| 手動で再デプロイする                     | `gh workflow run deploy.yml`                                                                                       |
+| 実行状況を見る                           | `gh run list --limit 5`、`gh run watch <id>`                                                                       |
+| サブパス構成のビルドをローカルで確認する | `VITE_BASE=/gh-radar/ npm run build && npm run preview` を実行し、`http://localhost:4173/gh-radar/` にアクセスする |
+| リポジトリ名やユーザー名を変える         | `deploy.yml` はリポジトリ名を自動で `VITE_BASE` に使う。本文と README 内の URL は手で修正する必要がある            |
 
-本地开发（`npm run dev`）和 e2e 都以 `/` 为根，不受子路径影响。代码里所有静态资源与数据路径都通过 `import.meta.env.BASE_URL` 拼接，新增资源请沿用这个写法，不要写死 `/`。
+ローカル開発（`npm run dev`）と e2e はいずれも `/` をルートとし、サブパスの影響を受けない。コード内の静的アセットとデータのパスはすべて `import.meta.env.BASE_URL` で組み立てている。新しいアセットを追加する際もこの書き方に従い、`/` をハードコードしないこと。
 
-## 排错
+## トラブルシューティング
 
-- **推了工作流文件但 Actions 页面里没有它**：GitHub 偶尔不登记只有 `schedule` / `workflow_dispatch` 触发的新工作流。给文件加一行注释再推一次即可（2026-10-20 遇到过一次）。
-- **快照跑完了站点没更新**：检查 `deploy.yml` 的 `workflow_run` 触发是否成功；也可以 `gh workflow run deploy.yml` 手动补一次。
-- **快照失败**：工作流整体失败且不会提交半份数据，仓库里的数据保持上一次成功的状态。看 `Take snapshot` 这一步的日志，常见原因是 GitHub API 临时 5xx，再手动触发一次即可。
-- **Actions 日志里的 Node 20 弃用提示**：`actions/checkout@v4`、`actions/setup-node@v4` 等仍基于 Node 20，GitHub 强制在 Node 24 上运行，不影响结果；有空时把版本号升到 v5。
-- **回滚**：`git revert` 出问题的提交并推送，部署会自动跟上；数据文件同理。
+- **ワークフローファイルを push したのに Actions ページに表示されない**：GitHub は `schedule` / `workflow_dispatch` のみをトリガーとする新規ワークフローを登録しないことがたまにある。ファイルにコメントを 1 行追加して再度 push すればよい（2026-10-20 に一度発生）。
+- **デプロイの `verify` ジョブだけが失敗する**：公開は済んでいるがページが壊れているか、CDN の反映が遅れている。ログの最後の行で失敗した項目を確認し、一時的なものなら `gh workflow run deploy.yml` で再実行する。
+- **スナップショットは完了したのにサイトが更新されない**：`deploy.yml` の `workflow_run` トリガーが成功したかを確認する。`gh workflow run deploy.yml` で手動デプロイして補うこともできる。
+- **スナップショットの失敗**：ワークフロー全体が失敗し、データが中途半端にコミットされることはない。リポジトリ内のデータは前回成功時の状態を保つ。`Take snapshot` ステップのログを見る。よくある原因は GitHub API の一時的な 5xx であり、もう一度手動で実行すればよい。
+- **Actions ログの Node 20 非推奨警告**：`actions/checkout@v4`、`actions/setup-node@v4` などは依然 Node 20 ベースで、GitHub が強制的に Node 24 で実行している。結果には影響しない。時間があるときにバージョンを v5 に上げる。
+- **ロールバック**：問題のあるコミットを `git revert` して push すれば、デプロイが自動で追従する。データファイルも同様である。

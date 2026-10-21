@@ -1,125 +1,125 @@
-# 开发指南
+# 開発ガイド
 
-面向想在本地运行或修改代码的人。使用方式见 [README](../README.md)，部署见 [deploy.md](deploy.md)，快照脚本见 [scripts/README.md](../scripts/README.md)。
+ローカルで実行したり、コードを変更したい人向けの文書である。使い方は [README](../README.md)、デプロイは [deploy.md](deploy.md)、スナップショットスクリプトは [scripts/README.md](../scripts/README.md) を参照。
 
-## 技术栈
+## 技術スタック
 
 - React 19 + Vite 8 + TypeScript 6
-- Tailwind CSS 4，视觉规范由 `src/styles/tokens.css` 中的 Design Tokens 统一定义
-- Base UI 作为无样式组件基础，按 Atomic Design 分层
-- i18next：英文（默认）、日文、中文
-- Vitest + Testing Library 做单元测试，Playwright 做端到端测试
-- ESLint、Prettier、Stylelint、`tsc` 做静态检查
+- Tailwind CSS 4。ビジュアル仕様は `src/styles/tokens.css` の Design Tokens で一元的に定義する
+- Base UI をスタイルなしコンポーネントの基盤とし、Atomic Design に沿って階層化する
+- i18next：英語（既定）、日本語、中国語
+- Vitest + Testing Library で単体テスト、Playwright で E2E テストを行う
+- ESLint、Prettier、Stylelint、`tsc` で静的検査を行う
 
-## 快速开始
+## クイックスタート
 
 ```bash
 npm install
-npx playwright install chromium   # 只在第一次或升级 Playwright 后需要
+npx playwright install chromium   # 初回、または Playwright を更新した後のみ必要
 npm run dev
 ```
 
 ## npm scripts
 
-| 命令                   | 作用                                                    |
-| ---------------------- | ------------------------------------------------------- |
-| `npm run dev`          | 启动开发服务器                                          |
-| `npm run build`        | 类型检查并构建到 `dist/`                                |
-| `npm run preview`      | 本地预览构建产物                                        |
-| `npm run typecheck`    | `tsc -b --noEmit`                                       |
-| `npm run lint`         | 依次运行 `lint:js`（ESLint）和 `lint:css`（Stylelint）  |
-| `npm run format`       | Prettier 格式化全部文件                                 |
-| `npm run format:check` | 只检查不修改                                            |
-| `npm run test`         | Vitest 单元测试（单次运行）                             |
-| `npm run test:e2e`     | Playwright 端到端测试，会先构建再用 `vite preview` 启动 |
-| `npm run check`        | typecheck + lint + format:check + test，提交前跑这个    |
+| コマンド               | 役割                                                                |
+| ---------------------- | ------------------------------------------------------------------- |
+| `npm run dev`          | 開発サーバーを起動する                                              |
+| `npm run build`        | 型検査を行い `dist/` にビルドする                                   |
+| `npm run preview`      | ビルド成果物をローカルでプレビューする                              |
+| `npm run typecheck`    | `tsc -b --noEmit`                                                   |
+| `npm run lint`         | `lint:js`（ESLint）と `lint:css`（Stylelint）を順に実行する         |
+| `npm run format`       | Prettier で全ファイルを整形する                                     |
+| `npm run format:check` | 検査のみ行い、変更しない                                            |
+| `npm run test`         | Vitest 単体テスト（単発実行）                                       |
+| `npm run test:e2e`     | Playwright E2E テスト。先にビルドしてから `vite preview` で起動する |
+| `npm run check`        | typecheck + lint + format:check + test。コミット前にこれを実行する  |
 
-`check` 不包含 e2e，e2e 请单独运行。
+`check` には e2e を含まないので、e2e は個別に実行する。
 
-## 目录结构
+## ディレクトリ構成
 
 ```
 src/
-  app/            应用入口与 Provider 组合
+  app/            アプリのエントリと Provider の組み合わせ
   components/
-    atoms/        最小 UI 单元（Button、Text、icons/）
-    molecules/    atoms 组合（ThemeToggle、LanguageSwitcher）
-    organisms/    页面区块（Header）
-    templates/    页面布局骨架（AppShell）
-  pages/          页面（HomePage）
+    atoms/        最小の UI 単位（Button、Text、icons/）
+    molecules/    atoms の組み合わせ（ThemeToggle、LanguageSwitcher）
+    organisms/    ページ区画（Header）
+    templates/    ページレイアウトの骨格（AppShell）
+  pages/          ページ（HomePage）
   features/
-    search/       检索状态机：searchReducer（纯函数）与 useRepositorySearch（hook）
+    search/       検索の状態機械：searchReducer（純関数）と useRepositorySearch（hook）
   lib/
-    categories.ts 六个分类与查询（站点与快照脚本共用）
-    github/       GitHub REST 访问层：请求头、错误分类、配额解析、search 端点（不依赖 React）
-    format/       Intl 封装：紧凑数字、相对时间、时刻
-    theme/        主题解析、持久化、ThemeProvider / useTheme
-    i18n/         i18next 初始化、语言持久化、键类型扩展
-    cx.ts         class 名拼接
+    categories.ts 6 つのカテゴリとクエリ（サイトとスナップショットスクリプトで共用）
+    github/       GitHub REST アクセス層：リクエストヘッダー、エラー分類、クォータ解析、search エンドポイント（React に依存しない）
+    format/       Intl のラッパー：コンパクト数値、相対時間、時刻
+    theme/        テーマの解決、永続化、ThemeProvider / useTheme
+    i18n/         i18next の初期化、言語の永続化、キー型の拡張
+    cx.ts         class 名の連結
   locales/        en.json / ja.json / zh.json
-  styles/         tokens.css（Design Tokens）、globals.css（Tailwind 映射与基础样式）
+  styles/         tokens.css（Design Tokens）、globals.css（Tailwind へのマッピングと基本スタイル）
   test/           Vitest setup
-scripts/          每日快照脚本（见 scripts/README.md）
-data/             watchlist.txt 手工关注列表
-public/data/      快照数据集（由 Actions 提交）
-e2e/              Playwright 测试
-  fixtures/       mock 的 GitHub 响应
-  helpers/        共享 test（含 GitHub 请求兜底拦截）与 mock 工具
-openspec/         规划文件（proposal / specs / design / tasks）
+scripts/          日次スナップショットスクリプト（scripts/README.md を参照）
+data/             watchlist.txt 手動のウォッチリスト
+public/data/      スナップショットデータセット（Actions がコミットする）
+e2e/              Playwright テスト
+  fixtures/       mock した GitHub レスポンス
+  helpers/        共有 test（GitHub リクエストのフォールバック遮断を含む）と mock ユーティリティ
+openspec/         計画ファイル（proposal / specs / design / tasks）
 ```
 
-分层约定：`components/` 只放 UI（Atomic Design）；不依赖 React 的代码放 `lib/`；某个功能的 React 状态逻辑放 `features/<name>/`。
+階層化の規約：`components/` には UI のみを置く（Atomic Design）。React に依存しないコードは `lib/` に置く。ある機能の React 状態ロジックは `features/<name>/` に置く。
 
-## 首页的分类与榜单
+## トップページのカテゴリとランキング
 
-左栏六个分类来自 `src/lib/categories.ts`，点击即提交该分类的查询。右栏两个榜单读取 `public/data/`：Most Popular 按快照 star 数排序；Rising Stars 按最近 30 天的 star 增量排序（序列不足 7 天时退化为近 90 天创建的仓库按 star 排序，并标注"数据积累中"）。榜单随选中的分类过滤，不消耗 API 配额；快照缺失或超过 3 天未更新时会提示。
+左カラムの 6 つのカテゴリは `src/lib/categories.ts` に由来し、クリックするとそのカテゴリのクエリを送信する。右カラムの 2 つのランキングは `public/data/` を読み取る。Most Popular はスナップショットの star 数順、Rising Stars は直近 30 日の star 増加数順である（系列が 7 日に満たない場合は、直近 90 日に作成されたリポジトリを star 数順に並べる表示に切り替え、「履歴を蓄積中」と注記する）。ランキングは選択中のカテゴリで絞り込まれ、API クォータを消費しない。スナップショットが存在しない、または 3 日以上更新されていない場合は通知を表示する。
 
-## 检索类型与筛选器
+## 検索タイプとフィルター
 
-搜索框上方可以切换检索对象：Repositories（默认）、Users、Topics，分别调用 `/search/repositories`、`/search/users`、`/search/topics`，各有自己的结果卡片；排序只对仓库有效。已配置 token 时，每次检索会额外对另外两种类型各发一次 `per_page=1` 的请求取匹配数显示在切换按钮上（`src/features/search/useTypeCounts.ts`）；未配置时不发，按钮只显示类型名。
+検索ボックスの上で検索対象を切り替えられる。Repositories（既定）、Users、Topics はそれぞれ `/search/repositories`、`/search/users`、`/search/topics` を呼び出し、それぞれ専用の結果カードを持つ。並び替えはリポジトリにのみ有効である。token が設定されている場合、検索ごとに他の 2 タイプへも `per_page=1` のリクエストを 1 回ずつ追加で送り、一致件数を切り替えボタンに表示する（`src/features/search/useTypeCounts.ts`）。未設定の場合は送信せず、ボタンにはタイプ名のみ表示する。
 
-仓库检索的筛选器（语言、最低 star、排除 fork、排除归档）由 `composeQuery()` 转换成 `language:` / `stars:>=` / `fork:false` / `archived:false` 追加到请求的 q 之后，输入框内容不变；改变任一项都从第 1 页重新检索。宽屏时筛选器在左栏分类下方，窄屏时折叠在搜索框下方。结果卡片上的语言文字和 topic 标签都可点击：前者设置语言筛选，后者以 `topic:<name>` 重新检索仓库。语言列表在 `src/lib/languages.ts`。
+リポジトリ検索のフィルター（言語、最低 star 数、fork の除外、アーカイブの除外）は `composeQuery()` によって `language:` / `stars:>=` / `fork:false` / `archived:false` に変換され、リクエストの q の末尾に追加される。入力ボックスの内容は変わらない。いずれかの項目を変更すると 1 ページ目から再検索する。広い画面ではフィルターは左カラムのカテゴリの下に、狭い画面では検索ボックスの下に折りたたまれて表示される。結果カード上の言語テキストと topic タグはどちらもクリック可能で、前者は言語フィルターを設定し、後者は `topic:<name>` でリポジトリを再検索する。言語の一覧は `src/lib/languages.ts` にある。
 
-## 每日快照数据集
+## 日次スナップショットデータセット
 
-`scripts/snapshot.ts` 每天通过 GitHub Actions 抓取六个分类的热门与新秀仓库和 `data/watchlist.txt` 中的仓库，写入 `public/data/`（`latest.json`、`daily/` 保留 30 天、`series/` 一年按天之后按周、`meta.json`）。这些 JSON 随站点一起发布，是榜单与趋势的数据来源，不消耗访问者的 API 配额。文件格式、保留策略与本地运行方式见 `scripts/README.md`。
+`scripts/snapshot.ts` は GitHub Actions 経由で毎日、6 つのカテゴリの人気と新星のリポジトリ、および `data/watchlist.txt` のリポジトリを取得し、`public/data/` に書き込む（`latest.json`、`daily/` は 30 日分保持、`series/` は 1 年間を日単位、それ以降は週単位、`meta.json`）。これらの JSON はサイトと一緒に公開され、ランキングとトレンドのデータソースとなり、訪問者の API クォータを消費しない。ファイル形式、保持ポリシー、ローカルでの実行方法は `scripts/README.md` を参照。
 
-## GitHub API 与配额
+## GitHub API とクォータ
 
-检索直接从浏览器调用 `https://api.github.com/search/{repositories,users,topics}`。未认证配额为每分钟 10 次 search 请求、每小时每个出口 IP 60 次请求；配额用尽时界面会显示恢复时刻。
+検索はブラウザから直接 `https://api.github.com/search/{repositories,users,topics}` を呼び出す。未認証のクォータは search リクエストが毎分 10 回、送信元 IP ごとに毎時 60 リクエストである。クォータを使い切ると、画面に回復時刻を表示する。
 
-页头的 "Connect GitHub" 可以配置个人 token：保存前用 `GET /rate_limit` 校验（不计配额），配置后 search 配额提到每分钟 30 次，页头显示剩余次数。token 只发往 `api.github.com`；默认只保存在内存，关闭标签页即消失，勾选"在此设备记住"才写入 `localStorage['osr.token']`。请创建只读、仅公开仓库、短期过期的 fine-grained token。
+ヘッダーの「GitHub と接続」から個人 token を設定できる。保存前に `GET /rate_limit` で検証し（クォータは消費しない）、設定後は search クォータが毎分 30 回に上がり、ヘッダーに残り回数を表示する。token は `api.github.com` にのみ送信される。既定ではメモリ上にのみ保持され、タブを閉じると消える。「この端末で記憶する」にチェックを入れた場合のみ `localStorage['osr.token']` に書き込む。読み取り専用、公開リポジトリのみ、短い有効期限の fine-grained token を作成すること。
 
-生产构建会在 `index.html` 注入 Content Security Policy（脚本仅本站、连接仅 `api.github.com`，由 `vite.config.ts` 的 `cspPlugin` 生成）；部署时建议改为 HTTP 响应头。
+本番ビルドでは `index.html` に Content Security Policy を注入する（スクリプトは自サイトのみ、接続は `api.github.com` のみ。`vite.config.ts` の `cspPlugin` が生成する）。デプロイ時には HTTP レスポンスヘッダーに移すことを推奨する。
 
-相同的类型、查询（含筛选条件）、排序、页码在会话内缓存 5 分钟，命中不发请求，刷新页面即失效。
+同じタイプ、クエリ（フィルター条件を含む）、並び替え、ページ番号はセッション内で 5 分間キャッシュされ、ヒットした場合はリクエストを送らない。ページを再読み込みすると無効になる。
 
-### e2e 的 mock 约定
+### e2e の mock 規約
 
-所有 Playwright 用例都从 `e2e/helpers/test.ts` 导入 `test`。它为每个页面自动挂一条 abort 所有 `api.github.com` 请求的兜底 route，任何用例都不会打到真实 API。需要响应时用 `e2e/helpers/mockGitHub.ts` 的 `mockSearch` / `mockSearchByPage` / `mockSearchTypes` 返回 `e2e/fixtures/` 里的 JSON；用例自己注册的 route 优先于兜底。
+すべての Playwright テストケースは `e2e/helpers/test.ts` から `test` をインポートする。これは各ページに、`api.github.com` へのすべてのリクエストを abort するフォールバック route を自動で設定するため、どのテストケースも実際の API に到達しない。レスポンスが必要な場合は `e2e/helpers/mockGitHub.ts` の `mockSearch` / `mockSearchByPage` / `mockSearchTypes` を使い、`e2e/fixtures/` 内の JSON を返す。テストケースが自分で登録した route はフォールバックより優先される。
 
-`e2e/fixtures/search-react.json` 来自一次真实响应，只保留了界面用到的字段。
+`e2e/fixtures/search-react.json` は実際のレスポンスに由来し、画面で使うフィールドのみを残している。
 
-## 约定
+## 規約
 
-### 新增界面文案
+### 画面テキストの追加
 
-1. 在 `src/locales/en.json`、`ja.json`、`zh.json` 三个文件中都加上同一个键。
-2. 组件中用 `useTranslation()` 的 `t('your.key')` 引用。键名由 `en.json` 推导出类型，写错会在 `typecheck` 阶段报错。
-3. `src/locales/locales.test.ts` 会断言三份文件的键集合完全一致，少一份就会失败。
-4. 组件里不允许出现硬编码的用户可见文案。
+1. `src/locales/en.json`、`ja.json`、`zh.json` の 3 ファイルすべてに同じキーを追加する。
+2. コンポーネントでは `useTranslation()` の `t('your.key')` で参照する。キー名の型は `en.json` から導出されるため、誤ったキーは `typecheck` の段階でエラーになる。
+3. `src/locales/locales.test.ts` が 3 ファイルのキー集合が完全に一致することを検証するため、1 つでも欠けると失敗する。
+4. コンポーネント内にハードコードされたユーザー向けテキストを置くことは許可しない。
 
-### 新增 Design Token
+### Design Token の追加
 
-1. 在 `src/styles/tokens.css` 的 `:root` 中加日间值，在 `[data-theme='dark']` 中加夜间值。
-2. 在 `src/styles/globals.css` 的 `@theme inline` 中把它映射成 Tailwind 工具类，例如 `--color-foo: var(--foo)` 生成 `bg-foo` / `text-foo`。
-3. 组件只使用语义类（`bg-surface`、`text-text-muted`、`border-border` 等），不写原始颜色。
+1. `src/styles/tokens.css` の `:root` にライトモードの値を、`[data-theme='dark']` にダークモードの値を追加する。
+2. `src/styles/globals.css` の `@theme inline` で Tailwind ユーティリティクラスにマッピングする。たとえば `--color-foo: var(--foo)` は `bg-foo` / `text-foo` を生成する。
+3. コンポーネントはセマンティックなクラス（`bg-surface`、`text-text-muted`、`border-border` など）のみを使い、生の色は書かない。
 
-### 主题与语言的持久化键
+### テーマと言語の永続化キー
 
-| 键                          | 取值               |
+| キー                        | 値                 |
 | --------------------------- | ------------------ |
 | `localStorage['osr.theme']` | `light` / `dark`   |
 | `localStorage['osr.lang']`  | `en` / `ja` / `zh` |
 
-主题在 `index.html` 的内联脚本中于首次绘制前应用，修改 `src/lib/theme/constants.ts` 时需同步该脚本。
+テーマは `index.html` のインラインスクリプトで初回描画前に適用される。`src/lib/theme/constants.ts` を変更する際は、このスクリプトも同期して更新する必要がある。
