@@ -139,8 +139,13 @@ export function HomePage() {
         onSortChange={setSort}
       />
       <SearchHints onPick={submit} />
-      {/* 8px gap + 19px margin = 27px above the rule; the rule spans 98% of the width. */}
-      <hr className="border-border mx-auto mt-[19px] w-[98%] border-0 border-t" />
+      {/* Only separate the search block from something below it: idle has nothing underneath. */}
+      {state.status !== 'idle' ? (
+        <hr
+          className="border-border mx-auto mt-[19px] w-[98%] border-0 border-t"
+          data-testid="search-rule"
+        />
+      ) : null}
     </div>
   )
 
