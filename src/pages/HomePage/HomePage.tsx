@@ -8,6 +8,7 @@ import { DiscoveryLayout } from '../../components/templates'
 import { useSnapshot } from '../../features/rankings'
 import { useRepositorySearch } from '../../features/search'
 import { CATEGORIES, type CategoryId } from '../../lib/categories'
+import { cx } from '../../lib/cx'
 import { formatNumber } from '../../lib/format'
 import { rankPopular, rankRising } from '../../lib/rankings'
 import { decodeLatest } from '../../lib/snapshot'
@@ -139,13 +140,15 @@ export function HomePage() {
         onSortChange={setSort}
       />
       <SearchHints onPick={submit} />
-      {/* Only separate the search block from something below it: idle has nothing underneath. */}
-      {state.status !== 'idle' ? (
-        <hr
-          className="border-border mx-auto mt-[19px] w-[98%] border-0 border-t"
-          data-testid="search-rule"
-        />
-      ) : null}
+      {/* Below lg the rankings sit under the search block, so the rule is always needed there;
+          from lg up the column is empty while idle, so hide it until there are results. */}
+      <hr
+        className={cx(
+          'border-border mx-auto mt-[19px] w-[98%] border-0 border-t',
+          state.status === 'idle' && 'lg:hidden',
+        )}
+        data-testid="search-rule"
+      />
     </div>
   )
 
