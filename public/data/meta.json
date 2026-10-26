@@ -1,10 +1,10 @@
 {
-  "lastRun": "2026-10-25T02:09:13.904Z",
-  "date": "2026-10-25",
-  "total": 2077,
+  "lastRun": "2026-10-26T02:09:43.256Z",
+  "date": "2026-10-26",
+  "total": 2080,
   "sources": {
-    "ai-ml:rising": 141,
-    "design:rising": 58,
+    "ai-ml:rising": 142,
+    "design:rising": 59,
     "devops:popular": 300,
     "backend:popular": 300,
     "ai-ml:popular": 300,
@@ -12,8 +12,8 @@
     "design:popular": 300,
     "database:popular": 300,
     "backend:rising": 17,
-    "frontend:rising": 45,
-    "devops:rising": 72,
+    "frontend:rising": 44,
+    "devops:rising": 74,
     "frontend:popular": 300,
     "watchlist": 5
   },
