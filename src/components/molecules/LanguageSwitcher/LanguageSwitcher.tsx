@@ -9,7 +9,7 @@ const triggerClass =
 const popupClass =
   'min-w-36 rounded-md border border-border bg-surface-raised p-1 shadow-lg outline-none'
 const itemClass =
-  'grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-text outline-none data-[highlighted]:bg-surface-muted'
+  'grid grid-cols-[1rem_1fr] items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-text outline-none data-[highlighted]:bg-surface-muted'
 
 /** Picks the UI language. Option labels are each language's own name. */
 export function LanguageSwitcher() {

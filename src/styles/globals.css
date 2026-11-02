@@ -51,6 +51,25 @@
     outline-offset: 2px;
   }
 
+  /* Tailwind v4's preflight resets buttons to the arrow cursor; every clickable control gets the
+     hand instead, including Base UI's select triggers (role=combobox) and options. */
+  button,
+  summary,
+  input[type='checkbox'],
+  input[type='radio'],
+  [role='button'],
+  [role='combobox'],
+  [role='option'],
+  [role='menuitem'],
+  [role='tab'] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
   /* The submit icon lives at the right edge of the search box; drop the native clear button. */
   input[type='search']::-webkit-search-cancel-button,
   input[type='search']::-webkit-search-decoration {

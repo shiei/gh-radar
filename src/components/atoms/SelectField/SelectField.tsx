@@ -27,7 +27,7 @@ const triggerClass =
 const popupClass =
   'w-[var(--anchor-width)] min-w-40 rounded-md border border-border bg-surface-raised p-1 shadow-lg outline-none'
 const itemClass =
-  'grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-text outline-none data-[highlighted]:bg-surface-muted'
+  'grid grid-cols-[1rem_1fr] items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-text outline-none data-[highlighted]:bg-surface-muted'
 
 /** Thin Base UI Select wrapper: single value, string options, keyboard accessible. */
 export function SelectField<T extends string>({

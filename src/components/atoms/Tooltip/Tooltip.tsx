@@ -22,7 +22,7 @@ export function Tooltip({ content, children, delay = 300, defaultOpen }: Tooltip
     <BaseTooltip.Root defaultOpen={defaultOpen}>
       <BaseTooltip.Trigger
         delay={delay}
-        render={<span tabIndex={0} className="cursor-default rounded-sm" />}
+        render={<span tabIndex={0} className="cursor-pointer rounded-sm" />}
       >
         {children}
       </BaseTooltip.Trigger>
