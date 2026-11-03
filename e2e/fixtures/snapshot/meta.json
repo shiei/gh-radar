@@ -16,5 +16,6 @@
     "database:rising": 1,
     "design:rising": 1
   },
-  "mapVersion": 1
+  "mapVersion": 1,
+  "historyDays": 13
 }

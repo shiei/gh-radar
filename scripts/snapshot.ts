@@ -15,6 +15,8 @@ import {
   pruneDaily,
   seriesBuckets,
   type Series,
+  applyDeltas,
+  historyDays,
   type SnapshotRecord,
   type SourceBatch,
 } from './lib/transform'
@@ -56,9 +58,22 @@ async function main() {
   }
   batches.push({ source: 'watchlist', repos: watched })
 
-  const latest = buildLatest(mergeSources(batches), today)
-  const meta = buildMeta(latest, new Date(), MAP_VERSION)
-  log(`total ${String(meta.total)} repositories`)
+  const merged = buildLatest(mergeSources(batches), today)
+
+  // Group today's records into series buckets, append, and downsample. Reads only: safe in dry run.
+  const byBucket: Record<string, Record<string, SnapshotRecord>> = {}
+  for (const [name, record] of Object.entries(merged.repos)) {
+    for (const bucket of seriesBuckets(record.src)) (byBucket[bucket] ??= {})[name] = record
+  }
+  const series: Record<string, Series> = {}
+  for (const [bucket, repos] of Object.entries(byBucket)) {
+    series[bucket] = downsampleSeries(appendSeries(await readSeries(bucket), today, repos), today)
+  }
+  // Star deltas are precomputed here so the site only ever downloads latest.json and meta.json.
+  const latest = applyDeltas(merged, series, today)
+  const history = Math.max(0, ...Object.values(series).map(historyDays))
+  const meta = buildMeta(latest, new Date(), MAP_VERSION, history)
+  log(`total ${String(meta.total)} repositories, ${String(Math.round(history))} days of history`)
   for (const [source, count] of Object.entries(meta.sources)) log(`  ${source}: ${String(count)}`)
 
   if (dryRun) {
@@ -66,15 +81,6 @@ async function main() {
     return
   }
 
-  // Group today's records into series buckets, append, and downsample.
-  const byBucket: Record<string, Record<string, SnapshotRecord>> = {}
-  for (const [name, record] of Object.entries(latest.repos)) {
-    for (const bucket of seriesBuckets(record.src)) (byBucket[bucket] ??= {})[name] = record
-  }
-  const series: Record<string, Series> = {}
-  for (const [bucket, repos] of Object.entries(byBucket)) {
-    series[bucket] = downsampleSeries(appendSeries(await readSeries(bucket), today, repos), today)
-  }
   const pruneDates = pruneDaily(await listDailyDates(), today)
   await writeOutput({ latest, series, meta, pruneDates })
   log(`wrote public/data for ${today}; pruned ${String(pruneDates.length)} daily files`)

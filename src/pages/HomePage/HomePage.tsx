@@ -17,7 +17,7 @@ import { useRepositorySearch, useTypeCounts } from '../../features/search'
 import { CATEGORIES, type CategoryId } from '../../lib/categories'
 import { cx } from '../../lib/cx'
 import { formatNumber } from '../../lib/format'
-import { rankPopular, rankRising } from '../../lib/rankings'
+import { rankPopular, rankRising, risingWindowDays } from '../../lib/rankings'
 import { decodeLatest } from '../../lib/snapshot'
 import { useTheme, type Theme } from '../../lib/theme'
 
@@ -42,7 +42,7 @@ function RankingsPanel({ activeCategory }: { activeCategory: CategoryId | null }
   const rising = useMemo(
     () =>
       snapshot.status === 'ready'
-        ? rankRising(repos, snapshot.bundle.series, new Date(), activeCategory)
+        ? rankRising(repos, snapshot.bundle.meta.historyDays ?? 0, new Date(), activeCategory)
         : { mode: 'fallback' as const, items: [] },
     [repos, snapshot, activeCategory],
   )
@@ -86,6 +86,8 @@ function RankingsPanel({ activeCategory }: { activeCategory: CategoryId | null }
   ]
     .filter(Boolean)
     .join(sentenceGap)
+  // Say how many days the deltas really span; "30" would be a lie while history is shorter.
+  const windowDays = risingWindowDays(snapshot.bundle.meta.historyDays ?? 0)
   return (
     <div className="flex flex-col gap-6" data-testid="rankings">
       <RankingList
@@ -97,7 +99,7 @@ function RankingsPanel({ activeCategory }: { activeCategory: CategoryId | null }
       <RankingList
         id="rising"
         title={t('ranking.rising')}
-        hint={`${scope}${sentenceGap}${t('ranking.risingHint')}`}
+        hint={`${scope}${sentenceGap}${t('ranking.risingHint', { days: windowDays })}`}
         items={rising.items}
         fallback={rising.mode === 'fallback'}
       />

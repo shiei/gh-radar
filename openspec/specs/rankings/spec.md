@@ -7,11 +7,15 @@
 ## Requirements
 
 ### Requirement: Rankings are computed from the snapshot
-ランキング SHALL `public/data/latest.json` と対応カテゴリの `series/<カテゴリ>.json` から計算し、MUST NOT GitHub API を呼び出さない。Most Popular：当日の star 数の降順。Rising Stars：直近 30 日間の star 増分（当日の star から 30 日前に最も近い点の star を引いた値）の降順。系列が 7 日に満たないとき SHALL 「直近 90 日以内に作成されたリポジトリを star 降順」にフォールバックし、見出しの横に近似である旨を表示する。
+ランキング SHALL `public/data/latest.json` と `meta.json` のみから計算し、MUST NOT GitHub API を呼び出さず、MUST NOT 系列ファイルをダウンロードしない。Most Popular：当日の star 数の降順。Rising Stars：スナップショットジョブが各レコードに書き込んだ star 増分（直近 30 日間、履歴が短い間は最古の点から）の降順。`meta.json` の履歴日数が 7 日に満たないとき SHALL 「直近 90 日以内に作成されたリポジトリを star 降順」にフォールバックし、見出しの横に近似である旨を表示する。説明文 SHALL 増分が実際に覆う日数（履歴日数と 30 の小さい方）を表示し、履歴が 30 日に満たない間に「30 日」と表記してはならない。
 
 #### Scenario: Rising by delta
 - **WHEN** 系列が 7 日を超えてカバーし、リポジトリ A が 30 日間で 1200 star、リポジトリ B が 800 star 増えた
 - **THEN** Rising Stars で A が B より前に並び、各行に +1.2K の増分が表示される
+
+#### Scenario: Window label is honest
+- **WHEN** `meta.json` の履歴日数が 14 日である
+- **THEN** Rising Stars の説明文は「直近 14 日間」と表示する
 
 #### Scenario: Fallback when history is short
 - **WHEN** 系列が 3 日分しかカバーしていない

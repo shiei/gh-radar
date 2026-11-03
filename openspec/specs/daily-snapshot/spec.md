@@ -14,13 +14,13 @@
 - **THEN** `latest.json` にはそのレコードが 1 件だけ存在し、ソースに `frontend:popular` と `watchlist` が含まれる
 
 ### Requirement: Per-repository fields
-各レコード SHALL 次を含む：`owner/name`、star 数、fork 数、未クローズ issue 数、最終プッシュ時刻、作成時刻、主要言語、説明文、アーカイブ済みか否か、ソース一覧、および owner の数値 id（アバター URL を直接組み立ててリダイレクト 1 回を省くために使う。API が提供しない場合は省略可）。
+各レコード SHALL 次を含む：`owner/name`、star 数、fork 数、未クローズ issue 数、最終プッシュ時刻、作成時刻、主要言語、説明文、アーカイブ済みか否か、ソース一覧、owner の数値 id（アバター URL を直接組み立ててリダイレクト 1 回を省くために使う。API が提供しない場合は省略可）、および直近 30 日間の star 増加数（系列から算出。系列が 30 日に満たない間は最古の点からの増加数、2 点未満なら省略）。増加数をスナップショット側で算出するのは、サイトが系列ファイルをダウンロードせずに済むようにするためである。
 
 #### Scenario: Record shape
 - **WHEN** `latest.json` 内の任意のリポジトリを読む
 - **THEN** 上記フィールドが揃っており、欠けている言語や説明文は null で表され、owner id が欠けている場合はそのフィールドが存在しない
 ### Requirement: Data files and retention
-データ SHALL `public/data/` に書き込む：`latest.json` は最新の 1 件のみ保持する。`daily/<YYYY-MM-DD>.json` は直近 30 日分を保持し、それより古いもの SHALL 削除する。`series/<カテゴリ>.json` はリポジトリごとに `[日付, star]` の系列を保存し、直近 365 日は日単位で保持し、それより古い部分 SHALL 週 1 点にダウンサンプリングする。`meta.json` は最後に成功した実行の時刻、リポジトリ総数、各ソースの件数を記録する。
+データ SHALL `public/data/` に書き込む：`latest.json` は最新の 1 件のみ保持する。`daily/<YYYY-MM-DD>.json` は直近 30 日分を保持し、それより古いもの SHALL 削除する。`series/<カテゴリ>.json` はリポジトリごとに `[日付, star]` の系列を保存し、直近 365 日は日単位で保持し、それより古い部分 SHALL 週 1 点にダウンサンプリングする。`meta.json` は最後に成功した実行の時刻、リポジトリ総数、各ソースの件数、および系列が遡れる日数（`historyDays`）を記録する。サイト SHALL `latest.json` と `meta.json` のみを読み、`series/` はトレンド表示など将来の用途のために保持する。
 
 #### Scenario: Daily pruning
 - **WHEN** 2026-11-25 の実行が成功する

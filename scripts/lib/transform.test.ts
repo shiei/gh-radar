@@ -2,12 +2,15 @@ import { describe, expect, it } from 'vitest'
 
 import {
   appendSeries,
+  applyDeltas,
   buildLatest,
   buildMeta,
+  historyDays,
   downsamplePoints,
   mergeSources,
   pruneDaily,
   seriesBuckets,
+  starDelta,
   toRecord,
   type RawRepo,
   type SeriesPoint,
@@ -127,13 +130,71 @@ describe('seriesBuckets + buildMeta', () => {
       mergeSources([{ source: 'devops:popular', repos: [raw('a/b'), raw('c/d')] }]),
       '2026-10-21',
     )
-    const meta = buildMeta(latest, new Date('2026-10-21T00:04:00Z'), 1)
+    const meta = buildMeta(latest, new Date('2026-10-21T00:04:00Z'), 1, 14.5)
     expect(meta).toEqual({
       lastRun: '2026-10-21T00:04:00.000Z',
       date: '2026-10-21',
       total: 2,
       sources: { 'devops:popular': 2 },
       mapVersion: 1,
+      historyDays: 14.5,
     })
+  })
+})
+
+describe('starDelta + historyDays', () => {
+  const day = (offset: number) =>
+    new Date(Date.UTC(2026, 10, 20) - offset * 86400000).toISOString().slice(0, 10)
+
+  it('uses the last point on or before the 30-day cutoff as baseline', () => {
+    const points: SeriesPoint[] = [
+      [day(40), 100],
+      [day(31), 120],
+      [day(29), 130],
+      [day(0), 200],
+    ]
+    expect(starDelta(points, day(0))).toBe(80)
+    expect(
+      starDelta(
+        [
+          [day(5), 10],
+          [day(0), 25],
+        ],
+        day(0),
+      ),
+    ).toBe(15)
+    expect(starDelta([[day(0), 25]], day(0))).toBeNull()
+    expect(starDelta(undefined, day(0))).toBeNull()
+    expect(historyDays({ a: points })).toBe(40)
+    expect(historyDays({})).toBe(0)
+  })
+})
+
+describe('applyDeltas', () => {
+  it('writes r from whichever bucket holds the series and drops stale values', () => {
+    const latest = buildLatest(
+      mergeSources([
+        { source: 'frontend:popular', repos: [raw('a/b', 120)] },
+        { source: 'devops:popular', repos: [raw('c/d', 50)] },
+      ]),
+      '2026-10-21',
+    )
+    latest.repos['a/b'].r = 999 // from a previous run; must not survive
+    const out = applyDeltas(
+      latest,
+      {
+        frontend: {
+          'a/b': [
+            ['2026-10-11', 100],
+            ['2026-10-21', 120],
+          ],
+        },
+        devops: { 'c/d': [['2026-10-21', 50]] },
+      },
+      '2026-10-21',
+    )
+    expect(out.repos['a/b']?.r).toBe(20)
+    expect('r' in out.repos['c/d']).toBe(false)
+    expect(latest.repos['a/b']?.r).toBe(999) // input untouched
   })
 })

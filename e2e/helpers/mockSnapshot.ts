@@ -10,7 +10,7 @@ function fixture(rel: string): string {
   )
 }
 
-/** Serve the fixture snapshot (30 repos, 14-day series dated 2026-10-20) instead of public/data. */
+/** Serve the fixture snapshot (30 repos dated 2026-10-20 with 13 days of history) instead of public/data. */
 export async function mockSnapshot(page: Page, options: { missing?: boolean } = {}) {
   await page.route('**/data/**', async (route) => {
     if (options.missing) return route.fulfill({ status: 404, body: '{}' })
@@ -23,7 +23,7 @@ export async function mockSnapshot(page: Page, options: { missing?: boolean } = 
   })
 }
 
-/** Freeze the browser clock so the fixture's 14 days count as fresh history. */
+/** Freeze the browser clock so the fixture snapshot counts as fresh. */
 export async function freezeDate(page: Page, iso = '2026-10-21T09:00:00Z') {
   await page.clock.setFixedTime(new Date(iso))
 }

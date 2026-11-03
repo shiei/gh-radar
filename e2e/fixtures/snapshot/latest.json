@@ -12,7 +12,8 @@
       "a": false,
       "src": [
         "frontend:popular"
-      ]
+      ],
+      "r": 260
     },
     "frontend-org/frontend-repo-2": {
       "s": 9900,
@@ -25,7 +26,8 @@
       "a": false,
       "src": [
         "frontend:popular"
-      ]
+      ],
+      "r": 520
     },
     "frontend-org/frontend-repo-3": {
       "s": 9800,
@@ -38,7 +40,8 @@
       "a": false,
       "src": [
         "frontend:popular"
-      ]
+      ],
+      "r": 780
     },
     "frontend-org/frontend-repo-4": {
       "s": 9700,
@@ -51,7 +54,8 @@
       "a": false,
       "src": [
         "frontend:popular"
-      ]
+      ],
+      "r": 1040
     },
     "frontend-org/frontend-repo-5": {
       "s": 9600,
@@ -64,7 +68,8 @@
       "a": false,
       "src": [
         "frontend:rising"
-      ]
+      ],
+      "r": 6500
     },
     "backend-org/backend-repo-1": {
       "s": 9000,
@@ -77,7 +82,8 @@
       "a": false,
       "src": [
         "backend:popular"
-      ]
+      ],
+      "r": 260
     },
     "backend-org/backend-repo-2": {
       "s": 8900,
@@ -90,7 +96,8 @@
       "a": false,
       "src": [
         "backend:popular"
-      ]
+      ],
+      "r": 520
     },
     "backend-org/backend-repo-3": {
       "s": 8800,
@@ -103,7 +110,8 @@
       "a": false,
       "src": [
         "backend:popular"
-      ]
+      ],
+      "r": 780
     },
     "backend-org/backend-repo-4": {
       "s": 8700,
@@ -116,7 +124,8 @@
       "a": false,
       "src": [
         "backend:popular"
-      ]
+      ],
+      "r": 1040
     },
     "backend-org/backend-repo-5": {
       "s": 8600,
@@ -129,7 +138,8 @@
       "a": false,
       "src": [
         "backend:rising"
-      ]
+      ],
+      "r": 6500
     },
     "ai-ml-org/ai-ml-repo-1": {
       "s": 8000,
@@ -142,7 +152,8 @@
       "a": false,
       "src": [
         "ai-ml:popular"
-      ]
+      ],
+      "r": 260
     },
     "ai-ml-org/ai-ml-repo-2": {
       "s": 7900,
@@ -155,7 +166,8 @@
       "a": false,
       "src": [
         "ai-ml:popular"
-      ]
+      ],
+      "r": 520
     },
     "ai-ml-org/ai-ml-repo-3": {
       "s": 7800,
@@ -168,7 +180,8 @@
       "a": false,
       "src": [
         "ai-ml:popular"
-      ]
+      ],
+      "r": 780
     },
     "ai-ml-org/ai-ml-repo-4": {
       "s": 7700,
@@ -181,7 +194,8 @@
       "a": false,
       "src": [
         "ai-ml:popular"
-      ]
+      ],
+      "r": 1040
     },
     "ai-ml-org/ai-ml-repo-5": {
       "s": 7600,
@@ -194,7 +208,8 @@
       "a": false,
       "src": [
         "ai-ml:rising"
-      ]
+      ],
+      "r": 6500
     },
     "devops-org/devops-repo-1": {
       "s": 7000,
@@ -207,7 +222,8 @@
       "a": false,
       "src": [
         "devops:popular"
-      ]
+      ],
+      "r": 260
     },
     "devops-org/devops-repo-2": {
       "s": 6900,
@@ -220,7 +236,8 @@
       "a": false,
       "src": [
         "devops:popular"
-      ]
+      ],
+      "r": 520
     },
     "devops-org/devops-repo-3": {
       "s": 6800,
@@ -233,7 +250,8 @@
       "a": false,
       "src": [
         "devops:popular"
-      ]
+      ],
+      "r": 780
     },
     "devops-org/devops-repo-4": {
       "s": 6700,
@@ -246,7 +264,8 @@
       "a": false,
       "src": [
         "devops:popular"
-      ]
+      ],
+      "r": 1040
     },
     "devops-org/devops-repo-5": {
       "s": 6600,
@@ -259,7 +278,8 @@
       "a": false,
       "src": [
         "devops:rising"
-      ]
+      ],
+      "r": 6500
     },
     "database-org/database-repo-1": {
       "s": 6000,
@@ -272,7 +292,8 @@
       "a": false,
       "src": [
         "database:popular"
-      ]
+      ],
+      "r": 260
     },
     "database-org/database-repo-2": {
       "s": 5900,
@@ -285,7 +306,8 @@
       "a": false,
       "src": [
         "database:popular"
-      ]
+      ],
+      "r": 520
     },
     "database-org/database-repo-3": {
       "s": 5800,
@@ -298,7 +320,8 @@
       "a": false,
       "src": [
         "database:popular"
-      ]
+      ],
+      "r": 780
     },
     "database-org/database-repo-4": {
       "s": 5700,
@@ -311,7 +334,8 @@
       "a": false,
       "src": [
         "database:popular"
-      ]
+      ],
+      "r": 1040
     },
     "database-org/database-repo-5": {
       "s": 5600,
@@ -324,7 +348,8 @@
       "a": false,
       "src": [
         "database:rising"
-      ]
+      ],
+      "r": 6500
     },
     "design-org/design-repo-1": {
       "s": 5000,
@@ -337,7 +362,8 @@
       "a": false,
       "src": [
         "design:popular"
-      ]
+      ],
+      "r": 260
     },
     "design-org/design-repo-2": {
       "s": 4900,
@@ -350,7 +376,8 @@
       "a": false,
       "src": [
         "design:popular"
-      ]
+      ],
+      "r": 520
     },
     "design-org/design-repo-3": {
       "s": 4800,
@@ -363,7 +390,8 @@
       "a": false,
       "src": [
         "design:popular"
-      ]
+      ],
+      "r": 780
     },
     "design-org/design-repo-4": {
       "s": 4700,
@@ -376,7 +404,8 @@
       "a": false,
       "src": [
         "design:popular"
-      ]
+      ],
+      "r": 1040
     },
     "design-org/design-repo-5": {
       "s": 4600,
@@ -389,7 +418,8 @@
       "a": false,
       "src": [
         "design:rising"
-      ]
+      ],
+      "r": 6500
     }
   }
 }

@@ -26,6 +26,11 @@ export interface SnapshotRecord {
   src: string[]
   /** Owner's numeric id, for direct avatar URLs. Absent in older snapshots. */
   o?: number
+  /**
+   * Stars gained over the last 30 days (over the whole series while it is shorter), computed
+   * from the series so the site never has to download them. Absent with fewer than two points.
+   */
+  r?: number
 }
 
 export interface Latest {
@@ -42,6 +47,8 @@ export interface Meta {
   total: number
   sources: Record<string, number>
   mapVersion: number
+  /** Longest span in days covered by any series: how far back the star deltas can look. */
+  historyDays: number
 }
 
 export interface SourceBatch {
@@ -166,7 +173,55 @@ export function seriesBuckets(sources: string[]): string[] {
   return [...buckets].sort()
 }
 
-export function buildMeta(latest: Latest, lastRun: Date, mapVersion: number): Meta {
+export const RISING_DELTA_DAYS = 30
+
+/** Stars at the latest point minus stars at the last point on or before `today - 30d` (or the first point). */
+export function starDelta(points: SeriesPoint[] | undefined, today: string): number | null {
+  if (!points || points.length < 2) return null
+  const cutoff = new Date(today).getTime() - RISING_DELTA_DAYS * DAY_MS
+  let baseline = points[0]
+  for (const point of points) {
+    if (new Date(point[0]).getTime() <= cutoff) baseline = point
+    else break
+  }
+  const last = points[points.length - 1]
+  if (baseline === last) baseline = points[0]
+  return last[1] - baseline[1]
+}
+
+/** Longest span (in days) covered by any series, i.e. how much history the dataset has. */
+export function historyDays(series: Series): number {
+  let max = 0
+  for (const points of Object.values(series)) {
+    const first = points[0]?.[0]
+    const last = points[points.length - 1]?.[0]
+    if (!first || !last) continue
+    max = Math.max(max, (new Date(last).getTime() - new Date(first).getTime()) / DAY_MS)
+  }
+  return max
+}
+
+/** Write every repository's star delta (`r`) into the records. A repo in several buckets has identical series. */
+export function applyDeltas(
+  latest: Latest,
+  seriesByBucket: Record<string, Series>,
+  today: string,
+): Latest {
+  const repos: Record<string, SnapshotRecord> = {}
+  for (const [name, record] of Object.entries(latest.repos)) {
+    let delta: number | null = null
+    for (const bucket of seriesBuckets(record.src)) {
+      delta = starDelta(seriesByBucket[bucket]?.[name], today)
+      if (delta !== null) break
+    }
+    const next = { ...record }
+    delete next.r
+    repos[name] = delta === null ? next : { ...next, r: delta }
+  }
+  return { ...latest, repos }
+}
+
+export function buildMeta(latest: Latest, lastRun: Date, mapVersion: number, history = 0): Meta {
   const sources: Record<string, number> = {}
   for (const record of Object.values(latest.repos)) {
     for (const src of record.src) sources[src] = (sources[src] ?? 0) + 1
@@ -177,5 +232,6 @@ export function buildMeta(latest: Latest, lastRun: Date, mapVersion: number): Me
     total: Object.keys(latest.repos).length,
     sources,
     mapVersion,
+    historyDays: history,
   }
 }

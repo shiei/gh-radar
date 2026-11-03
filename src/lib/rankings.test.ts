@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
-import { historyDays, rankPopular, rankRising, starDelta } from './rankings'
-import type { Series, SnapshotRepo } from './snapshot'
+import { rankPopular, rankRising, risingWindowDays } from './rankings'
+import type { SnapshotRepo } from './snapshot'
 
 const repo = (
   fullName: string,
   stars: number,
   sources: string[],
   createdAt = '2020-01-01T00:00:00Z',
+  delta: number | null = null,
 ): SnapshotRepo => ({
   fullName,
   owner: fullName.split('/')[0] ?? '',
@@ -22,10 +23,9 @@ const repo = (
   archived: false,
   ownerId: null,
   sources,
+  delta,
 })
 const today = new Date('2026-11-20T00:00:00Z')
-const day = (offset: number) =>
-  new Date(today.getTime() - offset * 86400000).toISOString().slice(0, 10)
 
 describe('rankPopular', () => {
   it('orders by stars and filters by category source prefix', () => {
@@ -39,69 +39,37 @@ describe('rankPopular', () => {
   })
 })
 
-describe('starDelta + historyDays', () => {
-  it('uses the last point on or before the 30-day cutoff as baseline', () => {
-    const points: Series[string] = [
-      [day(40), 100],
-      [day(31), 120],
-      [day(29), 130],
-      [day(0), 200],
-    ]
-    expect(starDelta(points, today)).toBe(80)
-    expect(
-      starDelta(
-        [
-          [day(5), 10],
-          [day(0), 25],
-        ],
-        today,
-      ),
-    ).toBe(15)
-    expect(starDelta([[day(0), 25]], today)).toBeNull()
-    expect(historyDays({ a: points })).toBe(40)
+describe('risingWindowDays', () => {
+  it('reports the real window while history is short and caps at 30', () => {
+    expect(risingWindowDays(0)).toBe(1)
+    expect(risingWindowDays(13.9)).toBe(13)
+    expect(risingWindowDays(45)).toBe(30)
   })
 })
 
 describe('rankRising', () => {
   const repos = [
-    repo('a/x', 500, ['frontend:popular'], '2026-10-01T00:00:00Z'),
-    repo('b/y', 300, ['frontend:rising'], '2026-11-01T00:00:00Z'),
-    repo('c/z', 900, ['devops:popular'], '2019-01-01T00:00:00Z'),
+    repo('a/x', 500, ['frontend:popular'], '2026-10-01T00:00:00Z', 400),
+    repo('b/y', 300, ['frontend:rising'], '2026-11-01T00:00:00Z', 10),
+    repo('c/z', 900, ['devops:popular'], '2019-01-01T00:00:00Z', 0),
+    repo('d/w', 50, ['devops:popular'], '2019-01-01T00:00:00Z', null),
   ]
 
   it('falls back to recently created repositories when history is short', () => {
-    const series: Series = {
-      'a/x': [
-        [day(2), 490],
-        [day(0), 500],
-      ],
-    }
-    const out = rankRising(repos, series, today, null)
+    const out = rankRising(repos, 3, today, null)
     expect(out.mode).toBe('fallback')
     expect(out.items.map((i) => i.repo.fullName)).toEqual(['a/x', 'b/y'])
+    expect(out.items[0]?.delta).toBeUndefined()
   })
 
-  it('ranks by 30-day delta once there is enough history', () => {
-    const series: Series = {
-      'a/x': [
-        [day(35), 100],
-        [day(0), 500],
-      ],
-      'b/y': [
-        [day(35), 290],
-        [day(0), 300],
-      ],
-      'c/z': [
-        [day(35), 900],
-        [day(0), 900],
-      ],
-    }
-    const out = rankRising(repos, series, today, null)
+  it('ranks by the precomputed delta once there is enough history', () => {
+    const out = rankRising(repos, 14, today, null)
     expect(out.mode).toBe('delta')
     expect(out.items.map((i) => [i.repo.fullName, i.delta])).toEqual([
       ['a/x', 400],
       ['b/y', 10],
     ])
-    expect(rankRising(repos, series, today, 'devops').items).toEqual([])
+    // Zero or missing deltas never rank; category filtering applies.
+    expect(rankRising(repos, 14, today, 'devops').items).toEqual([])
   })
 })

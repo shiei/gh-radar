@@ -16,6 +16,7 @@ describe('decodeRecord', () => {
         d: 'A thing',
         a: true,
         src: ['x'],
+        r: 7,
       }),
     ).toEqual({
       fullName: 'vercel/next.js',
@@ -31,6 +32,7 @@ describe('decodeRecord', () => {
       archived: true,
       sources: ['x'],
       ownerId: null,
+      delta: 7,
     })
     expect(avatarUrl('vercel')).toBe('https://github.com/vercel.png?size=48')
     expect(avatarUrl('vercel', 14985020)).toBe(
@@ -44,20 +46,29 @@ describe('loadSnapshot', () => {
   const urlOf = (input: RequestInfo | URL) =>
     typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
 
-  it('merges every series bucket and tolerates missing buckets', async () => {
+  it('loads meta and latest in parallel and never touches series files', async () => {
     const fetchImpl = vi.fn<typeof fetch>((input) => {
       const url = urlOf(input)
-      if (url.endsWith('/meta.json')) return Promise.resolve(json({ date: '2026-10-20', total: 1 }))
+      if (url.endsWith('/meta.json'))
+        return Promise.resolve(json({ date: '2026-10-20', total: 1, historyDays: 14 }))
       if (url.endsWith('/latest.json'))
         return Promise.resolve(json({ date: '2026-10-20', repos: {} }))
-      if (url.endsWith('/series/frontend.json'))
-        return Promise.resolve(json({ 'a/b': [['2026-10-20', 5]] }))
       return Promise.resolve(json({}, 404))
     })
     const result = await loadSnapshot(fetchImpl)
     expect(result.kind).toBe('ready')
     if (result.kind !== 'ready') return
-    expect(result.bundle.series['a/b']).toEqual([['2026-10-20', 5]])
+    expect(result.bundle.meta.historyDays).toBe(14)
+    expect(fetchImpl).toHaveBeenCalledTimes(2)
+  })
+
+  it('is missing when latest is absent even if meta exists', async () => {
+    const fetchImpl = vi.fn<typeof fetch>((input) =>
+      Promise.resolve(
+        urlOf(input).endsWith('/meta.json') ? json({ date: '2026-10-20' }) : json({}, 404),
+      ),
+    )
+    expect((await loadSnapshot(fetchImpl)).kind).toBe('missing')
   })
 
   it('reports missing when meta is absent and error on other failures', async () => {

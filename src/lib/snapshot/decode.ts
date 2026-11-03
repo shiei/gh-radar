@@ -16,6 +16,7 @@ export function decodeRecord(fullName: string, record: SnapshotRecord): Snapshot
     archived: record.a,
     sources: record.src,
     ownerId: record.o ?? null,
+    delta: record.r ?? null,
   }
 }
 

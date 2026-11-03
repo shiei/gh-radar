@@ -82,7 +82,7 @@ openspec/         計画ファイル（proposal / specs / design / tasks）
 
 ## 日次スナップショットデータセット
 
-`scripts/snapshot.ts` は GitHub Actions 経由で毎日、6 つのカテゴリの人気と新星のリポジトリ、および `data/watchlist.txt` のリポジトリを取得し、`public/data/` に書き込む（`latest.json`、`daily/` は 30 日分保持、`series/` は 1 年間を日単位、それ以降は週単位、`meta.json`）。これらの JSON はサイトと一緒に公開され、ランキングとトレンドのデータソースとなり、訪問者の API クォータを消費しない。ファイル形式、保持ポリシー、ローカルでの実行方法は `scripts/README.md` を参照。
+`scripts/snapshot.ts` は GitHub Actions 経由で毎日、6 つのカテゴリの人気と新星のリポジトリ、および `data/watchlist.txt` のリポジトリを取得し、`public/data/` に書き込む（`latest.json`、`daily/` は 30 日分保持、`series/` は 1 年間を日単位、それ以降は週単位、`meta.json`）。これらの JSON はサイトと一緒に公開され、訪問者の API クォータを消費しない。Rising Stars の star 増分はスクリプト側で `latest.json` の各レコードに書き込むため、サイトは `latest.json` と `meta.json` だけを読み、`series/` は将来のトレンド表示用に保持している。ファイル形式、保持ポリシー、ローカルでの実行方法は `scripts/README.md` を参照。
 
 ## GitHub API とクォータ
 

@@ -12,6 +12,8 @@ export interface SnapshotRecord {
   src: string[]
   /** Owner's numeric id, for direct avatar URLs. Absent in older snapshots. */
   o?: number
+  /** Stars gained over the delta window (see SnapshotMeta.historyDays). Absent without history. */
+  r?: number
 }
 
 export interface SnapshotLatest {
@@ -25,10 +27,9 @@ export interface SnapshotMeta {
   total: number
   sources: Record<string, number>
   mapVersion: number
+  /** Days of history behind the star deltas (30 once mature). Absent in snapshots before 2026-11-04. */
+  historyDays?: number
 }
-
-export type SeriesPoint = [date: string, stars: number]
-export type Series = Record<string, SeriesPoint[]>
 
 /** Decoded, readable form used by the UI. */
 export interface SnapshotRepo {
@@ -45,4 +46,6 @@ export interface SnapshotRepo {
   archived: boolean
   sources: string[]
   ownerId: number | null
+  /** Stars gained over the snapshot's delta window; null when the snapshot has none for it. */
+  delta: number | null
 }
