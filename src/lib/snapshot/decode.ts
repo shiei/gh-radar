@@ -12,7 +12,7 @@ export function decodeRecord(fullName: string, record: SnapshotRecord): Snapshot
     pushedAt: record.p,
     createdAt: record.c,
     language: record.l,
-    topics: record.t,
+    description: record.d ?? null,
     archived: record.a,
     sources: record.src,
     ownerId: record.o ?? null,

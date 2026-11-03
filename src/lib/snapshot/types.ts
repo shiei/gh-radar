@@ -6,7 +6,8 @@ export interface SnapshotRecord {
   p: string
   c: string
   l: string | null
-  t: string[]
+  /** Description. Absent in snapshots written before 2026-11-03, which stored topics instead. */
+  d?: string | null
   a: boolean
   src: string[]
   /** Owner's numeric id, for direct avatar URLs. Absent in older snapshots. */
@@ -40,7 +41,7 @@ export interface SnapshotRepo {
   pushedAt: string
   createdAt: string
   language: string | null
-  topics: string[]
+  description: string | null
   archived: boolean
   sources: string[]
   ownerId: number | null

@@ -18,7 +18,7 @@ const repo = (
   pushedAt: '',
   createdAt,
   language: null,
-  topics: [],
+  description: null,
   archived: false,
   ownerId: null,
   sources,

@@ -18,7 +18,7 @@ const item = (n: number, delta?: number): RankedRepo => ({
     pushedAt: '',
     createdAt: '',
     language: null,
-    topics: [],
+    description: null,
     archived: false,
     ownerId: null,
     sources: [],

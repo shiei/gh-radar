@@ -21,7 +21,7 @@ const raw = (full_name: string, stars = 10): RawRepo => ({
   pushed_at: '2026-10-20T00:00:00Z',
   created_at: '2020-01-01T00:00:00Z',
   language: 'TypeScript',
-  topics: ['x'],
+  description: 'Does a thing',
   archived: false,
 })
 
@@ -52,7 +52,7 @@ describe('toRecord', () => {
       {
         ...raw('a/b'),
         language: undefined,
-        topics: undefined,
+        description: '  ',
         archived: undefined,
         forks_count: undefined,
         open_issues_count: undefined,
@@ -66,7 +66,7 @@ describe('toRecord', () => {
       p: '2026-10-20T00:00:00Z',
       c: '2020-01-01T00:00:00Z',
       l: null,
-      t: [],
+      d: null,
       a: false,
       src: ['x'],
     })

@@ -7,7 +7,7 @@ export interface RawRepo {
   pushed_at: string
   created_at: string
   language?: string | null
-  topics?: string[]
+  description?: string | null
   archived?: boolean
   owner?: { id?: number }
 }
@@ -20,7 +20,8 @@ export interface SnapshotRecord {
   p: string
   c: string
   l: string | null
-  t: string[]
+  /** Repository description, trimmed. Null when the owner left it blank. */
+  d: string | null
   a: boolean
   src: string[]
   /** Owner's numeric id, for direct avatar URLs. Absent in older snapshots. */
@@ -74,6 +75,7 @@ export function mergeSources(
 }
 
 export function toRecord(raw: RawRepo, sources: string[]): SnapshotRecord {
+  const description = raw.description?.trim() ?? ''
   return {
     s: raw.stargazers_count,
     f: raw.forks_count ?? 0,
@@ -81,7 +83,7 @@ export function toRecord(raw: RawRepo, sources: string[]): SnapshotRecord {
     p: raw.pushed_at,
     c: raw.created_at,
     l: raw.language ?? null,
-    t: raw.topics ?? [],
+    d: description.length > 0 ? description : null,
     a: raw.archived ?? false,
     src: [...sources].sort(),
     ...(typeof raw.owner?.id === 'number' ? { o: raw.owner.id } : {}),

@@ -15,15 +15,13 @@ export interface RankingListProps {
   fallback?: boolean
 }
 
-/** Tooltip body: full name (the row may be truncated), language and topics. */
+/** Tooltip body: full name (the row may be truncated), language and description. */
 function RepoSummary({ repo }: { repo: SnapshotRepo }) {
   return (
     <span className="flex flex-col gap-1" data-testid="ranking-summary">
       <span className="font-medium">{repo.fullName}</span>
       {repo.language ? <span className="text-text-muted">{repo.language}</span> : null}
-      {repo.topics.length > 0 ? (
-        <span className="text-text-muted">{repo.topics.join(', ')}</span>
-      ) : null}
+      {repo.description ? <span>{repo.description}</span> : null}
     </span>
   )
 }
@@ -71,7 +69,6 @@ export function RankingList({ id, title, hint, items, fallback = false }: Rankin
                 {index + 1}
               </span>
               <Avatar src={avatarUrl(repo.owner, repo.ownerId)} name={repo.owner} size={20} />
-              {/* The snapshot has no description, so topics and language stand in for one. */}
               <Tooltip
                 content={<RepoSummary repo={repo} />}
                 render={

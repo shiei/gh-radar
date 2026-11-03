@@ -8,9 +8,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["frontend"],
+      "d": "A frontend repository called frontend-repo-1",
       "a": false,
-      "src": ["frontend:popular"]
+      "src": [
+        "frontend:popular"
+      ]
     },
     "frontend-org/frontend-repo-2": {
       "s": 9900,
@@ -19,9 +21,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["frontend"],
+      "d": "A frontend repository called frontend-repo-2",
       "a": false,
-      "src": ["frontend:popular"]
+      "src": [
+        "frontend:popular"
+      ]
     },
     "frontend-org/frontend-repo-3": {
       "s": 9800,
@@ -30,9 +34,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["frontend"],
+      "d": "A frontend repository called frontend-repo-3",
       "a": false,
-      "src": ["frontend:popular"]
+      "src": [
+        "frontend:popular"
+      ]
     },
     "frontend-org/frontend-repo-4": {
       "s": 9700,
@@ -41,9 +47,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["frontend"],
+      "d": "A frontend repository called frontend-repo-4",
       "a": false,
-      "src": ["frontend:popular"]
+      "src": [
+        "frontend:popular"
+      ]
     },
     "frontend-org/frontend-repo-5": {
       "s": 9600,
@@ -52,9 +60,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["frontend"],
+      "d": "A frontend repository called frontend-repo-5",
       "a": false,
-      "src": ["frontend:rising"]
+      "src": [
+        "frontend:rising"
+      ]
     },
     "backend-org/backend-repo-1": {
       "s": 9000,
@@ -63,9 +73,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["backend"],
+      "d": "A backend repository called backend-repo-1",
       "a": false,
-      "src": ["backend:popular"]
+      "src": [
+        "backend:popular"
+      ]
     },
     "backend-org/backend-repo-2": {
       "s": 8900,
@@ -74,9 +86,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["backend"],
+      "d": "A backend repository called backend-repo-2",
       "a": false,
-      "src": ["backend:popular"]
+      "src": [
+        "backend:popular"
+      ]
     },
     "backend-org/backend-repo-3": {
       "s": 8800,
@@ -85,9 +99,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["backend"],
+      "d": "A backend repository called backend-repo-3",
       "a": false,
-      "src": ["backend:popular"]
+      "src": [
+        "backend:popular"
+      ]
     },
     "backend-org/backend-repo-4": {
       "s": 8700,
@@ -96,9 +112,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["backend"],
+      "d": "A backend repository called backend-repo-4",
       "a": false,
-      "src": ["backend:popular"]
+      "src": [
+        "backend:popular"
+      ]
     },
     "backend-org/backend-repo-5": {
       "s": 8600,
@@ -107,9 +125,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["backend"],
+      "d": "A backend repository called backend-repo-5",
       "a": false,
-      "src": ["backend:rising"]
+      "src": [
+        "backend:rising"
+      ]
     },
     "ai-ml-org/ai-ml-repo-1": {
       "s": 8000,
@@ -118,9 +138,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["ai-ml"],
+      "d": "A ai-ml repository called ai-ml-repo-1",
       "a": false,
-      "src": ["ai-ml:popular"]
+      "src": [
+        "ai-ml:popular"
+      ]
     },
     "ai-ml-org/ai-ml-repo-2": {
       "s": 7900,
@@ -129,9 +151,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["ai-ml"],
+      "d": "A ai-ml repository called ai-ml-repo-2",
       "a": false,
-      "src": ["ai-ml:popular"]
+      "src": [
+        "ai-ml:popular"
+      ]
     },
     "ai-ml-org/ai-ml-repo-3": {
       "s": 7800,
@@ -140,9 +164,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["ai-ml"],
+      "d": "A ai-ml repository called ai-ml-repo-3",
       "a": false,
-      "src": ["ai-ml:popular"]
+      "src": [
+        "ai-ml:popular"
+      ]
     },
     "ai-ml-org/ai-ml-repo-4": {
       "s": 7700,
@@ -151,9 +177,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["ai-ml"],
+      "d": "A ai-ml repository called ai-ml-repo-4",
       "a": false,
-      "src": ["ai-ml:popular"]
+      "src": [
+        "ai-ml:popular"
+      ]
     },
     "ai-ml-org/ai-ml-repo-5": {
       "s": 7600,
@@ -162,9 +190,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["ai-ml"],
+      "d": "A ai-ml repository called ai-ml-repo-5",
       "a": false,
-      "src": ["ai-ml:rising"]
+      "src": [
+        "ai-ml:rising"
+      ]
     },
     "devops-org/devops-repo-1": {
       "s": 7000,
@@ -173,9 +203,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["devops"],
+      "d": "A devops repository called devops-repo-1",
       "a": false,
-      "src": ["devops:popular"]
+      "src": [
+        "devops:popular"
+      ]
     },
     "devops-org/devops-repo-2": {
       "s": 6900,
@@ -184,9 +216,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["devops"],
+      "d": "A devops repository called devops-repo-2",
       "a": false,
-      "src": ["devops:popular"]
+      "src": [
+        "devops:popular"
+      ]
     },
     "devops-org/devops-repo-3": {
       "s": 6800,
@@ -195,9 +229,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["devops"],
+      "d": "A devops repository called devops-repo-3",
       "a": false,
-      "src": ["devops:popular"]
+      "src": [
+        "devops:popular"
+      ]
     },
     "devops-org/devops-repo-4": {
       "s": 6700,
@@ -206,9 +242,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["devops"],
+      "d": "A devops repository called devops-repo-4",
       "a": false,
-      "src": ["devops:popular"]
+      "src": [
+        "devops:popular"
+      ]
     },
     "devops-org/devops-repo-5": {
       "s": 6600,
@@ -217,9 +255,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["devops"],
+      "d": "A devops repository called devops-repo-5",
       "a": false,
-      "src": ["devops:rising"]
+      "src": [
+        "devops:rising"
+      ]
     },
     "database-org/database-repo-1": {
       "s": 6000,
@@ -228,9 +268,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["database"],
+      "d": "A database repository called database-repo-1",
       "a": false,
-      "src": ["database:popular"]
+      "src": [
+        "database:popular"
+      ]
     },
     "database-org/database-repo-2": {
       "s": 5900,
@@ -239,9 +281,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["database"],
+      "d": "A database repository called database-repo-2",
       "a": false,
-      "src": ["database:popular"]
+      "src": [
+        "database:popular"
+      ]
     },
     "database-org/database-repo-3": {
       "s": 5800,
@@ -250,9 +294,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["database"],
+      "d": "A database repository called database-repo-3",
       "a": false,
-      "src": ["database:popular"]
+      "src": [
+        "database:popular"
+      ]
     },
     "database-org/database-repo-4": {
       "s": 5700,
@@ -261,9 +307,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["database"],
+      "d": "A database repository called database-repo-4",
       "a": false,
-      "src": ["database:popular"]
+      "src": [
+        "database:popular"
+      ]
     },
     "database-org/database-repo-5": {
       "s": 5600,
@@ -272,9 +320,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["database"],
+      "d": "A database repository called database-repo-5",
       "a": false,
-      "src": ["database:rising"]
+      "src": [
+        "database:rising"
+      ]
     },
     "design-org/design-repo-1": {
       "s": 5000,
@@ -283,9 +333,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["design"],
+      "d": "A design repository called design-repo-1",
       "a": false,
-      "src": ["design:popular"]
+      "src": [
+        "design:popular"
+      ]
     },
     "design-org/design-repo-2": {
       "s": 4900,
@@ -294,9 +346,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["design"],
+      "d": "A design repository called design-repo-2",
       "a": false,
-      "src": ["design:popular"]
+      "src": [
+        "design:popular"
+      ]
     },
     "design-org/design-repo-3": {
       "s": 4800,
@@ -305,9 +359,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2019-01-01T00:00:00Z",
       "l": "TypeScript",
-      "t": ["design"],
+      "d": "A design repository called design-repo-3",
       "a": false,
-      "src": ["design:popular"]
+      "src": [
+        "design:popular"
+      ]
     },
     "design-org/design-repo-4": {
       "s": 4700,
@@ -316,9 +372,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["design"],
+      "d": "A design repository called design-repo-4",
       "a": false,
-      "src": ["design:popular"]
+      "src": [
+        "design:popular"
+      ]
     },
     "design-org/design-repo-5": {
       "s": 4600,
@@ -327,9 +385,11 @@
       "p": "2026-10-19T00:00:00Z",
       "c": "2026-09-15T00:00:00Z",
       "l": "TypeScript",
-      "t": ["design"],
+      "d": "A design repository called design-repo-5",
       "a": false,
-      "src": ["design:rising"]
+      "src": [
+        "design:rising"
+      ]
     }
   }
 }

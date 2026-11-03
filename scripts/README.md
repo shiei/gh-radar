@@ -2,7 +2,7 @@
 
 ## snapshot.ts — 每日快照
 
-对六个分类（`src/lib/categories.ts`）各取"热门"与"新秀"两条查询的前 300 条，加上 `data/watchlist.txt` 里的仓库，把 star、fork、未关闭 issue、最近推送、创建时间、语言、topics、归档标记写进 `public/data/`。GitHub Actions（`.github/workflows/snapshot.yml`）每天 UTC 00:00 跑一次并提交结果；本地随时可以手动跑。
+对六个分类（`src/lib/categories.ts`）各取"热门"与"新秀"两条查询的前 300 条，加上 `data/watchlist.txt` 里的仓库，把 star、fork、未关闭 issue、最近推送、创建时间、语言、简介、归档标记写进 `public/data/`。GitHub Actions（`.github/workflows/snapshot.yml`）每天 UTC 00:00 跑一次并提交结果；本地随时可以手动跑。
 
 ```bash
 GITHUB_TOKEN=ghp_xxx npm run snapshot            # 写入 public/data
@@ -22,7 +22,7 @@ npm run snapshot -- --date 2026-10-21            # 指定快照日期（默认�
 | `series/<分类>.json` | 每个仓库的 `[["日期", star], ...]`，另有 `watchlist.json` | 365 天按天，更早按 ISO 周保留最后一点 |
 | `meta.json`          | 最近一次成功时间、日期、总数、各来源数量、映射版本        | 只留最新                              |
 
-记录用单字母键以控制体积：`s` star、`f` fork、`i` 未关闭 issue（含 PR）、`p` 最近推送、`c` 创建时间、`l` 主语言、`t` topics、`a` 是否归档、`src` 来源列表（如 `frontend:popular`、`devops:rising`、`watchlist`）。
+记录用单字母键以控制体积：`s` star、`f` fork、`i` 未关闭 issue（含 PR）、`p` 最近推送、`c` 创建时间、`l` 主语言、`d` 简介（空则为 null）、`a` 是否归档、`src` 来源列表（如 `frontend:popular`、`devops:rising`、`watchlist`）。
 
 ### 流程
 

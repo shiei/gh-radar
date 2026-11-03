@@ -19,7 +19,7 @@ test.describe('discovery home', () => {
     await expect(page.getByTestId('rankings-date')).toContainText('2026-10-20')
   })
 
-  test('hovering a ranking row shows its full name, language and topics', async ({ page }) => {
+  test('hovering a ranking row shows its full name, language and description', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 })
     await freezeDate(page)
     await mockSnapshot(page)
@@ -31,7 +31,7 @@ test.describe('discovery home', () => {
     await expect(summary).toBeVisible()
     await expect(summary).toContainText('frontend-org/frontend-repo-1')
     await expect(summary).toContainText('TypeScript')
-    await expect(summary).toContainText('frontend')
+    await expect(summary).toContainText('A frontend repository called frontend-repo-1')
   })
 
   test('clicking a category runs its query and filters the rankings', async ({ page }) => {
