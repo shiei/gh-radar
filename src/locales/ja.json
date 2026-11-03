@@ -3,6 +3,11 @@
     "name": "OpenSource Radar",
     "tagline": "開発者が今つくっているものを見つけよう。"
   },
+  "crash": {
+    "title": "問題が発生しました",
+    "body": "ページで予期しないエラーが起きました。再読み込みで直ることがほとんどです。繰り返す場合は GitHub の issue でお知らせください。",
+    "reload": "ページを再読み込み"
+  },
   "theme": {
     "toggle": {
       "label": "ダークモード",

@@ -3,6 +3,11 @@
     "name": "OpenSource Radar",
     "tagline": "Discover what developers are building."
   },
+  "crash": {
+    "title": "Something went wrong",
+    "body": "The page hit an unexpected error. Reloading usually fixes it; if it keeps happening, please open an issue on GitHub.",
+    "reload": "Reload the page"
+  },
   "theme": {
     "toggle": {
       "label": "Dark mode",

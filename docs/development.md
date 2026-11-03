@@ -100,6 +100,10 @@ openspec/         計画ファイル（proposal / specs / design / tasks）
 
 `e2e/fixtures/search-react.json` は実際のレスポンスに由来し、画面で使うフィールドのみを残している。
 
+## エラー処理と可観測性
+
+`src/main.tsx` はアプリ全体を `src/app/ErrorBoundary.tsx` で包む。描画中の例外は空白ページの代わりに 3 言語の案内と再読み込みボタンになる。描画エラー、`window` の `error`、未処理の Promise rejection はすべて `src/lib/report.ts` の `reportError` を通る。現在の送信先はコンソールだけで、Sentry などを足すときはこの関数だけを変える。GitHub API の失敗は例外ではなく `Result` 型（`src/lib/github/errors.ts`）で表現され、boundary には届かない。
+
 ## 規約
 
 ### 画面テキストの追加
