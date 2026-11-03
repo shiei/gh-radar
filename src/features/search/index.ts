@@ -1,4 +1,6 @@
-export { initialSearchState, maxPage, searchReducer } from './searchReducer'
+export { initialSearchState, initialStateFromUrl, maxPage, searchReducer } from './searchReducer'
+export { buildSearchUrl, parseSearchUrl } from './urlState'
+export type { UrlSearchState } from './urlState'
 export type { SearchAction, SearchState, SearchStatus } from './searchReducer'
 export { useRepositorySearch } from './useRepositorySearch'
 export type { RepositorySearch } from './useRepositorySearch'

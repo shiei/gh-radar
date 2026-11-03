@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
 import type { AnySearchResult } from '../../lib/github'
-import { initialSearchState, maxPage, searchReducer, type SearchState } from './searchReducer'
+import {
+  initialSearchState,
+  initialStateFromUrl,
+  maxPage,
+  searchReducer,
+  type SearchState,
+} from './searchReducer'
 
 const result = (totalCount: number): AnySearchResult => ({
   type: 'repositories',
@@ -156,5 +162,50 @@ describe('filters', () => {
     expect(next.filters.excludeForks).toBe(true)
     expect(next.requestId).toBe(users.requestId)
     expect(next.status).toBe('success')
+  })
+})
+
+describe('restore (URL and history)', () => {
+  it('adopts every field and starts a request', () => {
+    const next = searchReducer(initialSearchState, {
+      type: 'restore',
+      state: {
+        type: 'users',
+        query: 'torvalds',
+        sort: 'stars',
+        page: 3,
+        filters: { ...initialSearchState.filters, language: 'C' },
+      },
+    })
+    expect(next).toMatchObject({
+      type: 'users',
+      query: 'torvalds',
+      sort: 'stars',
+      page: 3,
+      status: 'loading',
+      requestId: 1,
+    })
+    expect(next.filters.language).toBe('C')
+  })
+
+  it('returns to idle on an empty query and still bumps requestId', () => {
+    const state = loaded(100, { page: 2 })
+    const next = searchReducer(state, {
+      type: 'restore',
+      state: { ...initialSearchState, query: '' },
+    })
+    expect(next).toMatchObject({ status: 'idle', query: '', result: null, page: 1 })
+    expect(next.requestId).toBe(state.requestId + 1)
+  })
+
+  it('initialStateFromUrl parses the query string or stays idle', () => {
+    expect(initialStateFromUrl('')).toBe(initialSearchState)
+    expect(initialStateFromUrl('?q=rust&sort=updated&page=2')).toMatchObject({
+      query: 'rust',
+      sort: 'updated',
+      page: 2,
+      status: 'loading',
+      requestId: 1,
+    })
   })
 })

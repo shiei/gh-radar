@@ -6,6 +6,7 @@ import type {
   SearchType,
 } from '../../lib/github'
 import { DEFAULT_FILTERS, MAX_PAGE, PAGE_SIZE } from '../../lib/github'
+import { parseSearchUrl, type UrlSearchState } from './urlState'
 
 export type SearchStatus = 'idle' | 'loading' | 'success' | 'empty' | 'error'
 
@@ -31,6 +32,8 @@ export type SearchAction =
   | { type: 'setFilters'; filters: Partial<SearchFilters> }
   | { type: 'goToPage'; page: number }
   | { type: 'retry' }
+  /** Adopt a search from the URL (initial load, back/forward). An empty query returns to idle. */
+  | { type: 'restore'; state: UrlSearchState }
   | { type: 'succeeded'; requestId: number; result: AnySearchResult }
   | { type: 'failed'; requestId: number; error: GitHubError }
 
@@ -44,6 +47,14 @@ export const initialSearchState: SearchState = {
   result: null,
   error: null,
   requestId: 0,
+}
+
+/** Initial state for a page load: the URL's search already in flight, or idle without one. */
+export function initialStateFromUrl(search: string): SearchState {
+  const parsed = parseSearchUrl(search)
+  return parsed
+    ? searchReducer(initialSearchState, { type: 'restore', state: parsed })
+    : initialSearchState
 }
 
 /** Last page the user can reach: result-bound and capped by GitHub's 1000-result window. */
@@ -108,6 +119,12 @@ export function searchReducer(state: SearchState, action: SearchAction): SearchS
     case 'retry': {
       if (!state.query) return state
       return startRequest(state, {})
+    }
+    case 'restore': {
+      const { type, query, sort, page, filters } = action.state
+      // Bump requestId even when going idle so an in-flight request is abandoned.
+      if (!query) return { ...initialSearchState, requestId: state.requestId + 1 }
+      return startRequest(state, { type, query, sort, page, filters })
     }
     case 'succeeded': {
       if (action.requestId !== state.requestId) return state

@@ -169,3 +169,60 @@ describe('useRepositorySearch types and filters', () => {
     expect(result.current.state.type).toBe('repositories')
   })
 })
+
+describe('useRepositorySearch URL state', () => {
+  const calls: { url: string; signal: AbortSignal | undefined }[] = []
+  // Never resolves: these tests only look at what was requested and at the URL bar.
+  const fetchMock = vi.fn<typeof fetch>(
+    (input, init) =>
+      new Promise<Response>(() => {
+        calls.push({ url: urlOf(input), signal: init?.signal ?? undefined })
+      }),
+  )
+
+  beforeEach(() => {
+    calls.length = 0
+    clearSearchCache()
+    vi.stubGlobal('fetch', fetchMock)
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    window.history.replaceState(null, '', '/')
+  })
+
+  it('starts from the URL, canonicalises it, and sends that request', async () => {
+    window.history.replaceState(null, '', '/?q=rust&sort=stars&page=2&page=2')
+    const { result } = renderHook(() => useRepositorySearch())
+    expect(result.current.state).toMatchObject({ query: 'rust', sort: 'stars', page: 2 })
+    expect(window.location.search).toBe('?q=rust&sort=stars&page=2')
+    await waitFor(() => expect(calls).toHaveLength(1))
+    expect(calls[0]?.url).toContain('q=rust')
+    expect(calls[0]?.url).toContain('sort=stars')
+    expect(calls[0]?.url).toContain('page=2')
+  })
+
+  it('pushes the URL on every submit and restores state on popstate', async () => {
+    const { result } = renderHook(() => useRepositorySearch())
+    expect(window.location.search).toBe('')
+    act(() => result.current.submit('react'))
+    expect(window.location.search).toBe('?q=react')
+    act(() => result.current.submit('vue', 'users'))
+    expect(window.location.search).toBe('?q=vue&type=users')
+
+    // Simulate the browser going back: the URL changes first, then popstate fires.
+    window.history.replaceState(null, '', '/?q=react')
+    act(() => {
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+    expect(result.current.state).toMatchObject({ query: 'react', type: 'repositories' })
+    expect(window.location.search).toBe('?q=react')
+
+    window.history.replaceState(null, '', '/')
+    act(() => {
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+    expect(result.current.state).toMatchObject({ status: 'idle', query: '' })
+    await waitFor(() => expect(calls.every((c) => c.signal?.aborted)).toBe(true))
+  })
+})

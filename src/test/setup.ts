@@ -39,4 +39,6 @@ if (typeof window.matchMedia !== 'function') {
 afterEach(() => {
   cleanup()
   window.localStorage.clear()
+  // Search state is mirrored into the URL; never let one test's URL leak into the next.
+  window.history.replaceState(null, '', '/')
 })

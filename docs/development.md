@@ -76,7 +76,7 @@ openspec/         計画ファイル（proposal / specs / design / tasks）
 
 ## 検索タイプとフィルター
 
-検索ボックスの上で検索対象を切り替えられる。Repositories（既定）、Users、Topics はそれぞれ `/search/repositories`、`/search/users`、`/search/topics` を呼び出し、それぞれ専用の結果カードを持つ。並び替えはリポジトリにのみ有効である。token が設定されている場合、検索ごとに他の 2 タイプへも `per_page=1` のリクエストを 1 回ずつ追加で送り、一致件数を切り替えボタンに表示する（`src/features/search/useTypeCounts.ts`）。未設定の場合は送信せず、ボタンにはタイプ名のみ表示する。
+送信済みの検索状態（クエリ、種別、並び順、ページ、フィルター）は URL のクエリ文字列に反映され、リンク共有とブラウザの戻る / 進むに対応する（`src/features/search/urlState.ts`）。検索ボックスの上で検索対象を切り替えられる。Repositories（既定）、Users、Topics はそれぞれ `/search/repositories`、`/search/users`、`/search/topics` を呼び出し、それぞれ専用の結果カードを持つ。並び替えはリポジトリにのみ有効である。token が設定されている場合、検索ごとに他の 2 タイプへも `per_page=1` のリクエストを 1 回ずつ追加で送り、一致件数を切り替えボタンに表示する（`src/features/search/useTypeCounts.ts`）。未設定の場合は送信せず、ボタンにはタイプ名のみ表示する。
 
 リポジトリ検索のフィルター（言語、最低 star 数、fork の除外、アーカイブの除外）は `composeQuery()` によって `language:` / `stars:>=` / `fork:false` / `archived:false` に変換され、リクエストの q の末尾に追加される。入力ボックスの内容は変わらない。いずれかの項目を変更すると 1 ページ目から再検索する。広い画面ではフィルターは左カラムのカテゴリの下に、狭い画面では検索ボックスの下に折りたたまれて表示される。結果カード上の言語テキストと topic タグはどちらもクリック可能で、前者は言語フィルターを設定し、後者は `topic:<name>` でリポジトリを再検索する。言語の一覧は `src/lib/languages.ts` にある。
 

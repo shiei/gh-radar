@@ -179,6 +179,17 @@
 - **WHEN** ユーザーが失敗案内上でリトライをクリックする
 - **THEN** 同じクエリ、ソート、ページ番号で再検索される
 
+### Requirement: Search state lives in the URL
+送信済みの検索（クエリ、種別、並び順、ページ、フィルター）SHALL ページの URL クエリ文字列に反映される（`?q=react&sort=stars&page=2&lang=Rust&exclude=forks,archived`、既定値は省略）。そのような URL を開くと SHALL 同じ検索を自動的に実行し、入力欄にクエリを表示する。検索の変更 SHALL 履歴エントリを追加し、ブラウザの戻る / 進む SHALL 対応する検索状態を復元する。`q` の無い URL に戻ったとき SHALL 初期状態（結果なし）に戻る。
+
+#### Scenario: Shared link
+- **WHEN** 訪問者が `?q=react&sort=stars&page=2` を開く
+- **THEN** react の検索が star 順・2 ページ目で実行され、入力欄に「react」が入っている
+
+#### Scenario: Back button
+- **WHEN** ユーザーが「react」を検索した後「vue」を検索し、ブラウザの戻るを押す
+- **THEN** URL と結果が「react」の検索に戻る
+
 ### Requirement: Results are cached within the session
 同一の「種別、クエリ、ソート、フィルター条件、ページ番号」の組の検索結果 SHALL セッション内で 5 分間キャッシュする。キャッシュにヒットしたとき SHALL リクエストを発行せず結果を直接表示する。5 分を超えるかページを再読み込みするとキャッシュは無効になる。失敗したレスポンスは MUST NOT キャッシュしない。
 

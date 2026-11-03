@@ -8,7 +8,8 @@ import {
   type SearchType,
 } from '../../lib/github'
 import { getCached, invalidateCached, setCached } from './searchCache'
-import { initialSearchState, searchReducer, type SearchState } from './searchReducer'
+import { initialStateFromUrl, searchReducer, type SearchState } from './searchReducer'
+import { buildSearchUrl, parseSearchUrl, URL_DEFAULTS } from './urlState'
 
 export interface RepositorySearch {
   state: SearchState
@@ -32,13 +33,19 @@ function toRequest(state: SearchState): SearchRequest {
  * tags responses so stale ones are dropped by the reducer.
  */
 export function useRepositorySearch(): RepositorySearch {
-  const [state, dispatch] = useReducer(searchReducer, initialSearchState)
+  const [state, dispatch] = useReducer(searchReducer, undefined, () =>
+    initialStateFromUrl(window.location.search),
+  )
   const controllerRef = useRef<AbortController | null>(null)
   const { requestId } = state
 
   useEffect(() => {
     if (requestId === 0) return
     controllerRef.current?.abort()
+    if (!state.query) {
+      controllerRef.current = null
+      return
+    }
     const req = toRequest(state)
 
     // Session cache: a fresh hit answers without a request (and without an AbortController).
@@ -66,6 +73,31 @@ export function useRepositorySearch(): RepositorySearch {
     // Request fields only change together with requestId when a request is intended.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestId])
+
+  // The URL mirrors every submitted search so links can be shared and back/forward work.
+  // The first sync replaces the entry (it only canonicalises what the user opened with);
+  // later ones push. A state restored from popstate already matches the URL, so nothing is written.
+  const syncedRef = useRef(false)
+  useEffect(() => {
+    const { pathname, search, hash } = window.location
+    const target = `${pathname}${buildSearchUrl(state)}${hash}`
+    if (target === `${pathname}${search}${hash}`) {
+      syncedRef.current = true
+      return
+    }
+    if (syncedRef.current) window.history.pushState(null, '', target)
+    else window.history.replaceState(null, '', target)
+    syncedRef.current = true
+    // Same reasoning as above: the fields only change together with requestId.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestId])
+
+  useEffect(() => {
+    const onPopState = () =>
+      dispatch({ type: 'restore', state: parseSearchUrl(window.location.search) ?? URL_DEFAULTS })
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
 
   const submit = useCallback(
     (q: string, type?: SearchType) => dispatch({ type: 'submit', query: q, searchType: type }),
