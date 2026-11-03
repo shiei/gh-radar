@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { formatCompactNumber } from '../../../lib/format'
 import { RANKING_TOP, type RankedRepo } from '../../../lib/rankings'
-import { avatarUrl } from '../../../lib/snapshot'
+import { avatarUrl, type SnapshotRepo } from '../../../lib/snapshot'
 import { Avatar, Button, InfoIcon, StarIcon, Text, Tooltip } from '../../atoms'
 
 export interface RankingListProps {
@@ -13,6 +13,19 @@ export interface RankingListProps {
   items: RankedRepo[]
   /** Rising only: history is too short, items are an approximation. */
   fallback?: boolean
+}
+
+/** Tooltip body: full name (the row may be truncated), language and topics. */
+function RepoSummary({ repo }: { repo: SnapshotRepo }) {
+  return (
+    <span className="flex flex-col gap-1" data-testid="ranking-summary">
+      <span className="font-medium">{repo.fullName}</span>
+      {repo.language ? <span className="text-text-muted">{repo.language}</span> : null}
+      {repo.topics.length > 0 ? (
+        <span className="text-text-muted">{repo.topics.join(', ')}</span>
+      ) : null}
+    </span>
+  )
 }
 
 export function RankingList({ id, title, hint, items, fallback = false }: RankingListProps) {
@@ -58,16 +71,22 @@ export function RankingList({ id, title, hint, items, fallback = false }: Rankin
                 {index + 1}
               </span>
               <Avatar src={avatarUrl(repo.owner, repo.ownerId)} name={repo.owner} size={20} />
-              <a
-                href={`https://github.com/${repo.fullName}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-text hover:text-accent min-w-0 flex-1 truncate hover:underline"
-                title={repo.fullName}
+              {/* The snapshot has no description, so topics and language stand in for one. */}
+              <Tooltip
+                content={<RepoSummary repo={repo} />}
+                render={
+                  <a
+                    href={`https://github.com/${repo.fullName}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-text hover:text-accent min-w-0 flex-1 truncate hover:underline"
+                    data-testid="ranking-link"
+                  />
+                }
               >
                 <span className="text-text-muted">{repo.owner} / </span>
                 {repo.name}
-              </a>
+              </Tooltip>
               <span className="text-text-muted inline-flex shrink-0 items-center gap-0.5 text-xs tabular-nums">
                 <StarIcon size={12} />
                 {formatCompactNumber(repo.stars, lang)}

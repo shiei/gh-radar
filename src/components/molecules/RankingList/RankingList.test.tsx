@@ -37,6 +37,17 @@ describe('RankingList', () => {
     expect(screen.getByTestId('ranking-rising-toggle')).toHaveTextContent('Show less')
   })
 
+  it('links each row to GitHub and keeps the link as the tooltip trigger', () => {
+    render(<RankingList id="popular" title="P" hint="h" items={[item(1)]} />)
+    const link = screen.getByTestId('ranking-link')
+    expect(link.tagName).toBe('A')
+    expect(link).toHaveAttribute('href', 'https://github.com/o/r1')
+    expect(link).toHaveTextContent('o / r1')
+    // The tooltip replaces the native title; a focusable wrapper would add a second tab stop.
+    expect(link).not.toHaveAttribute('title')
+    expect(link.parentElement).toHaveAttribute('data-testid', 'ranking-item')
+  })
+
   it('labels the fallback mode and the empty state', () => {
     const { rerender } = render(
       <RankingList id="rising" title="R" hint="h" items={[item(1)]} fallback />,

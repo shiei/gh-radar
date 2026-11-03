@@ -16,6 +16,18 @@ describe('Tooltip', () => {
     expect(trigger).toHaveAttribute('tabindex', '0')
   })
 
+  it('uses the given element as the trigger instead of adding a span', () => {
+    render(
+      <Tooltip content="Exact time" render={<a href="https://example.com" />}>
+        3 days ago
+      </Tooltip>,
+    )
+    const trigger = screen.getByText('3 days ago')
+    expect(trigger.tagName).toBe('A')
+    expect(trigger).toHaveAttribute('href', 'https://example.com')
+    expect(trigger).not.toHaveAttribute('tabindex')
+  })
+
   it('renders the content with tooltip semantics when open', async () => {
     render(
       <Tooltip content={'Line one\nExact time'} defaultOpen>
