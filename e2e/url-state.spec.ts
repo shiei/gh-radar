@@ -13,7 +13,8 @@ test.describe('search state in the URL', () => {
     expect(sent.get('page')).toBe('2')
 
     await search(page, 'vue')
-    await expect(page).toHaveURL(/\?q=vue$/)
+    // Sort is a setting and survives a new query; only the page resets.
+    await expect(page).toHaveURL(/\?q=vue&sort=stars$/)
 
     await page.goBack()
     await expect(page).toHaveURL(/\?q=react&sort=stars&page=2$/)
