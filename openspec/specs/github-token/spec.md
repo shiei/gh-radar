@@ -55,7 +55,7 @@
 - **THEN** 作成リンクが見え、その下の注意書きに読み取り専用、公開リポジトリのみ、短期の有効期限の 3 点が含まれる
 
 ### Requirement: Production page restricts script and connection origins
-本番ビルドのページ SHALL Content Security Policy を持つ：スクリプトは本サイトのオリジンのみ許可（インラインのテーマ起動スクリプトはハッシュで許可）、ネットワーク接続は本サイトと `api.github.com` のみ許可、画像は本サイトと GitHub のアバタードメインのみ許可、object と外部 base は禁止。開発モードはこの制約を受けない。
+本番ビルドのページ SHALL Content Security Policy を持つ：スクリプトは本サイトのオリジン（インラインのテーマ起動スクリプトはハッシュで許可）と Google のタグホストのみ許可、ネットワーク接続は本サイトと `api.github.com` と Google Analytics のホストのみ許可、画像は本サイトと GitHub のアバタードメインと Google Analytics のホストのみ許可、object と外部 base は禁止。Google のホストの詳細は `analytics-consent` spec を参照。開発モードはこの制約を受けない。
 
 #### Scenario: Policy present in the built page
 - **WHEN** 本番ビルドのトップページを読み込む

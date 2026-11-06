@@ -90,7 +90,7 @@ openspec/         計画ファイル（proposal / specs / design / tasks）
 
 ヘッダーの「GitHub と接続」から個人 token を設定できる。保存前に `GET /rate_limit` で検証し（クォータは消費しない）、設定後は search クォータが毎分 30 回に上がり、ヘッダーに残り回数を表示する。token は `api.github.com` にのみ送信される。既定ではメモリ上にのみ保持され、タブを閉じると消える。「この端末で記憶する」にチェックを入れた場合のみ `localStorage['osr.token']` に書き込む。読み取り専用、公開リポジトリのみ、短い有効期限の fine-grained token を作成すること。
 
-本番ビルドでは `index.html` に Content Security Policy を注入する（スクリプトは自サイトのみ、接続は `api.github.com` のみ。`vite.config.ts` の `cspPlugin` が生成する）。デプロイ時には HTTP レスポンスヘッダーに移すことを推奨する。
+本番ビルドでは `index.html` に Content Security Policy を注入する（スクリプトは自サイトと Google のタグホストのみ、接続は `api.github.com` と Google Analytics のみ。`vite.config.ts` の `cspPlugin` が生成する）。デプロイ時には HTTP レスポンスヘッダーに移すことを推奨する。
 
 同じタイプ、クエリ（フィルター条件を含む）、並び替え、ページ番号はセッション内で 5 分間キャッシュされ、ヒットした場合はリクエストを送らない。ページを再読み込みすると無効になる。
 
@@ -99,6 +99,17 @@ openspec/         計画ファイル（proposal / specs / design / tasks）
 すべての Playwright テストケースは `e2e/helpers/test.ts` から `test` をインポートする。これは各ページに、`api.github.com` へのすべてのリクエストを abort するフォールバック route を自動で設定するため、どのテストケースも実際の API に到達しない。レスポンスが必要な場合は `e2e/helpers/mockGitHub.ts` の `mockSearch` / `mockSearchByPage` / `mockSearchTypes` を使い、`e2e/fixtures/` 内の JSON を返す。テストケースが自分で登録した route はフォールバックより優先される。
 
 `e2e/fixtures/search-react.json` は実際のレスポンスに由来し、画面で使うフィールドのみを残している。
+
+## アクセス解析と Cookie 同意
+
+Google Analytics 4（測定 ID は `src/lib/analytics/constants.ts`）は、訪問者が Cookie バナーで「許可する」を選んだ後にのみ読み込む。流れは次のとおり。
+
+- `src/lib/analytics/consentStore.ts`：決定（`granted` / `denied` / 未回答 `null`）を `localStorage['osr.consent']` に保持する小さなストア。
+- `src/lib/analytics/gtag.ts`：gtag.js の注入（`enableAnalytics`）と停止（`disableAnalytics`。`ga-disable-<ID>` フラグを立て、`_ga*` Cookie を失効させる）。広告機能と Google シグナルは config で無効にしている。
+- `src/lib/analytics/install.ts`：`main.tsx` から一度だけ呼ばれ、ストアを購読してタグを読み込む / 止める。`import.meta.env.PROD` でない限り何もしないので、`npm run dev` と Vitest からは実プロパティにデータが届かない。
+- `src/features/analytics/useConsent.ts`：React 側の hook。`ConsentBanner`（organisms）が未回答のときだけ表示され、`Footer` の「Cookie の設定」で回答をリセットして再表示できる。
+
+e2e では `e2e/helpers/test.ts` が Google のホストへのリクエストをすべて abort し、同意を `denied` に事前設定してバナーが他の spec の邪魔をしないようにしている。バナー自体は `e2e/consent.spec.ts` が検証する。
 
 ## エラー処理と可観測性
 

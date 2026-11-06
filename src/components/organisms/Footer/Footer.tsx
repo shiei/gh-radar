@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
+import { useConsent } from '../../../features/analytics'
+import type { ConsentStore } from '../../../lib/analytics'
 import { ExternalLinkIcon, Text } from '../../atoms'
 import { ALTERNATIVES, PROJECT_URL } from './alternatives'
 
@@ -25,8 +27,14 @@ function AboutLine({ text }: { text: string }) {
   )
 }
 
-export function Footer() {
+export interface FooterProps {
+  /** Overridable for tests; the app uses the shared consent store. */
+  consentStore?: ConsentStore
+}
+
+export function Footer({ consentStore }: FooterProps = {}) {
   const { t } = useTranslation()
+  const { reset } = useConsent(consentStore)
   return (
     <footer className="border-border bg-surface border-t" data-testid="footer">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-[30px] py-10 lg:px-4">
@@ -58,6 +66,16 @@ export function Footer() {
         </section>
         <Text variant="muted" className="text-center text-xs" data-testid="footer-about">
           <AboutLine text={t('footer.about')} />
+        </Text>
+        <Text variant="muted" className="text-center text-xs">
+          <button
+            type="button"
+            onClick={reset}
+            className="text-accent hover:underline"
+            data-testid="consent-manage"
+          >
+            {t('consent.manage')}
+          </button>
         </Text>
       </div>
     </footer>

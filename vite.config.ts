@@ -7,8 +7,9 @@ import { defineConfig, type Plugin } from 'vite'
 
 /**
  * Content Security Policy for production builds. Scripts may only come from this
- * origin (plus the hashed inline theme bootstrap), and the page may only talk to
- * api.github.com. Dev mode is excluded because Vite injects its own inline scripts.
+ * origin (plus the hashed inline theme bootstrap) and Google's tag host; the page may
+ * only talk to api.github.com and, once the visitor has accepted cookies, Google
+ * Analytics. Dev mode is excluded because Vite injects its own inline scripts.
  * Move this to an HTTP header at the hosting layer when deploying.
  */
 function cspPlugin(): Plugin {
@@ -24,10 +25,10 @@ function cspPlugin(): Plugin {
       )
       const policy = [
         "default-src 'self'",
-        `script-src 'self' ${hashes.join(' ')}`.trim(),
+        `script-src 'self' ${hashes.join(' ')} https://*.googletagmanager.com`,
         "style-src 'self' 'unsafe-inline'",
-        "img-src 'self' data: https://avatars.githubusercontent.com https://github.com",
-        "connect-src 'self' https://api.github.com",
+        "img-src 'self' data: https://avatars.githubusercontent.com https://github.com https://*.google-analytics.com https://*.googletagmanager.com",
+        "connect-src 'self' https://api.github.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
         "font-src 'self'",
         "object-src 'none'",
         "base-uri 'self'",

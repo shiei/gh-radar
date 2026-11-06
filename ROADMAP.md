@@ -60,6 +60,7 @@
 - [x] ErrorBoundary と `reportError`：描画エラーは案内画面、window error / unhandledrejection も同じ関数へ。外部送信先はまだ無い。
 - [ ] 境界での型検証：GitHub API レスポンスとスナップショット JSON を `as T` ではなく実行時に検証する（zod など）。`homepage` を http(s) に限定。`rankings.ts` の非 null アサーションを除去。
 - [ ] 依存と体積：`@base-ui-components/react` の rc 版を安定版へ。JS バンドル 520 KB（gzip 164 KB）をルート / ランキング単位で分割し、サイズ予算を CI に入れる。
+- [x] アクセス解析：Google Analytics 4 を Cookie 同意バナー（許可 / 拒否、フッターから変更可）の後にのみ読み込む。CSP に Google のホストを追加。（2026-11-06）
 - [ ] 運用：master のブランチ保護、Deploy を CI（e2e 含む）の成功に連動、Web Vitals の計測、外部エラー送信先。
 
 ## 第三段階（バックエンドが必要）

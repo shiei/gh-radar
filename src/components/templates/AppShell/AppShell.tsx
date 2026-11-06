@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { CornerDecor, Footer, Header } from '../../organisms'
+import { ConsentBanner, CornerDecor, Footer, Header } from '../../organisms'
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -14,6 +14,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </main>
       </div>
       <Footer />
+      <ConsentBanner />
     </div>
   )
 }

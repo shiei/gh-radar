@@ -195,5 +195,13 @@
       "librariesIo": "以包为单位的依赖关系与被依赖数"
     },
     "about": "OpenSource Radar 是一个个人维护的开源小工具，用每日快照观察开源项目的动向。源码在 <link>GitHub</link>。"
+  },
+  "consent": {
+    "body": "本站使用 Cookie，是否允许？",
+    "more": "收集哪些内容",
+    "details": "Google Analytics 会在一个随机 ID 下记录你浏览的页面、国家、浏览器和屏幕尺寸。不用于广告，也不跨站追踪。你同意之前不会加载任何统计脚本，之后随时可以在页脚更改选择。",
+    "accept": "允许",
+    "decline": "拒绝",
+    "manage": "Cookie 设置"
   }
 }

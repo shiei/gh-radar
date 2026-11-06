@@ -5,9 +5,12 @@ import './styles/globals.css'
 import './lib/i18n'
 import { App } from './app/App'
 import { ErrorBoundary } from './app/ErrorBoundary'
+import { installAnalytics } from './lib/analytics'
 import { installGlobalErrorHandlers } from './lib/report'
 
 installGlobalErrorHandlers()
+// Google Analytics loads only after the visitor accepts cookies (ConsentBanner); never in dev.
+installAnalytics()
 
 const rootElement = document.getElementById('root')
 if (!rootElement) {

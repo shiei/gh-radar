@@ -15,6 +15,10 @@ A small open-source tool for watching what is moving in open source: search GitH
 - **Optional GitHub token** to raise the search limit from 10 to 30 requests a minute. It stays in your browser (memory only unless you choose to remember it) and is sent only to `api.github.com`.
 - English, Japanese and Chinese UI, dark and light themes.
 
+## Privacy
+
+Visit counts come from Google Analytics, and only if you accept the cookie notice shown on your first visit. Until then nothing from Google is loaded; declining is one click and is remembered. What is recorded: pages viewed, country, browser and screen size under a random ID, with ad features and Google Signals turned off. "Cookie settings" in the footer lets you change your choice later. The GitHub token never leaves your browser except to `api.github.com`.
+
 ## Where the data comes from
 
 Search results come straight from the GitHub REST API in your browser. Rankings come from `public/data/`, which a GitHub Actions job rebuilds every day at 00:00 UTC: the top 300 popular and rising repositories for each of the six categories plus a small watchlist, about 2,000 repositories in total. It is deliberately a sample, not all of GitHub; the ranking tooltips say so. Older snapshots are kept for 30 days, per-repository star series for a year by day and then by week. Details: [scripts/README.md](scripts/README.md).

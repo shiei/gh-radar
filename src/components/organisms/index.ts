@@ -1,4 +1,5 @@
 export { CornerDecor } from './CornerDecor/CornerDecor'
+export { ConsentBanner } from './ConsentBanner/ConsentBanner'
 export { Footer } from './Footer/Footer'
 export { Header } from './Header/Header'
 export { SettingsDrawer } from './SettingsDrawer/SettingsDrawer'

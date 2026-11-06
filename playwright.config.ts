@@ -12,7 +12,14 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     trace: 'on-first-retry',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    {
+      name: 'chromium',
+      // PW_CHANNEL=chrome runs against an installed Google Chrome, for machines where
+      // Playwright no longer ships a Chromium build (e.g. older macOS).
+      use: { ...devices['Desktop Chrome'], channel: process.env.PW_CHANNEL },
+    },
+  ],
   webServer: {
     command: `npm run build && npm run preview -- --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
