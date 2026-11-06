@@ -199,7 +199,7 @@
   "consent": {
     "body": "This site uses cookies. Is that OK?",
     "more": "What is collected",
-    "details": "Google Analytics records the pages you view, your country, browser and screen size under a random ID. No ads, no cross-site tracking. Nothing is loaded until you accept, and you can change your choice from the footer at any time.",
+    "details": "Used only to count visits, never for ads. Nothing is loaded until you accept, and you can change your choice from the footer at any time.",
     "accept": "Accept",
     "decline": "Decline",
     "manage": "Cookie settings"
