@@ -1,22 +1,22 @@
 {
-  "lastRun": "2026-11-19T04:55:38.319Z",
-  "date": "2026-11-19",
-  "total": 2090,
+  "lastRun": "2026-11-20T04:46:14.993Z",
+  "date": "2026-11-20",
+  "total": 2097,
   "sources": {
-    "ai-ml:rising": 150,
-    "design:rising": 61,
+    "ai-ml:rising": 152,
+    "design:rising": 63,
     "devops:popular": 300,
     "backend:popular": 300,
     "ai-ml:popular": 300,
     "database:rising": 53,
-    "devops:rising": 65,
+    "devops:rising": 66,
     "design:popular": 300,
     "database:popular": 300,
     "backend:rising": 16,
-    "frontend:rising": 55,
+    "frontend:rising": 56,
     "frontend:popular": 300,
     "watchlist": 5
   },
   "mapVersion": 1,
-  "historyDays": 30
+  "historyDays": 31
 }
